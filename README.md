@@ -90,7 +90,7 @@ This library allows you to perform both serialization and deserialization of the
 ```typescript
 import {serialize} from "serializer.ts";
 
-let users = serialize(photo);
+let photo = serialize(photo);
 ```
 
 Work of `serialize` method may look like `JSON.parse` method, but benefit of using this method is that you can skip
