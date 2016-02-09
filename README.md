@@ -115,7 +115,7 @@ specify what type of object each property contain. This is done using `@Type` de
 
 Lets say we have an album with photos. And we are trying to deserialize album object:
 
-```
+```typescript
 import {Type} from "serializer.ts/Decorators";
 
 export class Album {
