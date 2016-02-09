@@ -1,0 +1,12 @@
+{
+  "ambientDevDependencies": {
+    "assertion-error": "github:DefinitelyTyped/DefinitelyTyped/assertion-error/assertion-error.d.ts#7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645",
+    "chai": "github:DefinitelyTyped/DefinitelyTyped/chai/chai.d.ts#7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645",
+    "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645",
+    "sinon": "github:DefinitelyTyped/DefinitelyTyped/sinon/sinon.d.ts#7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645"
+  },
+  "ambientDependencies": {
+    "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#6697d6f7dadbf5773cb40ecda35a76027e0783b2",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
+  }
+}

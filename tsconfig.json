@@ -1,0 +1,20 @@
+{
+    "version": "1.8.0",
+    "compilerOptions": {
+        "outDir": "build/es5",
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "declaration": true
+    },
+    "exclude": [
+        "build",
+        "node_modules",
+        "typings/browser.d.ts",
+        "typings/browser"
+    ]
+}

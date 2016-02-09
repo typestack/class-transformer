@@ -1,0 +1,46 @@
+{
+  "name": "serializer.ts",
+  "version": "0.0.1",
+  "description": "Proper serialization and deserialization raw json objects to classes in Typescript",
+  "license": "Apache-2.0",
+  "readmeFilename": "README.md",
+  "private": true,
+  "author": {
+    "name": "Umed Khudoiberdiev",
+    "email": "zarrhost@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pleerock/serializer.ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pleerock/serializer.ts/issues"
+  },
+  "tags": [
+    "serialization",
+    "deserialization",
+    "serializer",
+    "typescript",
+    "typescript-serializer"
+  ],
+  "dependencies": {
+    "reflect-metadata": "^0.1.3"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "del": "^2.2.0",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-replace": "^0.5.4",
+    "gulp-shell": "^0.5.1",
+    "gulp-tslint": "^4.3.1",
+    "gulpclass": "0.1.0",
+    "mocha": "^2.3.2",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0",
+    "tslint": "^3.3.0",
+    "tslint-stylish": "^2.1.0-beta",
+    "typescript": "^1.8.0",
+    "typings": "^0.6.6"
+  }
+}
