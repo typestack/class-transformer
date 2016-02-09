@@ -69,6 +69,6 @@ export default serializer;
 export function serialize<T>(object: T) {
     return serializer.serialize(object);
 }
-export function deserialize<T>(cls: Function, json: any) {
-    return serializer.deserialize(cls, json);
+export function deserialize<T>(cls: Function, json: any): T {
+    return serializer.deserialize<T>(cls, json);
 }

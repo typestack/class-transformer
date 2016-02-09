@@ -1,4 +1,4 @@
-import {serialize, deserialize} from "../../src/index";
+import {serialize, deserialize} from "../../src/Serializer";
 import {Photo} from "./Photo";
 
 // check deserialization
