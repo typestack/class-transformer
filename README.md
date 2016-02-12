@@ -119,6 +119,7 @@ Lets say we have an album with photos. And we are trying to deserialize album ob
 import {Type} from "serializer.ts/Decorators";
 
 export class Album {
+
     id: number;
 
     name: string;
@@ -174,6 +175,8 @@ this.http
         console.log(users);
     });
 ```
+
+You can also inject a class `Serializer` as a service, and use its methods.
 
 ## Samples
 
