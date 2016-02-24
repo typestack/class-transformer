@@ -88,7 +88,7 @@ This library allows you to perform both serialization and deserialization of the
 #### serialization
 
 ```typescript
-import {serialize} from "serializer.ts";
+import {serialize} from "serializer.ts/Serializer";
 
 let photo = serialize(photo);
 ```
@@ -99,7 +99,7 @@ some properties during serialization. Skipping is covered in next section.
 #### deserialization
 
 ```typescript
-import {deserialize} from "serializer.ts";
+import {deserialize} from "serializer.ts/Serializer";
 
 let users = deserialize<User[]>(User, usersJson);
 ```
