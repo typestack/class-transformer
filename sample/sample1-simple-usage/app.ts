@@ -40,7 +40,8 @@ let photosJson = [{
     author: {
         id: "2",
         firstName: "Johny",
-        lastName: "Cage"
+        lastName: "Cage",
+        registrationDate: "1995-12-17T03:24:00"
     },
     albums: [{
         id: "1",

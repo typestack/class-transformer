@@ -6,7 +6,7 @@ import {SkipMetadata} from "./metadata/SkipMetadata";
 /**
  * Specifies a type of the property. Property needs to known about its type
  */
-export function Type(typeFunction?: () => Function): Function {
+export function Type(typeFunction?: (type?: any) => Function) {
     return function(target: any, key: string) {
         const type = Reflect.getMetadata("design:type", target, key);
         const isArray = type && typeof type === "string" ? type.toLowerCase() === "array" : false;

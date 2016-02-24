@@ -159,6 +159,32 @@ export class User {
 Now when you'll try to serialize or deserialize object `password` property will be skipped and will not be included
 in the serialized/deserialized object.
 
+## Converting date strings into Date objects
+
+Sometimes you have dates in your plain old javascript objects received in a string format. And you want to create a
+real javascript Date objects from them. To make deserializer to automatically make your date strings a Date objects
+simply pass Date object to the `@Type` decorator:
+
+```typescript
+import {Skip, Type} from "serializer.ts/Decorators";
+
+export class User {
+
+    id: number;
+
+    email: string;
+
+    @Skip()
+    password: string;
+
+    @Type(() => Date)
+    registrationDate: Date;
+}
+```
+
+Same technique can be used with `Number`, `String`, `Boolean` primitive types when you want to convert your values
+into these types.
+
 ## Example with Angular2
 
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.

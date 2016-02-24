@@ -40,11 +40,23 @@ export class Serializer {
                 if (object[key] instanceof Array) {
                     if (!type) throw new TypeMissingError(cls, key);
                     newObject[key] = object[key].map((arrayItem: any) => this.convert(type, arrayItem, operationType));
+                    
+                } else if (object[key] instanceof Object || type) {
+                    if (!type)
+                        throw new TypeMissingError(cls, key);
 
-                } else if (object[key] instanceof Object) {
-                    if (!type) throw new TypeMissingError(cls, key);
-                    newObject[key] = this.convert(type, object[key], operationType);
-
+                    if (type === Date) {
+                        newObject[key] = new Date(object[key]);
+                    } else if (type === String) {
+                        newObject[key] = String(object[key]);
+                    } else if (type === Number) {
+                        newObject[key] = Number(object[key]);
+                    } else if (type === Boolean) {
+                        newObject[key] = Boolean(object[key]);
+                    } else {
+                        newObject[key] = this.convert(type, object[key], operationType);
+                    }
+                    
                 } else {
                     newObject[key] = object[key];
                 }
