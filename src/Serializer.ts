@@ -38,7 +38,9 @@ export class Serializer {
                 const type = this.getType(cls, key);
 
                 if (object[key] instanceof Array) {
-                    if (!type) throw new TypeMissingError(cls, key);
+                    if (object[key].length > 0 && !type)
+                        throw new TypeMissingError(cls, key);
+                    
                     newObject[key] = object[key].map((arrayItem: any) => this.convert(type, arrayItem, operationType));
                     
                 } else if (object[key] instanceof Object || type) {
