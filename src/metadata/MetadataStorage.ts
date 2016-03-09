@@ -30,11 +30,15 @@ export class MetadataStorage {
     // -------------------------------------------------------------------------
 
     findSkipMetadata(target: Function, propertyName: string) {
-        return this._skipMetadatas.find(meta => meta.target === target && meta.key === propertyName);
+        const metadataFromTarget = this._skipMetadatas.find(meta => meta.target === target && meta.key === propertyName);
+        const metadataFromChildren = this._skipMetadatas.find(meta => target.prototype instanceof meta.target && meta.key === propertyName);
+        return metadataFromTarget || metadataFromChildren;
     }
 
     findTypeMetadata(target: Function, propertyName: string) {
-        return this._typeMetadatas.find(meta => meta.target === target && meta.key === propertyName);
+        const metadataFromTarget = this._typeMetadatas.find(meta => meta.target === target && meta.key === propertyName);
+        const metadataFromChildren = this._typeMetadatas.find(meta => target.prototype instanceof meta.target && meta.key === propertyName);
+        return metadataFromTarget || metadataFromChildren;
     }
 
 }
