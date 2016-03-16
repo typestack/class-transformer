@@ -31,6 +31,9 @@ export class Serializer {
     // -------------------------------------------------------------------------
 
     private convert(cls: Function, object: any, operationType: OperationType) {
+        if (object === null || object === undefined)
+            return object;
+        
         const newObject = operationType === "serialization" ? {} : new (<any> cls)();
         Object.keys(object)
             .filter(key => !this.isSkipped(cls, key, operationType))
