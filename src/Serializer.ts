@@ -41,13 +41,13 @@ export class Serializer {
                 const type = this.getType(cls, key);
 
                 if (object[key] instanceof Array) {
-                    if (object[key].length > 0 && !type)
+                    if (object[key].length > 0 && !type && operationType === "deserialization")
                         throw new TypeMissingError(cls, key);
                     
                     newObject[key] = object[key].map((arrayItem: any) => this.convert(type, arrayItem, operationType));
                     
                 } else if (object[key] instanceof Object || type) {
-                    if (!type)
+                    if (!type && operationType === "deserialization")
                         throw new TypeMissingError(cls, key);
 
                     if (type === Date) {
@@ -70,11 +70,13 @@ export class Serializer {
     }
 
     private isSkipped(target: Function, propertyName: string, operationType: OperationType) {
+        if (!target) return undefined;
         const meta = defaultMetadataStorage.findSkipMetadata(target, propertyName);
         return operationType === "serialization" ? meta && meta.isOnSerialize : meta && meta.isOnDeserialize;
     }
 
     private getType(target: Function, propertyName: string) {
+        if (!target) return undefined;
         const meta = defaultMetadataStorage.findTypeMetadata(target, propertyName);
         return meta ? meta.typeFunction() : undefined;
     }

@@ -1,6 +1,6 @@
 {
   "name": "serializer.ts",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Proper serialization and deserialization raw json objects to classes in Typescript",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
