@@ -10,10 +10,21 @@ export class Photo {
 
     description: string;
 
+    tags: string[];
+
     @Type(() => User)
     author: User;
 
     @Type(() => Album)
     albums: Album[];
+    
+    get name() {
+        return this.id + "_" + this.filename;
+    }
+
+    getAlbums() {
+        console.log("this is not serialized/deserialized");
+        return this.albums;
+    }
 
 }

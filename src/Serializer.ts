@@ -1,7 +1,9 @@
 import {defaultMetadataStorage} from "./metadata/MetadataStorage";
 import {TypeMissingError} from "./error/TypeMissingError";
 
-type OperationType = string; // use in typescript 1.8 string literal instead:  "deserialization" | "serialization";
+export interface SerializerOptions {
+    skipStartedWith: string;
+}
 
 export class Serializer {
 
@@ -9,20 +11,20 @@ export class Serializer {
     // Adder Methods
     // -------------------------------------------------------------------------
 
-    serialize<T>(object: T): any {
+    serialize<T>(object: T, options?: SerializerOptions): any {
         if (object instanceof Array) {
             return (<any> object).map((item: any) => this.convert(item.constructor, item, "serialization"));
         } else {
             const cls = (<any> object.constructor);
-            return this.convert(cls, object, "serialization");
+            return this.convert(cls, object, "serialization", options);
         }
     }
 
-    deserialize<T>(cls: Function, json: any): T {
+    deserialize<T>(cls: Function, json: any, options?: SerializerOptions): T {
         if (json instanceof Array) {
             return (<any> json).map((item: any) => this.convert(cls, item, "deserialization"));
         } else {
-            return this.convert(cls, json, "deserialization");
+            return this.convert(cls, json, "deserialization", options);
         }
     }
 
@@ -30,22 +32,30 @@ export class Serializer {
     // Adder Methods
     // -------------------------------------------------------------------------
 
-    private convert(cls: Function, object: any, operationType: OperationType) {
+    private convert(cls: Function, object: any, operationType: "deserialization"|"serialization", options?: SerializerOptions) {
         if (object === null || object === undefined)
             return object;
-        
+
         const newObject = operationType === "serialization" ? {} : new (<any> cls)();
-        Object.keys(object)
-            .filter(key => !this.isSkipped(cls, key, operationType))
-            .forEach(key => {
+
+        for (let key in object) {
+            if (this.isSkipped(cls, key, operationType)) break;
+            if (typeof object[key] !== "function") {
+                if (options && options.skipStartedWith &&
+                    key.substr(0, options.skipStartedWith.length) === options.skipStartedWith) break;
+
                 const type = this.getType(cls, key);
 
                 if (object[key] instanceof Array) {
-                    if (object[key].length > 0 && !type && operationType === "deserialization")
-                        throw new TypeMissingError(cls, key);
-                    
-                    newObject[key] = object[key].map((arrayItem: any) => this.convert(type, arrayItem, operationType));
-                    
+                    // if (object[key].length > 0 && !type && operationType === "deserialization")
+                    //     throw new TypeMissingError(cls, key);
+
+                    if (object[key].length > 0 && type) {
+                        newObject[key] = object[key].map((arrayItem: any) => this.convert(type, arrayItem, operationType));
+                    } else {
+                        newObject[key] = object[key];
+                    }
+
                 } else if (object[key] instanceof Object || type) {
                     if (!type && operationType === "deserialization")
                         throw new TypeMissingError(cls, key);
@@ -61,15 +71,17 @@ export class Serializer {
                     } else {
                         newObject[key] = this.convert(type, object[key], operationType);
                     }
-                    
+
                 } else {
                     newObject[key] = object[key];
                 }
-            });
+            }
+        }
+
         return newObject;
     }
 
-    private isSkipped(target: Function, propertyName: string, operationType: OperationType) {
+    private isSkipped(target: Function, propertyName: string, operationType: "deserialization"|"serialization") {
         if (!target) return undefined;
         const meta = defaultMetadataStorage.findSkipMetadata(target, propertyName);
         return operationType === "serialization" ? meta && meta.isOnSerialize : meta && meta.isOnDeserialize;

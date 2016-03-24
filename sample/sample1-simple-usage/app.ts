@@ -7,6 +7,10 @@ let photoJson = {
     id: "1",
     filename: "myphoto.jpg",
     description: "about my photo",
+    tags: [
+        "me",
+        "iam"
+    ],
     author: {
         id: "2",
         firstName: "Johny",
