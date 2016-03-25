@@ -39,10 +39,10 @@ export class Serializer {
         const newObject = operationType === "serialization" ? {} : new (<any> cls)();
 
         for (let key in object) {
-            if (this.isSkipped(cls, key, operationType)) break;
+            if (this.isSkipped(cls, key, operationType)) continue;
             if (typeof object[key] !== "function") {
                 if (options && options.skipStartedWith &&
-                    key.substr(0, options.skipStartedWith.length) === options.skipStartedWith) break;
+                    key.substr(0, options.skipStartedWith.length) === options.skipStartedWith) continue;
 
                 const type = this.getType(cls, key);
 
