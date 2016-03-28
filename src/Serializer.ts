@@ -1,5 +1,4 @@
 import {defaultMetadataStorage} from "./metadata/MetadataStorage";
-import {TypeMissingError} from "./error/TypeMissingError";
 
 export interface SerializerOptions {
     skipStartedWith: string;
@@ -57,8 +56,8 @@ export class Serializer {
                     }
 
                 } else if (object[key] instanceof Object || type) {
-                    if (!type && operationType === "deserialization")
-                        throw new TypeMissingError(cls, key);
+                    // if (!type && operationType === "deserialization")
+                    //     throw new TypeMissingError(cls, key);
 
                     if (type === Date) {
                         newObject[key] = new Date(object[key]);
