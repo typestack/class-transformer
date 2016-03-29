@@ -55,7 +55,7 @@ export class Serializer {
                         newObject[key] = object[key];
                     }
 
-                } else if (object[key] instanceof Object || type) {
+                } else if (object[key] instanceof Object && type) {
                     // if (!type && operationType === "deserialization")
                     //     throw new TypeMissingError(cls, key);
 
