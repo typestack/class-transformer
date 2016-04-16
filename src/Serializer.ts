@@ -58,6 +58,9 @@ export class Serializer {
                 } else if (object[key] instanceof Object && type) {
                     // if (!type && operationType === "deserialization")
                     //     throw new TypeMissingError(cls, key);
+                    newObject[key] = this.convert(type, object[key], operationType);
+
+                } else {
 
                     if (type === Date) {
                         newObject[key] = new Date(object[key]);
@@ -68,11 +71,9 @@ export class Serializer {
                     } else if (type === Boolean) {
                         newObject[key] = Boolean(object[key]);
                     } else {
-                        newObject[key] = this.convert(type, object[key], operationType);
+                        newObject[key] = object[key];
                     }
-
-                } else {
-                    newObject[key] = object[key];
+                    
                 }
             }
         }
