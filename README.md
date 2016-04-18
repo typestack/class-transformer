@@ -1,8 +1,38 @@
-# Serializer.ts
+# constructor-utils
 
-Sometimes you want to map raw json objects to the ES6 **classes** you have. For example, if you are getting json object
-from your backend, some api or from files, and after you `JSON.parse` it you have a plain javascript object, not
-instance of class you have created.
+Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then before. You'll
+need set of utils to work with them.
+
+## Release notes
+
+**0.0.13**
+
+* Library has changed its name from `serializer.ts` to `constructor-utils`.
+* Added `constructor-utils/constructor-utils` namespace.
+
+## Installation
+
+
+1. Install module:
+
+    `npm install constructor-utils --save`
+
+2. Use [typings](https://github.com/typings/typings) to install all required definition dependencies.
+
+    `typings install`
+
+3. ES6 features are used, so you may want to install [es6-shim](https://github.com/paulmillr/es6-shim) too:
+
+    `npm install es6-shim --save`
+
+    if you are building nodejs app, you may want to `require("es6-shim");` in your app.
+    or if you are building web app, you man want to add `<script src="path-to-shim/es6-shim.js">` on your page.
+
+## Transform plain object to constructor and versa
+
+Sometimes you want to transform plain javascript objects to the ES6 **classes** you have.
+For example, if you are getting json object from your backend, some api or from files,
+and after you `JSON.parse` it you have a plain javascript object, not instance of class you have.
 
 For example you have a list of users in your `users.json` you are trying to load:
 
@@ -63,60 +93,38 @@ to create new instances of User object and manually copy all properties to new o
 Alternatives? Yes, you can use this library. Purpose of this library is to help you to map you plain javascript
 objects to the instances of classes you have created.
 
-## Installation
-
-
-1. Install module:
-
-    `npm install serializer.ts --save`
-
-2. Use [typings](https://github.com/typings/typings) to install all required definition dependencies.
-
-    `typings install`
-
-3. ES6 features are used, so you may want to install [es6-shim](https://github.com/paulmillr/es6-shim) too:
-
-    `npm install es6-shim --save`
-
-    if you are building nodejs app, you may want to `require("es6-shim");` in your app.
-    or if you are building web app, you man want to add `<script src="path-to-shim/es6-shim.js">` on your page.
-
-## Basic usage
-
-This library allows you to perform both serialization and deserialization of the objects:
-
-#### serialization
+#### plainToConstructor
 
 ```typescript
-import {serialize} from "serializer.ts/Serializer";
+import {plainToConstructor, plainToConstructorArray} from "constructor-utils/constructor-utils";
 
-let photo = serialize(photo);
-```
-
-Work of `serialize` method may look like `JSON.parse` method, but benefit of using this method is that you can skip
-some properties during serialization. Skipping is covered in next section.
-
-#### deserialization
-
-```typescript
-import {deserialize} from "serializer.ts/Serializer";
-
-let users = deserialize<User[]>(User, usersJson);
+let users = plainToConstructor(User, userJson); // to convert user plain object a single user
+let users = plainToConstructorArray(User, usersJson); // to convert user plain objects array of users
 ```
 
 This allows to map plain javascript array `usersJson` to array of `User` objects.
 Now you can use `users[0].getName()` and `users[0].isKid()` methods.
 
-## Nested objects
-
-When you deserialize objects that have nested objects, its required for this component to known what type of object
-you are trying to deserialize. Since Typescript does not have good reflection abilities yet we must implicitly
-specify what type of object each property contain. This is done using `@Type` decorator.
-
-Lets say we have an album with photos. And we are trying to deserialize album object:
+#### constructorToPlain
 
 ```typescript
-import {Type} from "serializer.ts/Decorators";
+import {constructorToPlain} from "constructor-utils/constructor-utils";
+let photo = constructorToPlain(photo);
+```
+
+This method transforms your constructor object back to plain javascript object, that can be `JSON.stringify` later.
+
+#### Working with nested objects
+
+When you are trying to transform objects that have nested objects,
+its required for this component to known what type of object you are trying to transform.
+Since Typescript does not have good reflection abilities yet, we must implicitly specify what type of object each property contain.
+This is done using `@Type` decorator.
+
+Lets say we have an album with photos. And we are trying to convert album plain object to constructor object:
+
+```typescript
+import {Type, plainToConstructor} from "constructor-utils/constructor-utils";
 
 export class Album {
 
@@ -133,17 +141,17 @@ export class Photo {
     filename: string;
 }
 
-let album = deserialize<Album>(Album, albumJson);
+let album = plainToConstructor(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
-## Skipping specific properties
+### skipping specific properties
 
-Sometimes you want to skip some properties during serialization/deserialization. This can be done using `@Skip`
+Sometimes you want to skip some properties during transformation. This can be done using `@Skip`
 decorator:
 
 ```typescript
-import {Skip} from "serializer.ts/Decorators";
+import {Skip} from "constructor-utils/constructor-utils";
 
 export class User {
 
@@ -156,17 +164,17 @@ export class User {
 }
 ```
 
-Now when you'll try to serialize or deserialize object `password` property will be skipped and will not be included
-in the serialized/deserialized object.
+Now when you'll try to transform objects, `password` property will be skipped and will not be included
+in the resulted object.
 
-## Converting date strings into Date objects
+### converting date strings into Date objects
 
 Sometimes you have dates in your plain old javascript objects received in a string format. And you want to create a
-real javascript Date objects from them. To make deserializer to automatically make your date strings a Date objects
+real javascript Date objects from them. To make this component to automatically make your date strings a Date objects
 simply pass Date object to the `@Type` decorator:
 
 ```typescript
-import {Skip, Type} from "serializer.ts/Decorators";
+import {Skip, Type} from "constructor-utils/constructor-utils";
 
 export class User {
 
@@ -182,29 +190,55 @@ export class User {
 }
 ```
 
+Note, that dates will be converted to strings when you'll try to convert constructor object to plain object.
+
 Same technique can be used with `Number`, `String`, `Boolean` primitive types when you want to convert your values
 into these types.
 
-## Example with Angular2
+### using custom arrays
+
+If you have a custom array type, you can use them using `@ArrayType()` decorator:
+
+```typescript
+import {ArrayType} from "constructor-utils/constructor-utils";
+
+export class AlbumCollection extends Array<Album> {
+    // custom array functions ...
+}
+
+export class Photo {
+
+    id: number;
+
+    name: string;
+
+    @ArrayType(() => Album)
+    albums: AlbumCollection;
+}
+```
+
+Library will handle proper transformation automatically.
+
+### example with Angular2
 
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
 
 ```typescript
-import {deserialize} from "serializer.ts/Serializer";
+import {plainToConstructorArray} from "constructor-utils/constructor-utils";
 
 this.http
     .get("users.json")
     .map(res => res.json())
-    .map(res => deserialize<User[]>(User, res))
+    .map(res => plainToConstructorArray(User, res))
     .subscribe(users => {
         // now "users" is type of User[] and each user have getName() and isKid() methods available
         console.log(users);
     });
 ```
 
-You can also inject a class `Serializer` as a service, and use its methods.
+You can also inject a class `ConstructorUtils` as a service, and use its methods.
 
 ## Samples
 
-Take a look on samples in [./sample](https://github.com/pleerock/serializer.ts/tree/master/sample) for more examples of
+Take a look on samples in [./sample](https://github.com/pleerock/constructor-utils/tree/master/sample) for more examples of
 usages.

@@ -1,7 +1,7 @@
 {
-  "name": "serializer.ts",
-  "version": "0.0.12",
-  "description": "Proper serialization and deserialization raw json objects to classes in Typescript",
+  "name": "constructor-utils",
+  "version": "0.0.13",
+  "description": "Constructor utilities to simplify work with classes and constructors. Provides plain javascript objects to classes transformation utilities.",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "private": true,
@@ -11,10 +11,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pleerock/serializer.ts.git"
+    "url": "https://github.com/pleerock/constructor-utils.git"
   },
   "bugs": {
-    "url": "https://github.com/pleerock/serializer.ts/issues"
+    "url": "https://github.com/pleerock/constructor-utils/issues"
   },
   "tags": [
     "serialization",

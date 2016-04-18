@@ -1,4 +1,4 @@
-import {Type} from "../../src/Decorators";
+import {Type} from "../../src/decorators";
 
 export class User {
 

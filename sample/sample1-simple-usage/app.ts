@@ -1,4 +1,4 @@
-import {serialize, deserialize} from "../../src/Serializer";
+import {constructorToPlain, plainToConstructor, plainToConstructorArray} from "../../src/constructor-utils";
 import {Photo} from "./Photo";
 
 // check deserialization
@@ -26,12 +26,12 @@ let photoJson = {
     }]
 };
 
-let photo = deserialize<Photo>(Photo, photoJson);
+let photo = plainToConstructor<Photo>(Photo, photoJson);
 console.log("deserialized object: " , photo);
 
 // now check serialization
 
-let newPhotoJson = serialize(photo);
+let newPhotoJson = constructorToPlain(photo);
 console.log("serialized object: " , newPhotoJson);
 
 // try to deserialize an array
@@ -75,10 +75,10 @@ let photosJson = [{
     }]
 }];
 
-let photos = deserialize<Photo[]>(Photo, photosJson);
+let photos = plainToConstructorArray(Photo, photosJson);
 console.log("deserialized array: " , photos);
 
 // now check array serialization
 
-let newPhotosJson = serialize(photos);
+let newPhotosJson = constructorToPlain(photos);
 console.log("serialized array: " , newPhotosJson);

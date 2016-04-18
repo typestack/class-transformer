@@ -1,4 +1,4 @@
-import {Type, Skip} from "../../src/Decorators";
+import {Type, Skip} from "../../src/decorators";
 import {Photo} from "./Photo";
 
 export class Album {

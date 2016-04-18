@@ -1,4 +1,4 @@
-import {Type, Skip} from "../../src/Decorators";
+import {Type, Skip} from "../../src/decorators";
 import {User} from "./User";
 
 export class Authorable {

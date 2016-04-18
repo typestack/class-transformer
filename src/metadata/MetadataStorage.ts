@@ -2,7 +2,7 @@ import {TypeMetadata} from "./TypeMetadata";
 import {SkipMetadata} from "./SkipMetadata";
 
 /**
- * Storage all serializer metadata.
+ * Storage all library metadata.
  */
 export class MetadataStorage {
 

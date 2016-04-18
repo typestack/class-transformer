@@ -1,8 +1,8 @@
 import {PropertyMetadata} from "./PropertyMetadata";
 
 export interface SkipOptions {
-    onSerialize: boolean;
-    onDeserialize: boolean;
+    constructorToPlain: boolean;
+    plainToConstructor: boolean;
 }
 
 export class SkipMetadata extends PropertyMetadata {
@@ -18,12 +18,12 @@ export class SkipMetadata extends PropertyMetadata {
         return this._options;
     }
 
-    get isOnSerialize() {
-        return !this._options || (this._options && this._options.onSerialize);
+    get isConstructorToPlain() {
+        return !this._options || (this._options && this._options.constructorToPlain);
     }
 
-    get isOnDeserialize() {
-        return !this._options || (this._options && this._options.onDeserialize);
+    get isPlainToConstructor() {
+        return !this._options || (this._options && this._options.plainToConstructor);
     }
 
 }

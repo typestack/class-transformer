@@ -1,4 +1,4 @@
-import {Type, Skip} from "../../src/Decorators";
+import {Type, Skip} from "../../src/decorators";
 import {Album} from "./Album";
 import {Authorable} from "./Authorable";
 
@@ -10,7 +10,7 @@ export class Photo extends Authorable {
 
     description: string;
 
-    @Skip({ onSerialize: false, onDeserialize: false }) // this will ignore skipping inherited from Authorable class
+    @Skip({ constructorToPlain: false, plainToConstructor: false }) // this will ignore skipping inherited from Authorable class
     authorEmail: string;
 
     @Type(() => Album)
