@@ -5,6 +5,10 @@ need set of utils to work with them.
 
 ## Release notes
 
+**0.0.15**
+
+* removed code mappings from package.
+
 **0.0.14**
 
 * removed `import "reflect-metadata"` from source code. Now reflect metadata should be included like any other
