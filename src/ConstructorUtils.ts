@@ -30,6 +30,9 @@ export class ConstructorUtils {
     }
 
     plainToConstructorArray<T>(cls: ConstructorFunction<T>, json: Object[], options?: PlainToConstructorOptions): T[] {
+        if (!(json instanceof Array))
+            throw new Error(`Cannot convert given data to array of constructors. Given object is not an array.`);
+        
         return json.map(item => this.plainToConstructor(cls, item, options));
     }
 
