@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {defaultMetadataStorage} from "./metadata/MetadataStorage";
 import {TypeMetadata} from "./metadata/TypeMetadata";
 import {SkipMetadata} from "./metadata/SkipMetadata";
@@ -8,7 +7,7 @@ import {SkipMetadata} from "./metadata/SkipMetadata";
  */
 export function Type(typeFunction?: (type?: any) => Function) {
     return function(target: any, key: string) {
-        const type = Reflect.getMetadata("design:type", target, key);
+        const type = (<any> Reflect).getMetadata("design:type", target, key);
         const isArray = type && typeof type === "string" ? type.toLowerCase() === "array" : false;
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, isArray);
         defaultMetadataStorage.addTypeMetadata(metadata);
@@ -20,7 +19,7 @@ export function Type(typeFunction?: (type?: any) => Function) {
  */
 export function ArrayType(typeFunction?: (type?: any) => Function) {
     return function(target: any, key: string) {
-        const type = Reflect.getMetadata("design:type", target, key);
+        const type = (<any> Reflect).getMetadata("design:type", target, key);
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, true);
         defaultMetadataStorage.addTypeMetadata(metadata);
     };

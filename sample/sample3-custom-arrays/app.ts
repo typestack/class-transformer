@@ -1,3 +1,5 @@
+import "es6-shim";
+import "reflect-metadata";
 import {constructorToPlain, plainToConstructor} from "../../src/constructor-utils";
 import {Photo} from "./Photo";
 

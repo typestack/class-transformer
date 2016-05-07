@@ -5,6 +5,11 @@ need set of utils to work with them.
 
 ## Release notes
 
+**0.0.14**
+
+* removed `import "reflect-metadata"` from source code. Now reflect metadata should be included like any other
+user's shims.
+
 **0.0.13**
 
 * Library has changed its name from `serializer.ts` to `constructor-utils`.
@@ -21,12 +26,15 @@ need set of utils to work with them.
 
     `typings install`
 
-3. ES6 features are used, so you may want to install [es6-shim](https://github.com/paulmillr/es6-shim) too:
+3. ES6 features are used, so you may want to install [es6-shim](https://github.com/paulmillr/es6-shim) too. You also
+need to install [reflect-metadata](https://www.npmjs.com/package/reflect-metadata) package.
 
     `npm install es6-shim --save`
+    `npm install reflect-metadata --save`
 
-    if you are building nodejs app, you may want to `require("es6-shim");` in your app.
-    or if you are building web app, you man want to add `<script src="path-to-shim/es6-shim.js">` on your page.
+    if you are building nodejs app, you may want to `require("es6-shim");` and `require("reflect-metadata")` in your app.
+    or if you are building web app, you man want to add `<script src="path-to-es6-shim/es6-shim.js">` on your page.
+    or if you are building web app, you man want to add `<script src="path-to-reflect-metadata-shim/reflect-metadata.js">` on your page.
 
 ## Transform plain object to constructor and versa
 
