@@ -1,6 +1,6 @@
 import "es6-shim";
 import "reflect-metadata";
-import {constructorToPlain, plainToConstructor, plainToConstructorArray} from "../../src/constructor-utils";
+import {constructorToPlain, plainToConstructor, plainToConstructorArray} from "../../src/index";
 import {Photo} from "./Photo";
 
 let photoJson = {

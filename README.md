@@ -5,6 +5,10 @@ need set of utils to work with them.
 
 ## Release notes
 
+**0.0.16**
+
+* renamed `constructor-utils` to `constructor-utils` package namespace.
+
 **0.0.15**
 
 * removed code mappings from package.
@@ -17,7 +21,7 @@ user's shims.
 **0.0.13**
 
 * Library has changed its name from `serializer.ts` to `constructor-utils`.
-* Added `constructor-utils/constructor-utils` namespace.
+* Added `constructor-utils` namespace.
 
 ## Installation
 
@@ -25,6 +29,19 @@ user's shims.
 1. Install module:
 
     `npm install constructor-utils --save`
+    
+2. If you are using system.js you may want to add this into `map` and `package` config:
+
+```json
+{
+    "map": {
+        "constructor-utils": "node_modules/constructor-utils"
+    },
+    "packages": {
+        "constructor-utils": { "main": "index.js", "defaultExtension": "js" }
+    }
+}
+```
 
 2. Use [typings](https://github.com/typings/typings) to install all required definition dependencies.
 
@@ -108,7 +125,7 @@ objects to the instances of classes you have created.
 #### plainToConstructor
 
 ```typescript
-import {plainToConstructor, plainToConstructorArray} from "constructor-utils/constructor-utils";
+import {plainToConstructor, plainToConstructorArray} from "constructor-utils";
 
 let users = plainToConstructor(User, userJson); // to convert user plain object a single user
 let users = plainToConstructorArray(User, usersJson); // to convert user plain objects array of users
@@ -120,7 +137,7 @@ Now you can use `users[0].getName()` and `users[0].isKid()` methods.
 #### constructorToPlain
 
 ```typescript
-import {constructorToPlain} from "constructor-utils/constructor-utils";
+import {constructorToPlain} from "constructor-utils";
 let photo = constructorToPlain(photo);
 ```
 
@@ -136,7 +153,7 @@ This is done using `@Type` decorator.
 Lets say we have an album with photos. And we are trying to convert album plain object to constructor object:
 
 ```typescript
-import {Type, plainToConstructor} from "constructor-utils/constructor-utils";
+import {Type, plainToConstructor} from "constructor-utils";
 
 export class Album {
 
@@ -163,7 +180,7 @@ Sometimes you want to skip some properties during transformation. This can be do
 decorator:
 
 ```typescript
-import {Skip} from "constructor-utils/constructor-utils";
+import {Skip} from "constructor-utils";
 
 export class User {
 
@@ -186,7 +203,7 @@ real javascript Date objects from them. To make this component to automatically 
 simply pass Date object to the `@Type` decorator:
 
 ```typescript
-import {Skip, Type} from "constructor-utils/constructor-utils";
+import {Skip, Type} from "constructor-utils";
 
 export class User {
 
@@ -212,7 +229,7 @@ into these types.
 If you have a custom array type, you can use them using `@ArrayType()` decorator:
 
 ```typescript
-import {ArrayType} from "constructor-utils/constructor-utils";
+import {ArrayType} from "constructor-utils";
 
 export class AlbumCollection extends Array<Album> {
     // custom array functions ...
@@ -236,7 +253,7 @@ Library will handle proper transformation automatically.
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
 
 ```typescript
-import {plainToConstructorArray} from "constructor-utils/constructor-utils";
+import {plainToConstructorArray} from "constructor-utils";
 
 this.http
     .get("users.json")
