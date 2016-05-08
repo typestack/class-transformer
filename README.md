@@ -7,7 +7,7 @@ need set of utils to work with them.
 
 **0.0.16**
 
-* renamed `constructor-utils` to `constructor-utils` package namespace.
+* renamed `constructor-utils/constructor-utils` to `constructor-utils` package namespace.
 
 **0.0.15**
 
