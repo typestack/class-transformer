@@ -5,6 +5,12 @@ need set of utils to work with them.
 
 ## Release notes
 
+**0.0.17**
+
+* fixed issue #4
+* added type guessing during transformation from constructor to plain object
+* added sample with generics
+
 **0.0.16**
 
 * renamed `constructor-utils/constructor-utils` to `constructor-utils` package namespace.
