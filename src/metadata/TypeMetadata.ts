@@ -3,7 +3,7 @@ import {PropertyMetadata} from "./PropertyMetadata";
 export class TypeMetadata extends PropertyMetadata {
 
     private _reflectedType: any;
-    private _typeFunction: () => Function;
+    private _typeFunction: (obj?: any) => Function;
     private _isArray: boolean;
 
     constructor(target: Function, key: string, reflectedType: any, typeFunction: () => Function, isArray: boolean) {

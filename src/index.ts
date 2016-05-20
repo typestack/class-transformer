@@ -15,6 +15,10 @@ export function constructorToPlain<T>(object: T, options?: ConstructorToPlainOpt
     return constructorUtils.constructorToPlain(object, options);
 }
 
+export function plainToConstructorFromObject<T>(cls: T, json: Object, options?: PlainToConstructorOptions): T {
+    return constructorUtils.plainToConstructorFromObject(cls, json, options);
+}
+
 export function plainToConstructor<T>(cls: ConstructorFunction<T>, json: Object, options?: PlainToConstructorOptions): T {
     return constructorUtils.plainToConstructor(cls, json, options);
 }

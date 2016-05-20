@@ -30,7 +30,7 @@ export function ArrayType(typeFunction?: (type?: any) => Function) {
  * constructorToPlain and plainToConstructor transformations, however you can specify on which of transformation types 
  * you want to skip this property.
  */
-export function Skip(options?: { constructorToPlain: boolean, plainToConstructor: boolean }) {
+export function Skip(options?: { constructorToPlain?: boolean, plainToConstructor?: boolean }) {
     return function(target: any, key: string) {
         const metadata = new SkipMetadata(target.constructor, key, options);
         defaultMetadataStorage.addSkipMetadata(metadata);

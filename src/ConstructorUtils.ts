@@ -25,6 +25,10 @@ export class ConstructorUtils {
         }
     }
 
+    plainToConstructorFromObject<T>(object: T, json: Object, options?: PlainToConstructorOptions): T {
+        return this.convert(object, json, "plainToConstructor", options);
+    }
+
     plainToConstructor<T>(cls: ConstructorFunction<T>, json: Object, options?: PlainToConstructorOptions): T {
         return this.convert(cls, json, "plainToConstructor", options);
     }
@@ -40,11 +44,19 @@ export class ConstructorUtils {
     // Adder Methods
     // -------------------------------------------------------------------------
 
-    private convert(cls: Function, object: any, operationType: "plainToConstructor"|"constructorToPlain", options?: ConstructorToPlainOptions) {
+    private convert(cls: Function|any, object: any, operationType: "plainToConstructor"|"constructorToPlain", options?: ConstructorToPlainOptions) {
         if (object === null || object === undefined)
             return object;
 
-        const newObject = operationType === "constructorToPlain" ? {} : new (<any> cls)();
+        let newObject: any = {};
+        if (operationType === "plainToConstructor") {
+            if (cls instanceof Function) {
+                newObject = new (<any> cls)();
+            } else {
+                newObject = cls;
+                cls = newObject.constructor;
+            }
+        }
 
         for (let key in object) {
             if (this.isSkipped(cls, key, operationType)) continue;
@@ -52,7 +64,21 @@ export class ConstructorUtils {
                 if (options && options.skipStartedWith &&
                     key.substr(0, options.skipStartedWith.length) === options.skipStartedWith) continue;
 
-                const type = this.getType(cls, key);
+                let type = this.getType(cls, key, newObject);
+                if (!type && operationType === "constructorToPlain") {
+                    if (object[key] instanceof Array && object[key].length > 0) { // guess type from first item in the array 
+                        // also check if type of each element in the array is equal
+                        const nonEmptyObjects = (object[key] as any[]).filter(i => i !== null && i !== undefined);
+                        const isEachInArrayHasSameType = nonEmptyObjects.every(i => nonEmptyObjects[0].constructor);
+                        if (isEachInArrayHasSameType) {
+                            const probablyType = nonEmptyObjects[0].constructor;
+                            if (probablyType !== String && probablyType !== Number && probablyType !== Boolean && probablyType !== Date)
+                                type = probablyType;
+                        }
+                    } else if (object[key] instanceof Object && object[key].constructor) { // guess type from the object
+                        type = object[key].constructor;
+                    }
+                }
 
                 if (object[key] instanceof Array) {
                     // if (object[key].length > 0 && !type && operationType === "plainToConstructor")
@@ -71,7 +97,7 @@ export class ConstructorUtils {
                         });
                     }
 
-                } else if (object[key] instanceof Date && type === Date) {
+                } else if (object[key] instanceof Date && type === Date && operationType === "constructorToPlain") {
                     newObject[key] = object[key].toISOString();
 
                 } else if (object[key] instanceof Object && typeof object[key] === "object" && type) {
@@ -106,10 +132,10 @@ export class ConstructorUtils {
         return operationType === "constructorToPlain" ? meta && meta.isConstructorToPlain : meta && meta.isPlainToConstructor;
     }
 
-    private getType(target: Function, propertyName: string) {
+    private getType(target: Function, propertyName: string, object: any) {
         if (!target) return undefined;
         const meta = defaultMetadataStorage.findTypeMetadata(target, propertyName);
-        return meta ? meta.typeFunction() : undefined;
+        return meta ? meta.typeFunction(object) : undefined;
     }
 
     private getReflectedType(target: Function, propertyName: string) {

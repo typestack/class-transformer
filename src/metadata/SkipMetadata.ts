@@ -1,8 +1,8 @@
 import {PropertyMetadata} from "./PropertyMetadata";
 
 export interface SkipOptions {
-    constructorToPlain: boolean;
-    plainToConstructor: boolean;
+    constructorToPlain?: boolean;
+    plainToConstructor?: boolean;
 }
 
 export class SkipMetadata extends PropertyMetadata {
