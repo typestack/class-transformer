@@ -58,9 +58,10 @@ export class ConstructorUtils {
             }
         }
 
-        for (let key in object) {
+        const keys = Object.keys(object).concat(Object.getOwnPropertyNames(cls.prototype));
+        for (let key of keys) {
             if (this.isSkipped(cls, key, operationType)) continue;
-            if (typeof object[key] !== "function") {
+            if (typeof object[key] !== "function" && object[key] !== undefined) {
                 if (options && options.skipStartedWith &&
                     key.substr(0, options.skipStartedWith.length) === options.skipStartedWith) continue;
 

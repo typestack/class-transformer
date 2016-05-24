@@ -5,6 +5,10 @@ need set of utils to work with them.
 
 ## Release notes
 
+**0.0.18 >> 0.0.19**
+
+* fixed bug when getters are not converted with es6 target
+
 **0.0.17**
 
 * fixed issue #4
