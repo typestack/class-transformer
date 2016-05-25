@@ -1,6 +1,6 @@
 {
   "name": "constructor-utils",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Constructor utilities to simplify work with classes and constructors. Provides plain javascript objects to classes transformation utilities.",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
