@@ -44,6 +44,26 @@ export class ConstructorUtils {
     // Adder Methods
     // -------------------------------------------------------------------------
 
+    private getMethods(obj: Object): string[] {
+        let ret = Object.getOwnPropertyNames(obj);
+        while (true) {
+            obj = Object.getPrototypeOf(obj);
+            let arr: string[];
+            try {
+                arr = Object.getOwnPropertyNames(obj);
+            } catch (e) {
+                break;
+            }
+    
+            for (let i = 0; i < arr.length; i++) {
+                if (ret.indexOf(arr[i]) == -1)
+                    ret.push(arr[i]);
+            }
+        }
+    
+        return ret;
+    }
+    
     private convert(cls: Function|any, object: any, operationType: "plainToConstructor"|"constructorToPlain", options?: ConstructorToPlainOptions) {
         if (object === null || object === undefined)
             return object;
@@ -58,7 +78,23 @@ export class ConstructorUtils {
             }
         }
 
-        const keys = Object.keys(object).concat(Object.getOwnPropertyNames(cls.prototype));
+        let keys = Object.keys(object);
+        if (operationType === "constructorToPlain") {
+            keys = keys.concat(this.getMethods(cls.prototype)).filter(key => [
+                'constructor',
+                'toString',
+                'toLocaleString',
+                'valueOf',
+                'hasOwnProperty',
+                'isPrototypeOf',
+                'propertyIsEnumerable',
+                '__defineGetter__',
+                '__lookupGetter__',
+                '__defineSetter__',
+                '__lookupSetter__',
+                '__proto__'
+            ].indexOf(key) === -1);
+        }
         for (let key of keys) {
             if (this.isSkipped(cls, key, operationType)) continue;
             if (typeof object[key] !== "function" && object[key] !== undefined) {
@@ -67,16 +103,7 @@ export class ConstructorUtils {
 
                 let type = this.getType(cls, key, newObject);
                 if (!type && operationType === "constructorToPlain") {
-                    if (object[key] instanceof Array && object[key].length > 0) { // guess type from first item in the array 
-                        // also check if type of each element in the array is equal
-                        const nonEmptyObjects = (object[key] as any[]).filter(i => i !== null && i !== undefined);
-                        const isEachInArrayHasSameType = nonEmptyObjects.every(i => nonEmptyObjects[0].constructor);
-                        if (isEachInArrayHasSameType) {
-                            const probablyType = nonEmptyObjects[0].constructor;
-                            if (probablyType !== String && probablyType !== Number && probablyType !== Boolean && probablyType !== Date)
-                                type = probablyType;
-                        }
-                    } else if (object[key] instanceof Object && object[key].constructor) { // guess type from the object
+                    if (!(object[key] instanceof Array) && object[key] instanceof Object && object[key].constructor) { // guess type from the object
                         type = object[key].constructor;
                     }
                 }
@@ -88,15 +115,22 @@ export class ConstructorUtils {
                     const reflectedType = this.getReflectedType(cls, key);
                     newObject[key] = reflectedType && operationType === "plainToConstructor" ? new reflectedType() : [];
 
-                    if (object[key].length > 0 && type) {
-                        object[key].forEach((arrayItem: any) => {
-                            newObject[key].push(this.convert(type, arrayItem, operationType));
+                    if (object[key].length > 0) {
+                        object[key].forEach((arrayItem: any) => { // todo: need to implement support of arrays inside arrays too?
+                            if (!type && operationType === "constructorToPlain" && arrayItem instanceof Object && arrayItem.constructor) {
+                                type = arrayItem.constructor;
+                            }
+                            if (type) {
+                                newObject[key].push(this.convert(type, arrayItem, operationType));
+                            } else {
+                                newObject[key].push(arrayItem);
+                            }
                         });
-                    } else {
+                    } /*else {
                         object[key].forEach((arrayItem: any) => {
                             newObject[key].push(arrayItem);
                         });
-                    }
+                    }*/
 
                 } else if (object[key] instanceof Date && type === Date && operationType === "constructorToPlain") {
                     newObject[key] = object[key].toISOString();
