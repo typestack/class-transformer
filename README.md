@@ -5,6 +5,10 @@ need set of utils to work with them.
 
 ## Release notes
 
+**0.0.22**
+
+* bugfix when array with primitive types is being converted
+
 **0.0.18 >> 0.0.21**
 
 * fixed bugs when getters are not converted with es6 target

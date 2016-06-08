@@ -18,7 +18,13 @@ export class ConstructorUtils {
 
     constructorToPlain<T>(object: T, options?: ConstructorToPlainOptions): any {
         if (object instanceof Array) {
-            return (<any> object).map((item: any) => this.convert(item.constructor, item, "constructorToPlain"));
+            return (<any> object).map((item: any) => {
+                if (item instanceof Object) {
+                    return this.convert(item.constructor, item, "constructorToPlain")
+                } else {
+                    return item;
+                }
+            });
         } else {
             const cls = (<any> object.constructor);
             return this.convert(cls, object, "constructorToPlain", options);
