@@ -17,17 +17,6 @@ export function Type(typeFunction?: (type?: any) => Function) {
 }
 
 /**
- * Specifies a type of the property. Property must be an array.
- */
-export function ArrayType(typeFunction?: (type?: any) => Function) {
-    return function(target: any, key: string) {
-        const type = (Reflect as any).getMetadata("design:type", target, key);
-        const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, true);
-        defaultMetadataStorage.addTypeMetadata(metadata);
-    };
-}
-
-/**
  * Marks property as included in the process of transformation. By default it includes the property for both
  * constructorToPlain and plainToConstructor transformations, however you can specify on which of transformation types
  * you want to skip this property.

@@ -16,7 +16,7 @@ export class ClassTransformer {
     classToPlain<T>(object: T[], options?: ClassTransformOptions): Object[];
     classToPlain<T>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
         // const arrayType = object instanceof Array ? object.constructor : undefined;
-        return this.convert(object, undefined, undefined, options || {});
+        return this.convert("classToPlain", undefined, object, undefined, undefined, options || {});
     }
 
     /**
@@ -24,42 +24,30 @@ export class ClassTransformer {
      * Uses given plain object as source object (it means fills given plain object with data from class object).
      * Also works with arrays.
      */
-    /*classToPlainFromExist<T, P>(object: T, plainObject: P, options?: ClassTransformOptions): P;
+    classToPlainFromExist<T, P>(object: T, plainObject: P, options?: ClassTransformOptions): P;
     classToPlainFromExist<T, P>(object: T, plainObjects: P[], options?: ClassTransformOptions): P[];
     classToPlainFromExist<T, P>(object: T, plainObject: P|P[], options?: ClassTransformOptions): P|P[] {
-
-        if (object instanceof Array) { // todo: make convert to handle array by itself?
-            return (object as T[]).map(subObject => {
-                if (subObject instanceof Object) {
-                    return this.convert({}, subObject.constructor, subObject, options);
-                } else {
-                    return subObject;
-                }
-            });
-
-        } else {
-            return this.convert(plainObject, object.constructor, object, options);
-        }
-    }*/
+        return this.convert("classToPlain", plainObject, object, undefined, undefined, options || {});
+    }
 
     /**
      * Converts plain (literal) object to class (constructor) object. Also works with arrays.
      */
-    /*plainToClass<T>(cls: ClassType<T>, plain: Object, options?: ClassTransformOptions): T;
+    plainToClass<T>(cls: ClassType<T>, plain: Object, options?: ClassTransformOptions): T;
     plainToClass<T>(cls: ClassType<T>, plain: Object[], options?: ClassTransformOptions): T[]; // plainArrayToClassArray
     plainToClass<T>(cls: ClassType<T>, plain: Object|Object[], options?: ClassTransformOptions): T|T[] {
         // let newObject: any = {};
-        /!*if (operationType === "plainToConstructor") {
+        /*if (operationType === "plainToConstructor") {
          if (target instanceof Function) {
          newObject = new (target as any)();
          } else {
          newObject = cls;
          cls = newObject.constructor;
          }
-         }*!/
+         }*/
 
-        return classTransformer.plainToClass(cls, plain, options);
-    }*/
+        return this.convert("plainToClass", undefined, plain, cls, undefined, options || {});
+    }
 
     /**
      * Converts plain (literal) object to class (constructor) object.
@@ -137,12 +125,18 @@ export class ClassTransformer {
     // Private Methods
     // -------------------------------------------------------------------------
 
-    private convert(value: Object|Object[]|any, targetType: Function, arrayType: Function, options: ClassTransformOptions) {
+    private convert(operationType: "plainToClass"|"classToPlain",
+                    source: Object|Object[]|any,
+                    value: Object|Object[]|any,
+                    targetType: Function,
+                    arrayType: Function,
+                    options: ClassTransformOptions) {
 
         if (value instanceof Array) {
             const newValue = arrayType /*&& operationType === "plainToConstructor"*/ ? new (arrayType as any)() : [];
-            (value as any[]).forEach(subValue => {
-                newValue.push(this.convert(subValue, targetType, undefined, options));
+            (value as any[]).forEach((subValue, index) => {
+                const subSource = source ? source[index] : undefined;
+                newValue.push(this.convert(operationType, subSource, subValue, targetType, undefined, options));
             });
             return newValue;
 
@@ -164,10 +158,13 @@ export class ClassTransformer {
         } else if (value instanceof Object) {
             // try to guess the type
             // todo: operationType === "constructorToPlain" &&
-            if (!targetType) targetType = value.constructor;
+            if (!targetType && operationType === "classToPlain") targetType = value.constructor;
 
             const keys = this.getKeys(targetType, value, options);
-            const newValue: any = {};
+            let newValue: any = source ? source : {};
+            if (operationType === "plainToClass") {
+                newValue = new (targetType as any)();
+            }
 
             // traverse over keys
             for (let key of keys) {
@@ -175,11 +172,12 @@ export class ClassTransformer {
 
                 // if value is an array try to get its custom array type
                 const arrayType = value[key] instanceof Array ? this.getReflectedType(targetType, key) : undefined;
-                const val = value[key] instanceof Function ? value[key]() : value[key];
+                const subValue = value[key] instanceof Function ? value[key]() : value[key];
                 const exposeMetadata = defaultMetadataStorage.findExposeMetadata(targetType, key);
                 const newKeyName = exposeMetadata && exposeMetadata.options && exposeMetadata.options.name ? exposeMetadata.options.name : key;
+                const subSource = source ? source[key] : undefined;
 
-                newValue[newKeyName] = this.convert(val, type, arrayType, options);
+                newValue[newKeyName] = this.convert(operationType, subSource, subValue, type, arrayType, options);
             }
             return newValue;
 

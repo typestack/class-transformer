@@ -1,4 +1,4 @@
-import {ClassTransformer} from "./ClassTransformer";
+import {ClassTransformer, ClassType} from "./ClassTransformer";
 import {MetadataStorage} from "./metadata/MetadataStorage";
 import {ClassTransformOptions} from "./ClassTransformOptions";
 
@@ -20,21 +20,21 @@ export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions):
  * Converts class (constructor) object to plain (literal) object.
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
-
+ */
 export function classToPlainFromExist<T>(object: T, plainObject: Object, options?: ClassTransformOptions): Object;
 export function classToPlainFromExist<T>(object: T, plainObjects: Object[], options?: ClassTransformOptions): Object[];
 export function classToPlainFromExist<T>(object: T, plainObject: Object|Object[], options?: ClassTransformOptions): Object|Object[] {
     return classTransformer.classToPlainFromExist(object, plainObject, options);
-} */
+}
 
 /**
  * Converts plain (literal) object to class (constructor) object. Also works with arrays.
-
+ */
 export function plainToClass<T>(cls: ClassType<T>, plain: Object, options?: ClassTransformOptions): T;
 export function plainToClass<T>(cls: ClassType<T>, plain: Object[], options?: ClassTransformOptions): T[]; // plainArrayToClassArray
 export function plainToClass<T>(cls: ClassType<T>, plain: Object|Object[], options?: ClassTransformOptions): T|T[] {
     return classTransformer.plainToClass(cls, plain, options);
-}*/
+}
 
 /**
  * Converts plain (literal) object to class (constructor) object.

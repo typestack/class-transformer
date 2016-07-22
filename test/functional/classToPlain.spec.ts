@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {defaultMetadataStorage, classToPlain} from "../../src/index";
+import {defaultMetadataStorage, classToPlain, classToPlainFromExist, plainToClass} from "../../src/index";
 import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
@@ -21,6 +21,27 @@ describe("classToPlain", () => {
         const plainUser = classToPlain(user);
         plainUser.should.not.be.instanceOf(User);
         plainUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman"
+        });
+
+        const existUser = { id: 1, age: 27 };
+        const plainUser2 = classToPlainFromExist(user, existUser);
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman"
+        });
+        plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: "Umed", lastName: "Khudoiberdiev", password: "imnosuperman" };
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
@@ -48,6 +69,18 @@ describe("classToPlain", () => {
             lastName: "Khudoiberdiev"
         });
         expect(plainUser.password).to.be.undefined;
+
+        const existUser = { id: 1, age: 27, password: "yayayaya" };
+        const plainUser2 = classToPlainFromExist(user, existUser);
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "yayayaya"
+        });
+        plainUser2.should.be.equal(existUser);
     });
 
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator", () => {
@@ -70,6 +103,15 @@ describe("classToPlain", () => {
         expect(plainUser.firstName).to.be.undefined;
         expect(plainUser.lastName).to.be.undefined;
         expect(plainUser.password).to.be.undefined;
+
+        const existUser = { id: 1, age: 27 };
+        const plainUser2 = classToPlainFromExist(user, existUser);
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27
+        });
+        plainUser2.should.be.equal(existUser);
     });
 
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator, but include properties marked with @Expose() decorator", () => {
@@ -98,6 +140,17 @@ describe("classToPlain", () => {
             lastName: "Khudoiberdiev"
         });
         expect(plainUser.password).to.be.undefined;
+
+        const existUser = { id: 1, age: 27 };
+        const plainUser2 = classToPlainFromExist(user, existUser);
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
+        plainUser2.should.be.equal(existUser);
     });
 
     it("should exclude all properties from object if its defined via transformation options, but include properties marked with @Expose() decorator", () => {
@@ -125,6 +178,17 @@ describe("classToPlain", () => {
             lastName: "Khudoiberdiev"
         });
         expect(plainUser.password).to.be.undefined;
+
+        const existUser = { id: 1, age: 27 };
+        const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "excludeAll" });
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
+        plainUser2.should.be.equal(existUser);
     });
 
     it("should expose all properties from object if its defined via transformation options, but exclude properties marked with @Exclude() decorator", () => {
@@ -152,6 +216,16 @@ describe("classToPlain", () => {
         });
         expect(plainUser.lastName).to.be.undefined;
         expect(plainUser.password).to.be.undefined;
+
+        const existUser = { id: 1, age: 27 };
+        const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "Umed"
+        });
+        plainUser2.should.be.equal(existUser);
     });
 
     it("should convert values to specific types if they are set via @Type decorator", () => {
@@ -196,6 +270,21 @@ describe("classToPlain", () => {
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
         });
+
+        const existUser = { id: 1, age: 27 };
+        const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "321",
+            lastName: "123",
+            password: 123,
+            isActive: true,
+            registrationDate: new Date(date.toString()),
+            lastVisitDate: date.toString(),
+        });
+        plainUser2.should.be.equal(existUser);
     });
 
     it("should transform nested objects too and make sure their decorators are used too", () => {
@@ -240,6 +329,7 @@ describe("classToPlain", () => {
 
         const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
         plainUser.should.not.be.instanceOf(User);
+        plainUser.photo.should.not.be.instanceOf(Photo);
         plainUser.should.be.eql({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -253,6 +343,28 @@ describe("classToPlain", () => {
         expect(plainUser.photo.filename).to.be.undefined;
         expect(plainUser.photo.uploadDate).to.be.eql(photo.uploadDate);
         expect(plainUser.photo.uploadDate).not.to.be.equal(photo.uploadDate);
+
+        const existUser = { id: 1, age: 27, photo: { id: 2, description: "photo" } };
+        const plainUser2: any = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.photo.should.not.be.instanceOf(Photo);
+        plainUser2.should.be.eql({
+            id: 1,
+            age: 27,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                name: "Me",
+                uploadDate: photo.uploadDate,
+                description: "photo"
+            }
+        });
+        plainUser2.should.be.equal(existUser);
+        expect(plainUser2.password).to.be.undefined;
+        expect(plainUser2.photo.filename).to.be.undefined;
+        expect(plainUser2.photo.uploadDate).to.be.eql(photo.uploadDate);
+        expect(plainUser2.photo.uploadDate).not.to.be.equal(photo.uploadDate);
     });
 
     it("should transform nested objects too and make sure given type is used instead of automatically guessed one", () => {
@@ -742,7 +854,6 @@ describe("classToPlain", () => {
         const users = [user1, user2];
 
         const plainUsers: any = classToPlain(users);
-        plainUsers.should.not.be.instanceOf(User);
         plainUsers.should.be.eql([{
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -753,14 +864,22 @@ describe("classToPlain", () => {
             name: "Dima Zotov"
         }]);
 
+        const existUsers = [{ id: 1, age: 27 }, { id: 2, age: 30 }];
+        const plainUser2 = classToPlainFromExist(users, existUsers);
+        plainUser2.should.be.eql([{
+            id: 1,
+            age: 27,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            name: "Umed Khudoiberdiev"
+        }, {
+            id: 2,
+            age: 30,
+            firstName: "Dima",
+            lastName: "Zotov",
+            name: "Dima Zotov"
+        }]);
+
     });
 
 });
-
-/*
-{
-    name: "myName",
-    since: 2.4,
-    until: 5,
-    groups: ["users", "admin-users"]
-}*/
