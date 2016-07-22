@@ -1,8 +1,8 @@
 {
-  "name": "constructor-utils",
-  "version": "0.0.22",
-  "description": "Constructor utilities to simplify work with classes and constructors. Provides plain javascript objects to classes transformation utilities.",
-  "license": "Apache-2.0",
+  "name": "class-transformer",
+  "version": "0.1.0",
+  "description": "Transforms or serializes / deserializes objects from one shape into another based on class decorators",
+  "license": "MIT",
   "readmeFilename": "README.md",
   "private": true,
   "author": {
@@ -11,37 +11,42 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pleerock/constructor-utils.git"
+    "url": "https://github.com/pleerock/class-transformer.git"
   },
   "bugs": {
-    "url": "https://github.com/pleerock/constructor-utils/issues"
+    "url": "https://github.com/pleerock/class-transformer/issues"
   },
   "tags": [
     "serialization",
     "deserialization",
     "serializer",
     "typescript",
+    "object-to-class",
     "typescript-serializer"
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^3.4.1",
-    "del": "^2.2.0",
+    "chai-as-promised": "^5.3.0",
+    "del": "^2.2.1",
+    "es6-shim": "^0.35.1",
     "gulp": "^3.9.1",
+    "gulp-istanbul": "^1.0.0",
     "gulp-mocha": "^2.2.0",
     "gulp-replace": "^0.5.4",
     "gulp-shell": "^0.5.1",
-    "gulp-tslint": "^4.3.3",
-    "gulpclass": "0.1.0",
-    "mocha": "^2.3.2",
-    "sinon": "^1.17.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-tslint": "^6.0.1",
+    "gulp-typescript": "^2.13.6",
+    "gulpclass": "^0.1.1",
+    "mocha": "^2.5.3",
+    "reflect-metadata": "^0.1.3",
+    "remap-istanbul": "^0.6.4",
+    "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
-    "tslint": "^3.3.0",
+    "tslint": "^3.13.0",
     "tslint-stylish": "^2.1.0-beta",
-    "typescript": "^1.8.9",
-    "typings": "^0.7.9",
-    "es6-shim": "^0.35.0",
-    "reflect-metadata": "^0.1.3"
+    "typescript": "^1.8.10",
+    "typings": "^1.3.2"
   }
 }

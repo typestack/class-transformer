@@ -1,6 +1,6 @@
 import "es6-shim";
 import "reflect-metadata";
-import {constructorToPlain, plainToConstructor} from "../../src/index";
+import {constructorToPlain, plainToClass} from "../../src/index";
 import {Photo} from "./Photo";
 
 // check deserialization
@@ -23,7 +23,7 @@ let photoJson = {
     }]
 };
 
-let photo = plainToConstructor(Photo, photoJson);
+let photo = plainToClass(Photo, photoJson);
 console.log("deserialized object: " , photo);
 console.log("-----------------------------");
 console.log("Trying to find album: ", photo.albums.findByName("My life"));

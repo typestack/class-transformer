@@ -2,7 +2,7 @@ import "es6-shim";
 import "reflect-metadata";
 import {SimpleCollection} from "./SimpleCollection";
 import {User} from "./User";
-import {constructorToPlain, plainToConstructor, plainToConstructorFromObject} from "../../src/index";
+import {constructorToPlain, plainToClass, plainToClassFromExist} from "../../src/index";
 import {SuperCollection} from "./SuperCollection";
 
 let collection = new SimpleCollection<User>();
@@ -25,7 +25,7 @@ let collectionJson = {
         firstName: "Johny",
         lastName: "Cage",
         password: "*******",
-    },{
+    }, {
         id: 2,
         firstName: "Dima",
         lastName: "Cage",
@@ -33,4 +33,4 @@ let collectionJson = {
     }]
 };
 
-console.log(plainToConstructorFromObject(new SuperCollection<User>(User), collectionJson));
+console.log(plainToClassFromExist(new SuperCollection<User>(User), collectionJson));
