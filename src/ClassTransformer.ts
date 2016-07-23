@@ -160,7 +160,7 @@ export class ClassTransformer {
             // todo: operationType === "constructorToPlain" &&
             if (!targetType && operationType === "classToPlain") targetType = value.constructor;
 
-            const keys = this.getKeys(targetType, value, options);
+            const keys = this.getKeys(operationType, targetType, value, options);
             let newValue: any = source ? source : {};
             if (operationType === "plainToClass") {
                 newValue = new (targetType as any)();
@@ -168,16 +168,40 @@ export class ClassTransformer {
 
             // traverse over keys
             for (let key of keys) {
-                let type = this.getKeyType(value, targetType, key);
+                let valueKey = key, newValueKey = key, propertyName = key;
+                if (operationType === "plainToClass") {
+                    const exposeMetadata = defaultMetadataStorage.findExposeMetadataByCustomName(targetType, key);
+                    if (exposeMetadata) {
+                        propertyName = exposeMetadata.propertyName;
+                        newValueKey = exposeMetadata.propertyName;
+                    }
+
+                } else if (operationType === "classToPlain") {
+                    const exposeMetadata = defaultMetadataStorage.findExposeMetadata(targetType, key);
+                    if (exposeMetadata && exposeMetadata.options && exposeMetadata.options.name)
+                        newValueKey = exposeMetadata.options.name;
+                }
+
+                let type = this.getKeyType(value, targetType, propertyName);
 
                 // if value is an array try to get its custom array type
-                const arrayType = value[key] instanceof Array ? this.getReflectedType(targetType, key) : undefined;
-                const subValue = value[key] instanceof Function ? value[key]() : value[key];
-                const exposeMetadata = defaultMetadataStorage.findExposeMetadata(targetType, key);
-                const newKeyName = exposeMetadata && exposeMetadata.options && exposeMetadata.options.name ? exposeMetadata.options.name : key;
-                const subSource = source ? source[key] : undefined;
+                const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
+                // const subValueKey = operationType === "plainToClass" && newKeyName ? newKeyName : key;
+                const subValue = value[valueKey] instanceof Function ? value[valueKey]() : value[valueKey];
+                const subSource = source ? source[valueKey] : undefined;
 
-                newValue[newKeyName] = this.convert(operationType, subSource, subValue, type, arrayType, options);
+                // if its deserialization then type if required
+                if (operationType === "plainToClass" && !type && subValue instanceof Object && !(subValue instanceof Date))
+                    throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forgot to specify a @Type?`);
+
+                // if newValue is a source object that has method that match newKeyName then skip it
+                if (newValue.constructor.prototype) {
+                    const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
+                    if (operationType === "plainToClass" && (newValue[newValueKey] instanceof Function || descriptor))
+                        continue;
+                }
+
+                newValue[newValueKey] = this.convert(operationType, subSource, subValue, type, arrayType, options);
             }
             return newValue;
 
@@ -198,7 +222,10 @@ export class ClassTransformer {
         return meta ? meta.reflectedType : undefined;
     }
 
-    private getKeys(target: Function, object: Object, options: ClassTransformOptions): string[] {
+    private getKeys(operationType: "plainToClass"|"classToPlain",
+                    target: Function,
+                    object: Object,
+                    options: ClassTransformOptions): string[] {
 
         // determine exclusion strategy
         let strategy = defaultMetadataStorage.getStrategy(target);
@@ -207,9 +234,29 @@ export class ClassTransformer {
 
         // get all keys that need to expose
         let keys: string[] = strategy === "exposeAll" ? Object.keys(object) : [];
+        /*if (operationType === "plainToClass") {
+            keys = keys.map(key => {
+                const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+                if (exposeMetadata && exposeMetadata.options && exposeMetadata.options.name) {
+                    return exposeMetadata.options.name;
+                }
+
+                return key;
+            });
+        }*/
 
         // add all exposed to list of keys
-        const exposedProperties = defaultMetadataStorage.getExposedProperties(target);
+        let exposedProperties = defaultMetadataStorage.getExposedProperties(target);
+        if (operationType === "plainToClass") {
+            exposedProperties = exposedProperties.map(key => {
+                const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+                if (exposeMetadata && exposeMetadata.options && exposeMetadata.options.name) {
+                    return exposeMetadata.options.name;
+                }
+
+                return key;
+            });
+        }
         keys = keys.concat(exposedProperties);
 
         // exclude excluded properties

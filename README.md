@@ -1,75 +1,81 @@
-# constructor-utils
+# class-transformer
 
-Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then before. You'll
-need set of utils to work with them.
+[![Build Status](https://travis-ci.org/pleerock/class-transformer.svg?branch=master)](https://travis-ci.org/pleerock/class-transformer)
+[![codecov](https://codecov.io/gh/pleerock/class-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/pleerock/class-transformer)
+[![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
+[![Dependency Status](https://david-dm.org/pleerock/class-transformer.svg)](https://david-dm.org/pleerock/class-transformer)
+[![devDependency Status](https://david-dm.org/pleerock/class-transformer/dev-status.svg)](https://david-dm.org/pleerock/class-transformer#info=devDependencies)
+[![Join the chat at https://gitter.im/pleerock/class-transformer](https://badges.gitter.im/pleerock/class-transformer.svg)](https://gitter.im/pleerock/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## Release notes
-
-**0.0.22**
-
-* bugfix when array with primitive types is being converted
-
-**0.0.18 >> 0.0.21**
-
-* fixed bugs when getters are not converted with es6 target
-
-**0.0.17**
-
-* fixed issue #4
-* added type guessing during transformation from constructor to plain object
-* added sample with generics
-
-**0.0.16**
-
-* renamed `constructor-utils/constructor-utils` to `constructor-utils` package namespace.
-
-**0.0.15**
-
-* removed code mappings from package.
-
-**0.0.14**
-
-* removed `import "reflect-metadata"` from source code. Now reflect metadata should be included like any other
-user's shims.
-
-**0.0.13**
-
-* Library has changed its name from `serializer.ts` to `constructor-utils`.
-* Added `constructor-utils` namespace.
+Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then before.
+You'll need set of utils to work with them.
+Class-transformer allows you to transform plain object to some instance of class and versa.
+Also it allows to serialized / deserialize object based on some criteria.
 
 ## Installation
 
+### Node.js
 
 1. Install module:
 
-    `npm install constructor-utils --save`
-    
-2. If you are using system.js you may want to add this into `map` and `package` config:
+    `npm install class-transformer --save`
+
+2. `reflect-metadata` shim is required, install it too:
+
+    `npm install reflect-metadata --save`
+
+    and make sure to import it in a global place, like app.ts:
+
+    ```typescript
+    import "reflect-metadata";
+    ```
+
+3. ES6 features are used, if you are using old version of node.js you may need to install es6-shim:
+
+   `npm install es6-shim --save`
+
+   and import it in a global place like app.ts:
+
+    ```typescript
+    import "es6-shim";
+    ```
+
+### Browser
+
+1. Install module:
+
+    `npm install class-transformer --save`
+
+2. `reflect-metadata` shim is required, install it too:
+
+    `npm install reflect-metadata --save`
+
+    add `<script>` to reflect-metadata in the head your `index.html`:
+
+    ```html
+    <html>
+       <head>
+           <!-- ... -->
+           <script src="node_modules/reflect-metadata/Reflect.js"></script>
+       </head>
+       <!-- ... -->
+    </html>
+    ```
+
+    If you are using angular 2 you should already have this shim installed.
+
+3. If you are using system.js you may want to add this into `map` and `package` config:
 
 ```json
 {
     "map": {
-        "constructor-utils": "node_modules/constructor-utils"
+        "class-transformer": "node_modules/class-transformer"
     },
     "packages": {
-        "constructor-utils": { "main": "index.js", "defaultExtension": "js" }
+        "class-transformer": { "main": "index.js", "defaultExtension": "js" }
     }
 }
 ```
-
-2. Use [typings](https://github.com/typings/typings) to install all required definition dependencies.
-
-    `typings install`
-
-3. ES6 features are used, so you may want to install [es6-shim](https://github.com/paulmillr/es6-shim) too. You also
-need to install [reflect-metadata](https://www.npmjs.com/package/reflect-metadata) package.
-
-    `npm install es6-shim --save`
-    `npm install reflect-metadata --save`
-
-    if you are building nodejs app, you may want to `require("es6-shim");` and `require("reflect-metadata")` in your app.
-    or if you are building web app, you man want to add `<script src="path-to-es6-shim/es6-shim.js">` on your page.
-    or if you are building web app, you man want to add `<script src="path-to-reflect-metadata-shim/reflect-metadata.js">` on your page.
 
 ## Transform plain object to constructor and versa
 
@@ -139,7 +145,7 @@ objects to the instances of classes you have created.
 #### plainToConstructor
 
 ```typescript
-import {plainToConstructor, plainToConstructorArray} from "constructor-utils";
+import {plainToConstructor, plainToConstructorArray} from "class-transformer";
 
 let users = plainToConstructor(User, userJson); // to convert user plain object a single user
 let users = plainToConstructorArray(User, usersJson); // to convert user plain objects array of users
@@ -151,7 +157,7 @@ Now you can use `users[0].getName()` and `users[0].isKid()` methods.
 #### constructorToPlain
 
 ```typescript
-import {constructorToPlain} from "constructor-utils";
+import {constructorToPlain} from "class-transformer";
 let photo = constructorToPlain(photo);
 ```
 
@@ -167,7 +173,7 @@ This is done using `@Type` decorator.
 Lets say we have an album with photos. And we are trying to convert album plain object to constructor object:
 
 ```typescript
-import {Type, plainToConstructor} from "constructor-utils";
+import {Type, plainToConstructor} from "class-transformer";
 
 export class Album {
 
@@ -190,11 +196,11 @@ let album = plainToConstructor(Album, albumJson);
 
 ### skipping specific properties
 
-Sometimes you want to skip some properties during transformation. This can be done using `@Skip`
+Sometimes you want to skip some properties during transformation. This can be done using `@Exclude`
 decorator:
 
 ```typescript
-import {Skip} from "constructor-utils";
+import {Exclude} from "class-transformer";
 
 export class User {
 
@@ -202,7 +208,7 @@ export class User {
 
     email: string;
 
-    @Skip()
+    @Exclude()
     password: string;
 }
 ```
@@ -217,7 +223,7 @@ real javascript Date objects from them. To make this component to automatically 
 simply pass Date object to the `@Type` decorator:
 
 ```typescript
-import {Skip, Type} from "constructor-utils";
+import {Exclude, Type} from "class-transformer";
 
 export class User {
 
@@ -225,10 +231,9 @@ export class User {
 
     email: string;
 
-    @Skip()
+    @Exclude()
     password: string;
 
-    @Type(() => Date)
     registrationDate: Date;
 }
 ```
@@ -240,10 +245,27 @@ into these types.
 
 ### using custom arrays
 
-If you have a custom array type, you can use them using `@ArrayType()` decorator:
+When you are using arrays you must provide a type of the object that array contains.
+This type, you specify in a `@Type()` decorator:
 
 ```typescript
-import {ArrayType} from "constructor-utils";
+import {ArrayType} from "class-transformer";
+
+export class Photo {
+
+    id: number;
+
+    name: string;
+
+    @Type(() => Album)
+    albums: Album[];
+}
+```
+
+You can also use custom array types:
+
+```typescript
+import {ArrayType} from "class-transformer";
 
 export class AlbumCollection extends Array<Album> {
     // custom array functions ...
@@ -255,7 +277,7 @@ export class Photo {
 
     name: string;
 
-    @ArrayType(() => Album)
+    @Type(() => Album)
     albums: AlbumCollection;
 }
 ```
@@ -267,21 +289,26 @@ Library will handle proper transformation automatically.
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
 
 ```typescript
-import {plainToConstructorArray} from "constructor-utils";
+import {plainToClass} from "class-transformer";
 
 this.http
     .get("users.json")
     .map(res => res.json())
-    .map(res => plainToConstructorArray(User, res))
+    .map(res => plainToClass(User, res))
     .subscribe(users => {
         // now "users" is type of User[] and each user have getName() and isKid() methods available
         console.log(users);
     });
 ```
 
-You can also inject a class `ConstructorUtils` as a service, and use its methods.
+You can also inject a class `ClassTransformer` as a service, and use its methods.
 
 ## Samples
 
-Take a look on samples in [./sample](https://github.com/pleerock/constructor-utils/tree/master/sample) for more examples of
+Take a look on samples in [./sample](https://github.com/pleerock/class-transformer/tree/master/sample) for more examples of
 usages.
+
+
+## Release notes
+
+See information about breaking changes and release notes [here](https://github.com/pleerock/class-transformer/tree/master/doc/release-notes.md).

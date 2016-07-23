@@ -43,6 +43,12 @@ export class MetadataStorage {
         return this.findMetadata(this._exposeMetadatas, target, propertyName);
     }
 
+    findExposeMetadataByCustomName(target: Function, name: string): ExposeMetadata {
+        return this._exposeMetadatas.find(metadata => {
+            return metadata.target === target && metadata.options && metadata.options.name === name;
+        });
+    }
+
     findTypeMetadata(target: Function, propertyName: string) {
         return this.findMetadata(this._typeMetadatas, target, propertyName);
     }

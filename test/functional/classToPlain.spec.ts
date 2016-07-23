@@ -81,6 +81,14 @@ describe("classToPlain", () => {
             password: "yayayaya"
         });
         plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: "Umed", lastName: "Khudoiberdiev", password: "imnosuperman" };
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
     });
 
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator", () => {
@@ -112,6 +120,11 @@ describe("classToPlain", () => {
             age: 27
         });
         plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: "Umed", lastName: "Khudoiberdiev", password: "imnosuperman" };
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({});
     });
 
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator, but include properties marked with @Expose() decorator", () => {
@@ -151,6 +164,14 @@ describe("classToPlain", () => {
             lastName: "Khudoiberdiev"
         });
         plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: "Umed", lastName: "Khudoiberdiev", password: "imnosuperman" };
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
     });
 
     it("should exclude all properties from object if its defined via transformation options, but include properties marked with @Expose() decorator", () => {
@@ -189,6 +210,14 @@ describe("classToPlain", () => {
             lastName: "Khudoiberdiev"
         });
         plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: "Umed", lastName: "Khudoiberdiev", password: "imnosuperman" };
+        const transformedUser = plainToClass(User, fromPlainUser, { strategy: "excludeAll" });
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
     });
 
     it("should expose all properties from object if its defined via transformation options, but exclude properties marked with @Exclude() decorator", () => {
@@ -226,6 +255,13 @@ describe("classToPlain", () => {
             firstName: "Umed"
         });
         plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: "Umed", lastName: "Khudoiberdiev", password: "imnosuperman" };
+        const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({
+            firstName: "Umed"
+        });
     });
 
     it("should convert values to specific types if they are set via @Type decorator", () => {
@@ -285,6 +321,18 @@ describe("classToPlain", () => {
             lastVisitDate: date.toString(),
         });
         plainUser2.should.be.equal(existUser);
+
+        const fromPlainUser = { firstName: 321, lastName: 123, password: "123", isActive: "1", registrationDate: date.toString(), lastVisitDate: date };
+        const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.be.eql({
+            firstName: "321",
+            lastName: "123",
+            password: 123,
+            isActive: true,
+            registrationDate: new Date(date.toString()),
+            lastVisitDate: date.toString(),
+        });
     });
 
     it("should transform nested objects too and make sure their decorators are used too", () => {
@@ -428,6 +476,59 @@ describe("classToPlain", () => {
         expect(plainUser.photo.name).to.be.undefined;
     });
 
+    it("should convert given plain object to class instance object", () => {
+        defaultMetadataStorage.clear();
+
+        class Photo {
+
+            id: number;
+
+            name: string;
+
+            @Exclude()
+            filename: string;
+
+        }
+
+        class User {
+
+            firstName: string;
+
+            lastName: string;
+
+            @Exclude()
+            password: string;
+
+            @Type(type => Photo)
+            photo: Photo;
+        }
+
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                name: "Me",
+                filename: "iam.jpg",
+                uploadDate: new Date(),
+            }
+        };
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.photo.should.be.instanceOf(Photo);
+        transformedUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                name: "Me",
+                uploadDate: fromPlainUser.photo.uploadDate
+            }
+        });
+
+    });
+
     it("should expose only properties that match given group", () => {
         defaultMetadataStorage.clear();
 
@@ -464,6 +565,7 @@ describe("classToPlain", () => {
             })
             isActive: boolean;
 
+            @Type(type => Photo)
             photo: Photo;
 
             @Expose({
@@ -484,6 +586,23 @@ describe("classToPlain", () => {
         user.photo.filename = "myphoto.jpg";
         user.photo.status = 1;
         user.photos = [user.photo];
+
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            isActive: false,
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1,
+            }]
+        };
 
         const plainUser1: any = classToPlain(user);
         plainUser1.should.not.be.instanceOf(User);
@@ -510,6 +629,19 @@ describe("classToPlain", () => {
         });
         expect(plainUser2.isActive).to.be.undefined;
 
+        const transformedUser2 = plainToClass(User, fromPlainUser, { groups: ["user"] });
+        transformedUser2.should.be.instanceOf(User);
+        transformedUser2.photo.should.be.instanceOf(Photo);
+        transformedUser2.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
         const plainUser3: any = classToPlain(user, { groups: ["guest"] });
         plainUser3.should.not.be.instanceOf(User);
         plainUser3.should.be.eql({
@@ -522,6 +654,18 @@ describe("classToPlain", () => {
         });
         expect(plainUser3.password).to.be.undefined;
         expect(plainUser3.isActive).to.be.undefined;
+
+        const transformedUser3 = plainToClass(User, fromPlainUser, { groups: ["guest"] });
+        transformedUser3.should.be.instanceOf(User);
+        transformedUser3.photo.should.be.instanceOf(Photo);
+        transformedUser3.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
 
         const plainUser4: any = classToPlain(user, { groups: ["admin"] });
         plainUser4.should.not.be.instanceOf(User);
@@ -540,9 +684,45 @@ describe("classToPlain", () => {
         expect(plainUser4.lastName).to.be.undefined;
         expect(plainUser4.password).to.be.undefined;
 
+        const transformedUser4 = plainToClass(User, fromPlainUser, { groups: ["admin"] });
+        transformedUser4.should.be.instanceOf(User);
+        transformedUser4.photo.should.be.instanceOf(Photo);
+        transformedUser4.photos[0].should.be.instanceOf(Photo);
+        transformedUser4.should.be.eql({
+            firstName: "Umed",
+            isActive: false,
+            photo: {
+                id: 1,
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                status: 1
+            }]
+        });
+
         const plainUser5: any = classToPlain(user, { groups: ["admin", "user"] });
         plainUser5.should.not.be.instanceOf(User);
         plainUser5.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            isActive: false,
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            }]
+        });
+
+        const transformedUser5 = plainToClass(User, fromPlainUser, { groups: ["admin", "user"] });
+        transformedUser5.should.be.instanceOf(User);
+        transformedUser5.should.be.eql({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -594,6 +774,7 @@ describe("classToPlain", () => {
             @Exclude()
             password: string;
 
+            @Type(type => Photo)
             photo: Photo;
 
             @Expose({
@@ -614,9 +795,44 @@ describe("classToPlain", () => {
         user.photo.status = 1;
         user.photos = [user.photo];
 
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1,
+            }]
+        };
+
         const plainUser1: any = classToPlain(user);
         plainUser1.should.not.be.instanceOf(User);
         plainUser1.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            }]
+        });
+
+        const transformedUser1 = plainToClass(User, fromPlainUser);
+        transformedUser1.should.be.instanceOf(User);
+        transformedUser1.photo.should.be.instanceOf(Photo);
+        transformedUser1.photos[0].should.be.instanceOf(Photo);
+        transformedUser1.should.be.eql({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -639,6 +855,15 @@ describe("classToPlain", () => {
             }
         });
 
+        const transformedUser2 = plainToClass(User, fromPlainUser, { version: 0.3 });
+        transformedUser2.should.be.instanceOf(User);
+        transformedUser2.photo.should.be.instanceOf(Photo);
+        transformedUser2.should.be.eql({
+            photo: {
+                id: 1
+            }
+        });
+
         const plainUser3: any = classToPlain(user, { version: 0.5 });
         plainUser3.should.not.be.instanceOf(User);
         plainUser3.should.be.eql({
@@ -648,9 +873,30 @@ describe("classToPlain", () => {
             }
         });
 
+        const transformedUser3 = plainToClass(User, fromPlainUser, { version: 0.5 });
+        transformedUser3.should.be.instanceOf(User);
+        transformedUser3.photo.should.be.instanceOf(Photo);
+        transformedUser3.should.be.eql({
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1
+            }
+        });
+
         const plainUser4: any = classToPlain(user, { version: 1 });
         plainUser4.should.not.be.instanceOf(User);
         plainUser4.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1
+            }
+        });
+
+        const transformedUser4 = plainToClass(User, fromPlainUser, { version: 1 });
+        transformedUser4.should.be.instanceOf(User);
+        transformedUser4.photo.should.be.instanceOf(Photo);
+        transformedUser4.should.be.eql({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -669,9 +915,32 @@ describe("classToPlain", () => {
             }
         });
 
+        const transformedUser5 = plainToClass(User, fromPlainUser, { version: 1.5 });
+        transformedUser5.should.be.instanceOf(User);
+        transformedUser5.photo.should.be.instanceOf(Photo);
+        transformedUser5.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
         const plainUser6: any = classToPlain(user, { version: 2 });
         plainUser6.should.not.be.instanceOf(User);
         plainUser6.should.be.eql({
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                status: 1
+            }
+        });
+
+        const transformedUser6 = plainToClass(User, fromPlainUser, { version: 2 });
+        transformedUser6.should.be.instanceOf(User);
+        transformedUser6.photo.should.be.instanceOf(Photo);
+        transformedUser6.should.be.eql({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -693,11 +962,26 @@ describe("classToPlain", () => {
             }]
         });
 
+        const transformedUser7 = plainToClass(User, fromPlainUser, { version: 3 });
+        transformedUser7.should.be.instanceOf(User);
+        transformedUser7.photo.should.be.instanceOf(Photo);
+        transformedUser7.photos[0].should.be.instanceOf(Photo);
+        transformedUser7.should.be.eql({
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                status: 1
+            }]
+        });
+
     });
 
     it("should expose method and accessors that have @Expose()", () => {
         defaultMetadataStorage.clear();
-
 
         class User {
             firstName: string;
@@ -723,6 +1007,12 @@ describe("classToPlain", () => {
         user.lastName = "Khudoiberdiev";
         user.password = "imnosuperman";
 
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman"
+        };
+
         const plainUser: any = classToPlain(user);
         plainUser.should.not.be.instanceOf(User);
         plainUser.should.be.eql({
@@ -731,6 +1021,13 @@ describe("classToPlain", () => {
             name: "Umed Khudoiberdiev",
             getName: "Umed Khudoiberdiev"
         });
+
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        const likeUser = new User();
+        likeUser.firstName = "Umed";
+        likeUser.lastName = "Khudoiberdiev";
+        transformedUser.should.be.eql(likeUser);
 
     });
 
@@ -765,6 +1062,12 @@ describe("classToPlain", () => {
         user.lastName = "Khudoiberdiev";
         user.password = "imnosuperman";
 
+        const fromPlainUser = {
+            myName: "Umed",
+            secondName: "Khudoiberdiev",
+            password: "imnosuperman"
+        };
+
         const plainUser: any = classToPlain(user);
         plainUser.should.not.be.instanceOf(User);
         plainUser.should.be.eql({
@@ -773,6 +1076,13 @@ describe("classToPlain", () => {
             name: "Umed Khudoiberdiev",
             fullName: "Umed Khudoiberdiev"
         });
+
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        const likeUser = new User();
+        likeUser.firstName = "Umed";
+        likeUser.lastName = "Khudoiberdiev";
+        transformedUser.should.be.eql(likeUser);
 
     });
 

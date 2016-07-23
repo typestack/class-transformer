@@ -1,0 +1,45 @@
+# Release notes
+
+**0.1.0**
+
+* renamed library from `constructor-utils` to `class-transformer`
+* completely renamed most of names
+* renamed all main methods: `plainToConstructor` now is `plainToClass`
+ and `constructorToPlain` is `classToPlain`, etc.
+* `@Skip()` decorator renamed to `@Exclude()`
+* added `@Expose` decorator
+* added lot of new options: groups, versioning, custom names, etc.
+* methods and getters that should be exposed must be decorated with `@Expose` decorator
+* added `excludedPrefix` to class transform options that allows exclude properties that start with one of the given prefix
+
+**0.0.22**
+
+* bugfix when array with primitive types is being converted
+
+**0.0.18 >> 0.0.21**
+
+* fixed bugs when getters are not converted with es6 target
+
+**0.0.17**
+
+* fixed issue #4
+* added type guessing during transformation from constructor to plain object
+* added sample with generics
+
+**0.0.16**
+
+* renamed `constructor-utils/constructor-utils` to `constructor-utils` package namespace.
+
+**0.0.15**
+
+* removed code mappings from package.
+
+**0.0.14**
+
+* removed `import "reflect-metadata"` from source code. Now reflect metadata should be included like any other
+user's shims.
+
+**0.0.13**
+
+* Library has changed its name from `serializer.ts` to `constructor-utils`.
+* Added `constructor-utils` namespace.
