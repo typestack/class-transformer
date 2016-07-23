@@ -30,11 +30,12 @@ export function classToPlainFromExist<T>(object: T, plainObject: Object|Object[]
 /**
  * Converts plain (literal) object to class (constructor) object. Also works with arrays.
  */
-export function plainToClass<T>(cls: ClassType<T>, plain: Object, options?: ClassTransformOptions): T;
-export function plainToClass<T>(cls: ClassType<T>, plain: Object[], options?: ClassTransformOptions): T[]; // plainArrayToClassArray
-export function plainToClass<T>(cls: ClassType<T>, plain: Object|Object[], options?: ClassTransformOptions): T|T[] {
+export function plainToClass<T, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): V; // plainArrayToClassArray
+export function plainToClass<T, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): V;
+export function plainToClass<T, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): V|V[] {
     return classTransformer.plainToClass(cls, plain, options);
 }
+
 
 /**
  * Converts plain (literal) object to class (constructor) object.

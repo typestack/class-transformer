@@ -33,9 +33,9 @@ export class ClassTransformer {
     /**
      * Converts plain (literal) object to class (constructor) object. Also works with arrays.
      */
-    plainToClass<T>(cls: ClassType<T>, plain: Object, options?: ClassTransformOptions): T;
-    plainToClass<T>(cls: ClassType<T>, plain: Object[], options?: ClassTransformOptions): T[]; // plainArrayToClassArray
-    plainToClass<T>(cls: ClassType<T>, plain: Object|Object[], options?: ClassTransformOptions): T|T[] {
+    plainToClass<T, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): V;
+    plainToClass<T, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): V;
+    plainToClass<T, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): V|V[] {
         // let newObject: any = {};
         /*if (operationType === "plainToConstructor") {
          if (target instanceof Function) {
