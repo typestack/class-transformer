@@ -7,7 +7,7 @@
 [![devDependency Status](https://david-dm.org/pleerock/class-transformer/dev-status.svg)](https://david-dm.org/pleerock/class-transformer#info=devDependencies)
 [![Join the chat at https://gitter.im/pleerock/class-transformer](https://badges.gitter.im/pleerock/class-transformer.svg)](https://gitter.im/pleerock/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then before.
+Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
 You'll need set of utils to work with them.
 Class-transformer allows you to transform plain object to some instance of class and versa.
 Also it allows to serialized / deserialize object based on some criteria.
@@ -77,9 +77,23 @@ Also it allows to serialized / deserialize object based on some criteria.
 }
 ```
 
-## Transform plain object to constructor and versa
+## What is class-transformer
 
-Sometimes you want to transform plain javascript objects to the ES6 **classes** you have.
+In JavaScript there are two types of objects:
+
+* literal object
+* constructor object
+
+Literal objects are plain javascript objects that are instances of `Object` class.
+Usually you create them via `{}` notation.
+Constructor objects are reusable objects with its own defined constructor, and maybe properties and methods.
+Usually you define them via `class` notation.
+
+So, what is the problem?
+
+## Transform plain object to class object
+
+Sometimes you want to transform plain javascript object to the ES6 **classes** you have.
 For example, if you are getting json object from your backend, some api or from files,
 and after you `JSON.parse` it you have a plain javascript object, not instance of class you have.
 
@@ -283,6 +297,12 @@ export class Photo {
 ```
 
 Library will handle proper transformation automatically.
+
+### How does it handle circular references?
+
+Circular references are being ignored.
+For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
+ and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
 
 ### example with Angular2
 

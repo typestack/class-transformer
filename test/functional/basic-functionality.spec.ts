@@ -10,7 +10,7 @@ import {
 import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
-describe("classToPlain", () => {
+describe("basic functionality", () => {
 
     it("should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour", () => {
         defaultMetadataStorage.clear();
