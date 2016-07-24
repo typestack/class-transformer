@@ -3,6 +3,8 @@ import {defaultMetadataStorage} from "./index";
 
 export type ClassType<T> = { new (...args: any[]): T; }
 
+export type ConvertOperationType = "plainToClass"|"classToPlain"|"classToClass";
+
 export class ClassTransformer {
 
     // -------------------------------------------------------------------------
@@ -12,10 +14,9 @@ export class ClassTransformer {
     /**
      * Converts class (constructor) object to plain (literal) object. Also works with arrays.
      */
-    classToPlain<T>(object: T, options?: ClassTransformOptions): Object;
-    classToPlain<T>(object: T[], options?: ClassTransformOptions): Object[];
-    classToPlain<T>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
-        // const arrayType = object instanceof Array ? object.constructor : undefined;
+    classToPlain<T extends Object>(object: T, options?: ClassTransformOptions): Object;
+    classToPlain<T extends Object>(object: T[], options?: ClassTransformOptions): Object[];
+    classToPlain<T extends Object>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
         return this.convert("classToPlain", undefined, object, undefined, undefined, options || {});
     }
 
@@ -24,108 +25,82 @@ export class ClassTransformer {
      * Uses given plain object as source object (it means fills given plain object with data from class object).
      * Also works with arrays.
      */
-    classToPlainFromExist<T, P>(object: T, plainObject: P, options?: ClassTransformOptions): P;
-    classToPlainFromExist<T, P>(object: T, plainObjects: P[], options?: ClassTransformOptions): P[];
-    classToPlainFromExist<T, P>(object: T, plainObject: P|P[], options?: ClassTransformOptions): P|P[] {
+    classToPlainFromExist<T extends Object, P>(object: T, plainObject: P, options?: ClassTransformOptions): T;
+    classToPlainFromExist<T extends Object, P>(object: T, plainObjects: P[], options?: ClassTransformOptions): T[];
+    classToPlainFromExist<T extends Object, P>(object: T, plainObject: P|P[], options?: ClassTransformOptions): T|T[] {
         return this.convert("classToPlain", plainObject, object, undefined, undefined, options || {});
     }
 
     /**
      * Converts plain (literal) object to class (constructor) object. Also works with arrays.
      */
-    plainToClass<T, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): V;
-    plainToClass<T, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): V;
-    plainToClass<T, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): V|V[] {
-        // let newObject: any = {};
-        /*if (operationType === "plainToConstructor") {
-         if (target instanceof Function) {
-         newObject = new (target as any)();
-         } else {
-         newObject = cls;
-         cls = newObject.constructor;
-         }
-         }*/
-
+    plainToClass<T extends Object, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T[];
+    plainToClass<T extends Object, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
+    plainToClass<T extends Object, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): T|T[] {
         return this.convert("plainToClass", undefined, plain, cls, undefined, options || {});
     }
 
     /**
      * Converts plain (literal) object to class (constructor) object.
      * Uses given object as source object (it means fills given object with data from plain object).
-     *  Also works with arrays.
+     * Also works with arrays.
      */
-    /*plainToClassFromExist<T>(clsObject: T, plain: Object, options?: ClassTransformOptions): T;
-    plainToClassFromExist<T>(clsObject: T, plain: Object[], options?: ClassTransformOptions): T[]; // plainArrayToClassArray
-    plainToClassFromExist<T>(clsObject: T, plain: Object|Object[], options?: ClassTransformOptions): T|T[] {
-        return classTransformer.plainToClassFromExist(clsObject, plain, options);
-    }*/
+    plainToClassFromExist<T extends Object, V extends Array<any>>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
+    plainToClassFromExist<T extends Object, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T[];
+    plainToClassFromExist<T extends Object, V>(clsObject: T, plain: V|V[], options?: ClassTransformOptions): T|T[] {
+        return this.convert("plainToClass", clsObject, plain, undefined, undefined, options || {});
+    }
 
     /**
      * Converts class (constructor) object to new class (constructor) object. Also works with arrays.
      */
-    /*classToClass<T>(object: T, options?: ClassTransformOptions): T;
+    classToClass<T>(object: T, options?: ClassTransformOptions): T;
     classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
     classToClass<T>(object: T|T[], options?: ClassTransformOptions): T|T[] {
-        return classTransformer.classToClass(object, options);
-    }*/
+        return this.convert("classToClass", undefined, object, undefined, undefined, options || {});
+    }
 
     /**
      * Converts class (constructor) object to plain (literal) object.
      * Uses given plain object as source object (it means fills given plain object with data from class object).
      * Also works with arrays.
      */
-    /*classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
+    classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
     classToClassFromExist<T>(object: T, fromObjects: T[], options?: ClassTransformOptions): T[];
     classToClassFromExist<T>(object: T, fromObject: T|T[], options?: ClassTransformOptions): T|T[] {
-        return classTransformer.classToClassFromExist(object, fromObject, options);
-    }*/
-
-    /**
-     * Converts plain (literan) object to new plain (literal) object. Also works with arrays.
-     */
-    /*plainToPlain<T>(object: T, options?: ClassTransformOptions): T;
-    plainToPlain<T>(object: T[], options?: ClassTransformOptions): T[];
-    plainToPlain<T>(object: T|T[], options?: ClassTransformOptions): T|T[] {
-        return classTransformer.plainToPlain(object, options);
-    }*/
-
-    /**
-     * Converts plain (literan) object to new plain (literal) object. Also works with arrays.
-     */
-    /*plainToPlainFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
-    plainToPlainFromExist<T>(object: T[], fromObject: T, options?: ClassTransformOptions): T[];
-    plainToPlainFromExist<T>(object: T|T[], fromObject: T, options?: ClassTransformOptions): T|T[] {
-        return classTransformer.plainToPlainFromExist(object, fromObject, options);
-    }*/
+        return this.convert("classToClass", fromObject, object, undefined, undefined, options || {});
+    }
 
     /**
      * Serializes given object to a JSON string.
      */
-    /*serialize<T>(object: T, options?: ClassTransformOptions): string;
+    serialize<T>(object: T, options?: ClassTransformOptions): string;
     serialize<T>(object: T[], options?: ClassTransformOptions): string;
     serialize<T>(object: T|T[], options?: ClassTransformOptions): string {
-        return classTransformer.serialize(object, options);
-    }*/
+        return JSON.stringify(this.classToPlain(object, options));
+    }
 
     /**
      * Deserializes given JSON string to a object of the given class.
      */
-    /*deserialize<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T {
-        return classTransformer.deserialize(cls, json, options);
-    }*/
+    deserialize<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T {
+        const jsonObject: T = JSON.parse(json);
+        return this.plainToClass(cls, jsonObject, options);
+    }
 
     /**
      * Deserializes given JSON string to an array of objects of the given class.
      */
-    /*deserializeArray<T>(cls: T, json: string, options?: ClassTransformOptions): T[] {
-        return classTransformer.deserialize(cls, json, options);
+    deserializeArray<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T[] {
+        const jsonObject: any[] = JSON.parse(json);
+        return this.plainToClass(cls, jsonObject, options);
     }
-    */
+
     // -------------------------------------------------------------------------
     // Private Methods
     // -------------------------------------------------------------------------
 
-    private convert(operationType: "plainToClass"|"classToPlain",
+    private convert(operationType: ConvertOperationType,
                     source: Object|Object[]|any,
                     value: Object|Object[]|any,
                     targetType: Function,
@@ -156,13 +131,14 @@ export class ClassTransformer {
             return new Date(value);
 
         } else if (value instanceof Object) {
+
             // try to guess the type
-            // todo: operationType === "constructorToPlain" &&
-            if (!targetType && operationType === "classToPlain") targetType = value.constructor;
+            if (!targetType && value.constructor !== Object/* && operationType === "classToPlain"*/) targetType = value.constructor;
+            if (!targetType && source) targetType = source.constructor;
 
             const keys = this.getKeys(operationType, targetType, value, options);
             let newValue: any = source ? source : {};
-            if (operationType === "plainToClass") {
+            if (!source && (operationType === "plainToClass" || operationType === "classToClass")) {
                 newValue = new (targetType as any)();
             }
 
@@ -176,7 +152,7 @@ export class ClassTransformer {
                         newValueKey = exposeMetadata.propertyName;
                     }
 
-                } else if (operationType === "classToPlain") {
+                } else if (operationType === "classToPlain" || operationType === "classToClass") {
                     const exposeMetadata = defaultMetadataStorage.findExposeMetadata(targetType, key);
                     if (exposeMetadata && exposeMetadata.options && exposeMetadata.options.name)
                         newValueKey = exposeMetadata.options.name;
@@ -222,7 +198,7 @@ export class ClassTransformer {
         return meta ? meta.reflectedType : undefined;
     }
 
-    private getKeys(operationType: "plainToClass"|"classToPlain",
+    private getKeys(operationType: ConvertOperationType,
                     target: Function,
                     object: Object,
                     options: ClassTransformOptions): string[] {
