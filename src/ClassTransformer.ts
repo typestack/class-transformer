@@ -173,7 +173,7 @@ export class ClassTransformer {
                 // if newValue is a source object that has method that match newKeyName then skip it
                 if (newValue.constructor.prototype) {
                     const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
-                    if (operationType === "plainToClass" && (newValue[newValueKey] instanceof Function || descriptor))
+                    if ((operationType === "plainToClass" || operationType === "classToClass") && (newValue[newValueKey] instanceof Function || descriptor)) //  || operationType === "classToClass"
                         continue;
                 }
 

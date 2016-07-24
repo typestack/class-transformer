@@ -302,6 +302,24 @@ describe("classToPlain", () => {
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
+
+        const classToClassUser = classToClass(user);
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
+            id: 1,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
     });
 
     it("should exclude all properties from object if its defined via transformation options, but include properties marked with @Expose() decorator", () => {
@@ -367,6 +385,24 @@ describe("classToPlain", () => {
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
+
+        const classToClassUser = classToClass(user, { strategy: "excludeAll" });
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "excludeAll" });
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
+            id: 1,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev"
+        });
     });
 
     it("should expose all properties from object if its defined via transformation options, but exclude properties marked with @Exclude() decorator", () => {
@@ -426,6 +462,22 @@ describe("classToPlain", () => {
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
         fromExistTransformedUser.should.be.instanceOf(User);
         fromExistTransformedUser.should.be.eql({
+            id: 1,
+            firstName: "Umed"
+        });
+
+        const classToClassUser = classToClass(user, { strategy: "exposeAll" });
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.be.eql({
+            firstName: "Umed"
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
             id: 1,
             firstName: "Umed"
         });
@@ -518,6 +570,32 @@ describe("classToPlain", () => {
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
         fromExistTransformedUser.should.be.instanceOf(User);
         fromExistTransformedUser.should.be.eql({
+            id: 1,
+            firstName: "321",
+            lastName: "123",
+            password: 123,
+            isActive: true,
+            registrationDate: new Date(date.toString()),
+            lastVisitDate: date.toString(),
+        });
+
+        const classToClassUser = classToClass(user, { strategy: "exposeAll" });
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.be.eql({
+            firstName: "321",
+            lastName: "123",
+            password: 123,
+            isActive: true,
+            registrationDate: new Date(date.toString()),
+            lastVisitDate: date.toString(),
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -685,6 +763,8 @@ describe("classToPlain", () => {
 
             metadata: string;
 
+            uploadDate: Date;
+
         }
 
         class User {
@@ -701,6 +781,16 @@ describe("classToPlain", () => {
             @Type(type => Photo)
             photo: Photo;
         }
+
+        const user = new User();
+        user.firstName = "Umed";
+        user.lastName = "Khudoiberdiev";
+        user.password = "imnosuperman";
+        user.photo = new Photo();
+        user.photo.id = 1;
+        user.photo.name = "Me";
+        user.photo.filename = "iam.jpg";
+        user.photo.uploadDate = new Date();
 
         const fromPlainUser = {
             firstName: "Umed",
@@ -748,6 +838,38 @@ describe("classToPlain", () => {
             }
         });
 
+        const classToClassUser = classToClass(user);
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.photo.should.be.instanceOf(Photo);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.not.be.equal(user.photo);
+        classToClassUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                name: "Me",
+                uploadDate: fromPlainUser.photo.uploadDate
+            }
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.not.be.equal(user.photo);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
+            id: 1,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                name: "Me",
+                metadata: "taken by Camera",
+                uploadDate: fromPlainUser.photo.uploadDate
+            }
+        });
     });
 
     it("should expose only properties that match given group", () => {
@@ -876,6 +998,39 @@ describe("classToPlain", () => {
         fromExistTransformedUser.should.be.equal(fromExistUser);
         fromExistTransformedUser.photo.should.be.equal(fromExistUser.photo);
         fromExistTransformedUser.should.be.eql({
+            id: 1,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                metadata: "taken by Camera",
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const classToClassUser = classToClass(user, { groups: ["user"] });
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.photo.should.be.instanceOf(Photo);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.not.be.equal(user.photo);
+        classToClassUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { groups: ["user"] });
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.not.be.equal(user.photo);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -1405,6 +1560,7 @@ describe("classToPlain", () => {
 
 
         class User {
+            id: number;
             firstName: string;
             lastName: string;
 
@@ -1479,6 +1635,49 @@ describe("classToPlain", () => {
         likeUser2.firstName = "Dima";
         likeUser2.lastName = "Zotov";
         transformedUser.should.be.eql([likeUser1, likeUser2]);
+
+        const classToClassUsers = classToClass(users);
+        classToClassUsers[0].should.be.instanceOf(User);
+        classToClassUsers[1].should.be.instanceOf(User);
+        classToClassUsers[0].should.not.be.equal(user1);
+        classToClassUsers[1].should.not.be.equal(user1);
+
+        const classUserLike1 = new User();
+        classUserLike1.firstName = "Umed";
+        classUserLike1.lastName = "Khudoiberdiev";
+
+        const classUserLike2 = new User();
+        classUserLike2.firstName = "Dima";
+        classUserLike2.lastName = "Zotov";
+
+        classToClassUsers.should.be.eql([classUserLike1, classUserLike2]);
+
+        const fromExistUser1 = new User();
+        fromExistUser1.id = 1;
+
+        const fromExistUser2 = new User();
+        fromExistUser2.id = 2;
+
+        const fromExistUsers = [fromExistUser1, fromExistUser2];
+
+        const classToClassFromExistUser = classToClassFromExist(users, fromExistUsers);
+        classToClassFromExistUser[0].should.be.instanceOf(User);
+        classToClassFromExistUser[1].should.be.instanceOf(User);
+        classToClassFromExistUser[0].should.not.be.equal(user1);
+        classToClassFromExistUser[1].should.not.be.equal(user1);
+        classToClassFromExistUser.should.be.eql(fromExistUsers);
+
+        const fromExistUserLike1 = new User();
+        fromExistUserLike1.id = 1;
+        fromExistUserLike1.firstName = "Umed";
+        fromExistUserLike1.lastName = "Khudoiberdiev";
+
+        const fromExistUserLike2 = new User();
+        fromExistUserLike2.id = 2;
+        fromExistUserLike2.firstName = "Dima";
+        fromExistUserLike2.lastName = "Zotov";
+
+        classToClassFromExistUser.should.be.eql([fromExistUserLike1, fromExistUserLike2]);
 
     });
 
