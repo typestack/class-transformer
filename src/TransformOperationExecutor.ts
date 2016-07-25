@@ -52,7 +52,7 @@ export class TransformOperationExecutor {
 
         } else if (targetType === Date || value instanceof Date) {
             if (value instanceof Date) {
-                return new Date(value.getTime());
+                return new Date(value.valueOf());
             }
             return new Date(value);
 
