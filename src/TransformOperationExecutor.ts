@@ -33,8 +33,11 @@ export class TransformOperationExecutor {
             const newValue = arrayType && this.transformationType === "plainToClass" ? new (arrayType as any)() : [];
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
-                if (!this.isCircular(subValue, level))
+                if (!this.isCircular(subValue, level)) {
                     newValue.push(this.transform(subSource, subValue, targetType, undefined, level + 1));
+                } else if (this.transformationType === "classToClass") {
+                    newValue.push(subValue);
+                }
             });
             return newValue;
 
@@ -108,8 +111,11 @@ export class TransformOperationExecutor {
                         continue;
                 }
 
-                if (!this.isCircular(subValue, level))
+                if (!this.isCircular(subValue, level)) {
                     newValue[newValueKey] = this.transform(subSource, subValue, type, arrayType, level + 1);
+                } else if (this.transformationType === "classToClass") {
+                    newValue[newValueKey] = subValue;
+                }
             }
             return newValue;
 

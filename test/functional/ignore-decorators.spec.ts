@@ -1,14 +1,6 @@
 import "reflect-metadata";
-import {
-    defaultMetadataStorage,
-    classToPlain,
-    classToPlainFromExist,
-    plainToClass,
-    plainToClassFromExist,
-    classToClass, classToClassFromExist
-} from "../../src/index";
-import {Exclude, Expose, Type} from "../../src/decorators";
-import {expect} from "chai";
+import {defaultMetadataStorage, classToPlain} from "../../src/index";
+import {Exclude, Expose} from "../../src/decorators";
 
 describe("ignoring specific decorators", () => {
 
