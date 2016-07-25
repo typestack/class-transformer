@@ -75,7 +75,7 @@ export class TransformOperationExecutor {
             for (let key of keys) {
 
                 let valueKey = key, newValueKey = key, propertyName = key;
-                if (!this.options.ignoreDecorators) {
+                if (!this.options.ignoreDecorators && targetType) {
                     if (this.transformationType === "plainToClass") {
                         const exposeMetadata = defaultMetadataStorage.findExposeMetadataByCustomName(targetType, key);
                         if (exposeMetadata) {
@@ -151,7 +151,7 @@ export class TransformOperationExecutor {
         // get all keys that need to expose
         let keys: string[] = strategy === "exposeAll" ? Object.keys(object) : [];
 
-        if (!this.options.ignoreDecorators) {
+        if (!this.options.ignoreDecorators && target) {
 
             // add all exposed to list of keys
             let exposedProperties = defaultMetadataStorage.getExposedProperties(target, this.transformationType);

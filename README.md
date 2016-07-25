@@ -463,7 +463,7 @@ export class User {
 
     password: string;
 
-    @Type(Date)
+    @Type(() => Date)
     registrationDate: Date;
 }
 ```
