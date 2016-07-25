@@ -100,7 +100,7 @@ export class TransformOperationExecutor {
 
                 // if its deserialization then type if required
                 if (this.transformationType === "plainToClass" && !type && subValue instanceof Object && !(subValue instanceof Date))
-                    throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forgot to specify a @Type?`);
+                    throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Type?`);
 
                 // if newValue is a source object that has method that match newKeyName then skip it
                 let hasDescriptor = false;

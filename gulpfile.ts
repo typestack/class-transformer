@@ -1,3 +1,4 @@
+import "es6-shim";
 import {Gulpclass, Task, SequenceTask, MergedTask} from "gulpclass";
 
 const gulp = require("gulp");
