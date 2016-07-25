@@ -26,4 +26,10 @@ export interface ClassTransformOptions {
      */
     excludePrefixes?: string[];
 
+    /**
+     * If set to true then class transformer will ignore all @Expose and @Exclude decorators and what inside them.
+     * This option is useful if you want to kinda clone your object but do not apply decorators affects.
+     */
+    ignoreDecorators?: boolean;
+
 }

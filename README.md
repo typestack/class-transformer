@@ -50,7 +50,7 @@ Also it allows to serialized / deserialize object based on some criteria.
 
     `npm install reflect-metadata --save`
 
-    add `<script>` to reflect-metadata in the head your `index.html`:
+    add `<script>` to reflect-metadata in the head of your `index.html`:
 
     ```html
     <html>
@@ -81,23 +81,21 @@ Also it allows to serialized / deserialize object based on some criteria.
 
 In JavaScript there are two types of objects:
 
-* literal object
-* constructor object
+* plain (literal) object
+* class (constructor) object
 
-Literal objects are plain javascript objects that are instances of `Object` class.
-Usually you create them via `{}` notation.
-Constructor objects are reusable objects with its own defined constructor, and maybe properties and methods.
+Plain objects are plain javascript objects that are instances of `Object` class.
+Sometimes they are called **literal** objects, when are being created via `{}` notation.
+Class objects are instances of classes with its own defined constructor, properties and methods.
 Usually you define them via `class` notation.
 
 So, what is the problem?
 
-## Transform plain object to class object
-
 Sometimes you want to transform plain javascript object to the ES6 **classes** you have.
-For example, if you are getting json object from your backend, some api or from files,
-and after you `JSON.parse` it you have a plain javascript object, not instance of class you have.
+For example, if you are loading a json from your backend, some api or from a json file.
+After you `JSON.parse` it you have a plain javascript object, not instance of class you have.
 
-For example you have a list of users in your `users.json` you are trying to load:
+For example you have a list of users in your `users.json` that you are loading:
 
 ```json
 [{
@@ -132,8 +130,8 @@ export class User {
         return this.firstName + " " + this.lastName;
     }
 
-    isKid() {
-        return this.age < 18;
+    isAdult() {
+        return this.age > 36 && this.age < 60;
     }
 }
 ```
@@ -144,38 +142,50 @@ following code:
 ```typescript
 fetch("users.json").then((users: User[]) => {
     // here you can use users[0].id, you can also use users[0].firstName and users[0].lastName
-    // however you cannot user users[0].getName() or users[0].isKid() because users object is actually
-    // array of plain javascript objects, not instances of User object. You told compiler that `users: User[]`
-    // you actually lied to your compiler that you are getting instances of User object.
+    // however you cannot use users[0].getName() or users[0].isAdult() because "users" actually is
+    // array of plain javascript objects, not instances of User object.
+    // You actually lied to compiler when you said that `users: User[]`.
 });
 ```
 
-So what to do? How to have in `users` array of `User` objects instead of plain javascript objects? Solution is
-to create new instances of User object and manually copy all properties to new objects.
+So what to do? How to make a `users` array of instances of `User` objects instead of plain javascript objects?
+Solution is to create new instances of User object and manually copy all properties to new objects.
 
 Alternatives? Yes, you can use this library. Purpose of this library is to help you to map you plain javascript
 objects to the instances of classes you have created.
 
-#### plainToConstructor
+This library also great for models exposed in your APIs,
+because it provides a great tooling to control what your models are exposing in your API.
+
+#### plainToClass
 
 ```typescript
-import {plainToConstructor, plainToConstructorArray} from "class-transformer";
+import {plainToClass} from "class-transformer";
 
-let users = plainToConstructor(User, userJson); // to convert user plain object a single user
-let users = plainToConstructorArray(User, usersJson); // to convert user plain objects array of users
+let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
 This allows to map plain javascript array `usersJson` to array of `User` objects.
-Now you can use `users[0].getName()` and `users[0].isKid()` methods.
+Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 
-#### constructorToPlain
+#### classToPlain
 
 ```typescript
-import {constructorToPlain} from "class-transformer";
-let photo = constructorToPlain(photo);
+import {classToPlain} from "class-transformer";
+let photo = classToPlain(photo);
 ```
 
-This method transforms your constructor object back to plain javascript object, that can be `JSON.stringify` later.
+This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
+
+#### classToClass
+
+```typescript
+import {classToClass} from "class-transformer";
+let photo = classToClass(photo);
+```
+
+This method transforms your class object into new instance of the class object. This is works pretty much the same
+as cloning your object
 
 #### Working with nested objects
 
@@ -316,7 +326,7 @@ this.http
     .map(res => res.json())
     .map(res => plainToClass(User, res))
     .subscribe(users => {
-        // now "users" is type of User[] and each user have getName() and isKid() methods available
+        // now "users" is type of User[] and each user have getName() and isAdult() methods available
         console.log(users);
     });
 ```

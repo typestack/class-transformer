@@ -6,6 +6,7 @@
 * completely renamed most of names
 * renamed all main methods: `plainToConstructor` now is `plainToClass`
  and `constructorToPlain` is `classToPlain`, etc.
+* `plainToConstructorArray` method removed - now `plainToClass` handles it
 * `@Skip()` decorator renamed to `@Exclude()`
 * added `@Expose` decorator
 * added lot of new options: groups, versioning, custom names, etc.
