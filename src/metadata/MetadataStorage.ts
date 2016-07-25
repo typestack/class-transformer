@@ -1,6 +1,7 @@
 import {TypeMetadata} from "./TypeMetadata";
 import {ExposeMetadata} from "./ExposeMetadata";
 import {ExcludeMetadata} from "./ExcludeMetadata";
+import {TransformationType} from "../TransformOperationExecutor";
 
 /**
  * Storage all library metadata.
@@ -68,12 +69,44 @@ export class MetadataStorage {
         return this.getMetadata(this._excludeMetadatas, target);
     }
 
-    getExposedProperties(target: Function): string[] {
-        return this.getExposedMetadatas(target).map(metadata => metadata.propertyName);
+    getExposedProperties(target: Function, transformationType: TransformationType): string[] {
+        return this.getExposedMetadatas(target)
+            .filter(metadata => {
+                if (!metadata.options)
+                    return true;
+                if (metadata.options.toClassOnly === true && metadata.options.toPlainOnly === true)
+                    return true;
+
+                if (metadata.options.toClassOnly === true) {
+                    return transformationType === "classToClass" ||  transformationType === "plainToClass";
+                }
+                if (metadata.options.toPlainOnly === true) {
+                    return transformationType === "classToPlain";
+                }
+
+                return true;
+            })
+            .map(metadata => metadata.propertyName);
     }
 
-    getExcludedProperties(target: Function): string[] {
-        return this.getExcludedMetadatas(target).map(metadata => metadata.propertyName);
+    getExcludedProperties(target: Function, transformationType: TransformationType): string[] {
+        return this.getExcludedMetadatas(target)
+            .filter(metadata => {
+                if (!metadata.options)
+                    return true;
+                if (metadata.options.toClassOnly === true && metadata.options.toPlainOnly === true)
+                    return true;
+
+                if (metadata.options.toClassOnly === true) {
+                    return transformationType === "classToClass" ||  transformationType === "plainToClass";
+                }
+                if (metadata.options.toPlainOnly === true) {
+                    return transformationType === "classToPlain";
+                }
+
+                return true;
+            })
+            .map(metadata => metadata.propertyName);
     }
 
     clear() {

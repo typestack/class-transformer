@@ -1,24 +1,16 @@
 import "reflect-metadata";
-import {
-    defaultMetadataStorage,
-    classToPlain,
-    classToPlainFromExist,
-    plainToClass,
-    plainToClassFromExist,
-    classToClass, classToClassFromExist
-} from "../../src/index";
-import {Exclude, Expose, Type} from "../../src/decorators";
-import {expect} from "chai";
+import {defaultMetadataStorage, classToPlain} from "../../src/index";
 
-describe.skip("circular reference problem", () => {
+describe("circular reference problem", () => {
 
-    it("", () => {
+    it("should skip circular reference objects", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
             id: number;
             filename: string;
             user: User;
+            users: User[];
         }
 
         class User {
@@ -32,19 +24,31 @@ describe.skip("circular reference problem", () => {
         photo1.filename = "me.jpg";
 
         const photo2 = new Photo();
-        photo2.id = 1;
-        photo2.filename = "me.jpg";
+        photo2.id = 2;
+        photo2.filename = "she.jpg";
 
         const user = new User();
         user.firstName = "Umed Khudoiberdiev";
         user.photos = [photo1, photo2];
-        user.photos.push(photo2);
 
         photo1.user = user;
         photo2.user = user;
+        photo1.users = [user];
+        photo2.users = [user];
 
         const plainUser = classToPlain(user);
-        console.log(plainUser);
+        plainUser.should.be.eql({
+            firstName: "Umed Khudoiberdiev",
+            photos: [{
+                id: 1,
+                filename: "me.jpg",
+                users: []
+            }, {
+                id: 2,
+                filename: "she.jpg",
+                users: []
+            }]
+        });
 
     });
 

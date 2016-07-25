@@ -4,11 +4,11 @@ export interface ExposeOptions {
     since?: number;
     until?: number;
     groups?: string[];
-    readonly?: boolean;
-    writeonly?: boolean;
+    toClassOnly?: boolean;
+    toPlainOnly?: boolean;
 }
 
 export interface ExcludeOptions {
-    readonly?: boolean;
-    writeonly?: boolean;
+    toClassOnly?: boolean;
+    toPlainOnly?: boolean;
 }
