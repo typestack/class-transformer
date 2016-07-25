@@ -3,6 +3,7 @@ import {MetadataStorage} from "./metadata/MetadataStorage";
 import {ClassTransformOptions} from "./ClassTransformOptions";
 
 export {ClassTransformer} from "./ClassTransformer";
+export {ClassTransformOptions} from "./ClassTransformOptions";
 export * from "./decorators";
 
 const classTransformer = new ClassTransformer();

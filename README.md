@@ -10,6 +10,7 @@
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
 Also it allows to serialize / deserialize object based on criteria.
+This tool is useful on both frontend and backend.
 
 ## Installation
 
@@ -246,6 +247,59 @@ export class Photo {
 
 let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
+```
+
+### Exposing getters and method return values
+
+You can expose what you getter or method return by setting a `@Expose()` decorator to those getters or methods:
+
+```typescript
+import {Expose} from "class-transformer";
+
+export class User {
+
+    id: number;
+    firstName: string;
+    lastName: string;
+    password: string;
+
+    @Expose()
+    get name() {
+        return this.firstName + " " + this.lastName;
+    }
+
+    @Expose()
+    getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+}
+```
+
+### Exposing properties with different names
+
+If you want to expose some of properties with different names,
+you can do it by specifying a `name` option to `@Expose` decorator:
+
+```typescript
+import {Expose} from "class-transformer";
+
+export class User {
+
+    @Expose("uid")
+    id: number;
+
+    firstName: string;
+
+    lastName: string;
+
+    @Expose("secretKey")
+    password: string;
+
+    @Expose("fullName")
+    getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+}
 ```
 
 ### Skipping specific properties
