@@ -8,9 +8,8 @@
 [![Join the chat at https://gitter.im/pleerock/class-transformer](https://badges.gitter.im/pleerock/class-transformer.svg)](https://gitter.im/pleerock/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
-You'll need set of utils to work with them.
 Class-transformer allows you to transform plain object to some instance of class and versa.
-Also it allows to serialized / deserialize object based on some criteria.
+Also it allows to serialize / deserialize object based on criteria.
 
 ## Installation
 

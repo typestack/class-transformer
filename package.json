@@ -1,6 +1,6 @@
 {
   "name": "class-transformer",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "description": "Transforms or serializes / deserializes objects from one shape into another based on class decorators",
   "license": "MIT",
   "readmeFilename": "README.md",
