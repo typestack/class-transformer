@@ -66,27 +66,27 @@ Also it allows to serialized / deserialize object based on some criteria.
 
 3. If you are using system.js you may want to add this into `map` and `package` config:
 
-```json
-{
-    "map": {
-        "class-transformer": "node_modules/class-transformer"
-    },
-    "packages": {
-        "class-transformer": { "main": "index.js", "defaultExtension": "js" }
+    ```json
+    {
+        "map": {
+            "class-transformer": "node_modules/class-transformer"
+        },
+        "packages": {
+            "class-transformer": { "main": "index.js", "defaultExtension": "js" }
+        }
     }
-}
-```
+    ```
 
 ## What is class-transformer
 
 In JavaScript there are two types of objects:
 
-* plain (literal) object
-* class (constructor) object
+* plain (literal) objects
+* class (constructor) objects
 
-Plain objects are plain javascript objects that are instances of `Object` class.
-Sometimes they are called **literal** objects, when are being created via `{}` notation.
-Class objects are instances of classes with its own defined constructor, properties and methods.
+Plain objects are objects that are instances of `Object` class.
+Sometimes they are called **literal** objects, when created via `{}` notation.
+Class objects are instances of classes with own defined constructor, properties and methods.
 Usually you define them via `class` notation.
 
 So, what is the problem?
@@ -157,6 +157,8 @@ objects to the instances of classes you have created.
 This library also great for models exposed in your APIs,
 because it provides a great tooling to control what your models are exposing in your API.
 
+### Methods
+
 #### plainToClass
 
 ```typescript
@@ -215,7 +217,7 @@ import {deserializeArray} from "class-transformer";
 let photos = deserializeArray(photos);
 ```
 
-#### Working with nested objects
+### Working with nested objects
 
 When you are trying to transform objects that have nested objects,
 its required to known what type of object you are trying to transform.
@@ -466,7 +468,7 @@ For example, if you are transforming class `User` that contains property `photos
  and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
 Circular references are not ignored only during `classToClass` operation.
 
-### example with Angular2
+## Example with Angular2
 
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
 
