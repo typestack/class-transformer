@@ -7,13 +7,13 @@
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "sourceMap": true,
         "noImplicitAny": true,
         "declaration": true
     },
     "exclude": [
         "build",
-        "node_modules",
-        "typings/browser.d.ts",
-        "typings/browser"
+        "sample",
+        "node_modules"
     ]
 }

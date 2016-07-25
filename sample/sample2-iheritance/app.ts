@@ -1,6 +1,6 @@
 import "es6-shim";
 import "reflect-metadata";
-import {constructorToPlain, plainToConstructor, plainToConstructorArray} from "../../src/index";
+import {constructorToPlain, plainToClass, plainArrayToClassArray} from "../../src/index";
 import {Photo} from "./Photo";
 
 let photoJson = {
@@ -28,7 +28,7 @@ let photoJson = {
     }]
 };
 
-let photo = plainToConstructor<Photo>(Photo, photoJson);
+let photo = plainToClass<Photo>(Photo, photoJson);
 console.log("deserialized object: " , photo);
 
 // now check serialization
@@ -77,7 +77,7 @@ let photosJson = [{
     }]
 }];
 
-let photos = plainToConstructorArray(Photo, photosJson);
+let photos = plainArrayToClassArray(Photo, photosJson);
 console.log("deserialized array: " , photos);
 
 // now check array serialization
