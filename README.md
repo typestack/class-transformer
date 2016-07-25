@@ -184,20 +184,49 @@ import {classToClass} from "class-transformer";
 let photo = classToClass(photo);
 ```
 
-This method transforms your class object into new instance of the class object. This is works pretty much the same
-as cloning your object
+This method transforms your class object into new instance of the class object.
+This maybe treated as deep clone of your objects.
+You can also use a `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
+
+#### serialize
+
+You can serialize your model to right json using `serialize` method:
+
+```typescript
+import {serialize} from "class-transformer";
+let photo = serialize(photo);
+```
+
+`serialize` works with both arrays and non-arrays.
+
+#### deserialize and deserializeArray
+
+You can deserialize your model to from json using `deserialize` method:
+
+```typescript
+import {deserialize} from "class-transformer";
+let photo = deserialize(photo);
+```
+
+To make deserialization to work with arrays use `deserializeArray` method:
+
+```typescript
+import {deserializeArray} from "class-transformer";
+let photos = deserializeArray(photos);
+```
 
 #### Working with nested objects
 
 When you are trying to transform objects that have nested objects,
-its required for this component to known what type of object you are trying to transform.
-Since Typescript does not have good reflection abilities yet, we must implicitly specify what type of object each property contain.
+its required to known what type of object you are trying to transform.
+Since Typescript does not have good reflection abilities yet,
+we should implicitly specify what type of object each property contain.
 This is done using `@Type` decorator.
 
-Lets say we have an album with photos. And we are trying to convert album plain object to constructor object:
+Lets say we have an album with photos. And we are trying to convert album plain object to class object:
 
 ```typescript
-import {Type, plainToConstructor} from "class-transformer";
+import {Type, plainToClass} from "class-transformer";
 
 export class Album {
 
@@ -214,14 +243,14 @@ export class Photo {
     filename: string;
 }
 
-let album = plainToConstructor(Album, albumJson);
+let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
-### skipping specific properties
+### Skipping specific properties
 
-Sometimes you want to skip some properties during transformation. This can be done using `@Exclude`
-decorator:
+Sometimes you want to skip some properties during transformation.
+This can be done using `@Exclude` decorator:
 
 ```typescript
 import {Exclude} from "class-transformer";
@@ -237,17 +266,14 @@ export class User {
 }
 ```
 
-Now when you'll try to transform objects, `password` property will be skipped and will not be included
-in the resulted object.
+Now when you transform a User, `password` property will be skipped and not be included in the transformed result.
 
-### converting date strings into Date objects
+### Skipping depend of operation
 
-Sometimes you have dates in your plain old javascript objects received in a string format. And you want to create a
-real javascript Date objects from them. To make this component to automatically make your date strings a Date objects
-simply pass Date object to the `@Type` decorator:
+You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
 
 ```typescript
-import {Exclude, Type} from "class-transformer";
+import {Exclude} from "class-transformer";
 
 export class User {
 
@@ -255,19 +281,144 @@ export class User {
 
     email: string;
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
+    password: string;
+}
+```
+
+Now `password` property will be excluded only during `classToPlain` operation. Oppositely, use `toClassOnly` option.
+
+### Skipping all properties of the class
+
+You can skip all properties of the class, and expose only those are needed explicitly:
+
+```typescript
+import {Exclude, Expose} from "class-transformer";
+
+@Exclude()
+export class User {
+
+    @Expose()
+    id: number;
+
+    @Expose()
+    email: string;
+
+    password: string;
+}
+```
+
+Now `id` and `email` will be exposed, and password will be excluded during transformation.
+Alternatively, you can set exclusion strategy during transformation:
+
+```typescript
+import {classToPlain} from "class-transformer";
+let photo = classToPlain(photo, { strategy: "excludeAll" });
+```
+
+In this case you don't need to `@Exclude()` a whole class.
+
+### Skipping private properties, or some prefixed properties
+
+If you name your private properties with a prefix, lets say with `_`, then you can exclude such properties
+from transformation too:
+
+```typescript
+import {classToPlain} from "class-transformer";
+let photo = classToPlain(photo, { excludePrefixes: ["_"] });
+```
+
+This will skip all properties that start with `_` prefix.
+You can pass any number of prefixes and all properties that begin with these prefixes will be ignored.
+
+### Using groups to control excluded properties
+
+You can use groups to control what data will be exposed and what will not be:
+
+```typescript
+import {Exclude, Expose} from "class-transformer";
+
+@Exclude()
+export class User {
+
+    id: number;
+
+    name: string;
+
+    @Expose({ groups: ["user", "admin"] }) // this means that this data will be exposed only to users and admins
+    email: string;
+
+    @Expose({ groups: ["user"] }) // this means that this data will be exposed only to users
+    password: string;
+}
+```
+
+```typescript
+import {classToPlain} from "class-transformer";
+let user1 = classToPlain(user, { groups: ["user"] }); // will contain id, name, email and password
+let user2 = classToPlain(user, { groups: ["admin"] }); // will contain id, name and email
+```
+
+### Using versioning to control exposed and excluded properties
+
+If you are building an API that has different versions, class-transformer has extremely useful tools for that.
+You can control which properties of your model should be exposed or excluded in what version. Example:
+
+```typescript
+import {Exclude, Expose} from "class-transformer";
+
+@Exclude()
+export class User {
+
+    id: number;
+
+    name: string;
+
+    @Expose({ since: 0.7, until: 1 }) // this means that this property will be exposed for version starting from 0.7 until 1
+    email: string;
+
+    @Expose({ since: 2.1 }) // this means that this property will be exposed for version starting from 2.1
+    password: string;
+}
+```
+
+```typescript
+import {classToPlain} from "class-transformer";
+let user1 = classToPlain(user, { 0.5 }); // will contain id and name
+let user2 = classToPlain(user, { 0.7 }); // will contain id, name and email
+let user3 = classToPlain(user, { 1 }); // will contain id and name
+let user4 = classToPlain(user, { 2 }); // will contain id and name
+let user5 = classToPlain(user, { 2.1 }); // will contain id, name nad password
+```
+
+### Сonverting date strings into Date objects
+
+Sometimes you have a Date in your plain javascript object received in a string format.
+And you want to create a real javascript Date object from it.
+You can do it simply by passing a Date object to the `@Type` decorator:
+
+```typescript
+import {Type} from "class-transformer";
+
+export class User {
+
+    id: number;
+
+    email: string;
+
     password: string;
 
+    @Type(Date)
     registrationDate: Date;
 }
 ```
 
-Note, that dates will be converted to strings when you'll try to convert constructor object to plain object.
+Note, that dates will be converted to strings when you'll try to convert class object to plain object.
 
-Same technique can be used with `Number`, `String`, `Boolean` primitive types when you want to convert your values
-into these types.
+Same technique can be used with `Number`, `String`, `Boolean`
+primitive types when you want to convert your values into these types.
 
-### using custom arrays
+### Working with arrays
 
 When you are using arrays you must provide a type of the object that array contains.
 This type, you specify in a `@Type()` decorator:
@@ -310,9 +461,10 @@ Library will handle proper transformation automatically.
 
 ### How does it handle circular references?
 
-Circular references are being ignored.
+Circular references are ignored.
 For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
  and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
+Circular references are not ignored only during `classToClass` operation.
 
 ### example with Angular2
 
@@ -331,7 +483,7 @@ this.http
     });
 ```
 
-You can also inject a class `ClassTransformer` as a service, and use its methods.
+You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
 
 ## Samples
 
