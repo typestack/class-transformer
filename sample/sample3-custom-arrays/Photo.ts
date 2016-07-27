@@ -1,6 +1,6 @@
-import {ArrayType} from "../../src/decorators";
 import {Album} from "./Album";
 import {AlbumArray} from "./AlbumArray";
+import {Type} from "../../src/decorators";
 
 export class Photo {
 
@@ -12,7 +12,7 @@ export class Photo {
 
     tags: string[];
 
-    @ArrayType(() => Album)
+    @Type(() => Album)
     albums: AlbumArray;
 
 }

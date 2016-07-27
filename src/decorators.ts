@@ -4,10 +4,16 @@ import {ExposeMetadata} from "./metadata/ExposeMetadata";
 import {ExposeOptions, ExcludeOptions} from "./metadata/ExposeExcludeOptions";
 import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
 
+export interface TypeTransformOptions {
+    newObject: any;
+    object: Object;
+    property: string;
+}
+
 /**
  * Specifies a type of the property.
  */
-export function Type(typeFunction?: (type?: any) => Function) {
+export function Type(typeFunction?: (type?: TypeTransformOptions) => Function) {
     return function(target: any, key: string) {
         const type = (Reflect as any).getMetadata("design:type", target, key);
         const isArray = type && typeof type === "string" ? type.toLowerCase() === "array" : false;

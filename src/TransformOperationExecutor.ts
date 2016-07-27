@@ -24,10 +24,10 @@ export class TransformOperationExecutor {
     // -------------------------------------------------------------------------
 
     transform(source: Object|Object[]|any,
-                value: Object|Object[]|any,
-                targetType: Function,
-                arrayType: Function,
-                level: number = 0) {
+              value: Object|Object[]|any,
+              targetType: Function,
+              arrayType: Function,
+              level: number = 0) {
 
         if (value instanceof Array) {
             const newValue = arrayType && this.transformationType === "plainToClass" ? new (arrayType as any)() : [];
@@ -90,7 +90,7 @@ export class TransformOperationExecutor {
                     }
                 }
 
-                let type = this.getKeyType(value, targetType, propertyName);
+                let type = this.getKeyType(newValue, value, targetType, propertyName);
 
                 // if value is an array try to get its custom array type
                 const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
@@ -99,8 +99,9 @@ export class TransformOperationExecutor {
                 const subSource = source ? source[valueKey] : undefined;
 
                 // if its deserialization then type if required
-                if (this.transformationType === "plainToClass" && !type && subValue instanceof Object && !(subValue instanceof Date))
-                    throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Type?`);
+                // if we uncomment this types like string[] will not work
+                // if (this.transformationType === "plainToClass" && !type && subValue instanceof Object && !(subValue instanceof Date))
+                //     throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Type?`);
 
                 // if newValue is a source object that has method that match newKeyName then skip it
                 let hasDescriptor = false;
@@ -129,10 +130,10 @@ export class TransformOperationExecutor {
         return !!this.transformedTypes.find(transformed => transformed.object === object && transformed.level < level);
     }
 
-    private getKeyType(object: Object, target: Function, key: string) {
+    private getKeyType(newObject: Object, object: Object, target: Function, key: string) {
         if (!target) return undefined;
         const metadata = defaultMetadataStorage.findTypeMetadata(target, key);
-        return metadata ? metadata.typeFunction(object) : undefined;
+        return metadata ? metadata.typeFunction({ newObject: newObject, transformingObject: object, property: key }) : undefined;
     }
 
     private getReflectedType(target: Function, propertyName: string) {

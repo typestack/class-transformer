@@ -1,11 +1,11 @@
-import {Type, Skip} from "../../src/decorators";
+import {Type, Exclude} from "../../src/decorators";
 import {User} from "./User";
 
 export class Authorable {
     
     authorName: string;
 
-    @Skip()
+    @Exclude()
     authorEmail: string;
     
     @Type(() => User)

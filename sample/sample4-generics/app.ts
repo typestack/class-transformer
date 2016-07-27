@@ -2,7 +2,7 @@ import "es6-shim";
 import "reflect-metadata";
 import {SimpleCollection} from "./SimpleCollection";
 import {User} from "./User";
-import {constructorToPlain, plainToClass, plainToClassFromExist} from "../../src/index";
+import {classToPlain, plainToClass, plainToClassFromExist} from "../../src/index";
 import {SuperCollection} from "./SuperCollection";
 
 let collection = new SimpleCollection<User>();
@@ -12,10 +12,10 @@ collection.items = [
 ];
 collection.count = 2;
 
-// using generics works only for constructorToPlain operations, since in runtime we can 
+// using generics works only for classToPlain operations, since in runtime we can
 // "guess" type without type provided only we have a constructor, not plain object.
 
-console.log(constructorToPlain(collection));
+// console.log(classToPlain(collection));
 
 // alternatively you can use factory method
 

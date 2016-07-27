@@ -1,11 +1,11 @@
-import {Type, Skip} from "../../src/decorators";
+import {Type, Exclude} from "../../src/decorators";
 import {Photo} from "./Photo";
 
 export class Album {
 
     id: string;
 
-    @Skip()
+    @Exclude()
     name: string;
 
     @Type(() => Photo)

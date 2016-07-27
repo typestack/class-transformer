@@ -1,4 +1,4 @@
-import {Type, Skip} from "../../src/decorators";
+import {Type, Exclude} from "../../src/decorators";
 import {Photo} from "./Photo";
 import {Authorable} from "./Authorable";
 
@@ -6,7 +6,7 @@ export class Album extends Authorable {
 
     id: string;
 
-    @Skip()
+    @Exclude()
     name: string;
 
     @Type(() => Photo)

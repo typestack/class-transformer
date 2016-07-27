@@ -13,7 +13,6 @@
     },
     "exclude": [
         "build",
-        "sample",
         "node_modules"
     ]
 }

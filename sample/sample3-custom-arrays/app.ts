@@ -1,6 +1,6 @@
 import "es6-shim";
 import "reflect-metadata";
-import {constructorToPlain, plainToClass} from "../../src/index";
+import {classToPlain, plainToClass} from "../../src/index";
 import {Photo} from "./Photo";
 
 // check deserialization
@@ -31,6 +31,6 @@ console.log("-----------------------------");
 
 // now check serialization
 
-let newPhotoJson = constructorToPlain(photo);
+let newPhotoJson = classToPlain(photo);
 console.log("serialized object: " , newPhotoJson);
 console.log("-----------------------------");
