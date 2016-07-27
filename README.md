@@ -514,6 +514,37 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
+### Additional data transformation
+
+You can perform additional data transformation using `@Transform` decorator.
+For example, you want to make your `Date` object to be a `moment` object when you are
+transforming object from plain to class:
+
+```typescript
+import {Transform} from "class-transformer";
+import * as moment from "moment";
+import {Moment} from "moment";
+
+export class Photo {
+
+    id: number;
+
+    @Transform(value => moment(value), { toClassOnly: true })
+    date: Moment;
+}
+```
+
+Now when you call `plainToClass` and send a plain representation of the Photo object, 
+it will convert a date value in your photo object to moment date. 
+`@Transform` decorator also supports groups and versioning.
+
+### Working with generics
+
+Generics are not supported because TypeScript does not have good reflection abilities.
+Once TypeScript team provide us better runtime type reelection tools, generics will be implemented.
+There are some tweaks however you can use, that maybe can solve your problem.
+[Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
+
 ### How does it handle circular references?
 
 Circular references are ignored.

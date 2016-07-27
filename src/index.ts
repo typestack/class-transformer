@@ -4,6 +4,7 @@ import {ClassTransformOptions} from "./ClassTransformOptions";
 
 export {ClassTransformer} from "./ClassTransformer";
 export {ClassTransformOptions} from "./ClassTransformOptions";
+export * from "./metadata/ExposeExcludeOptions";
 export * from "./decorators";
 
 const classTransformer = new ClassTransformer();

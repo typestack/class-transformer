@@ -1,5 +1,6 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./index";
+import {TypeOptions} from "./metadata/ExposeExcludeOptions";
 
 export type TransformationType = "plainToClass"|"classToPlain"|"classToClass";
 
@@ -27,6 +28,7 @@ export class TransformOperationExecutor {
               value: Object|Object[]|any,
               targetType: Function,
               arrayType: Function,
+              fromProperty: string,
               level: number = 0) {
 
         if (value instanceof Array) {
@@ -34,7 +36,7 @@ export class TransformOperationExecutor {
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
                 if (!this.isCircular(subValue, level)) {
-                    newValue.push(this.transform(subSource, subValue, targetType, undefined, level + 1));
+                    newValue.push(this.transform(subSource, subValue, targetType, undefined, String(index), level + 1));
                 } else if (this.transformationType === "classToClass") {
                     newValue.push(subValue);
                 }
@@ -68,6 +70,8 @@ export class TransformOperationExecutor {
             const keys = this.getKeys(targetType, value);
             let newValue: any = source ? source : {};
             if (!source && (this.transformationType === "plainToClass" || this.transformationType === "classToClass")) {
+                if (!targetType)
+                    throw new Error(`Cannot determine type for ${(targetType as any).name }.${fromProperty}, did you forget to specify a @Type?`);
                 newValue = new (targetType as any)();
             }
 
@@ -113,9 +117,11 @@ export class TransformOperationExecutor {
                 }
 
                 if (!this.isCircular(subValue, level)) {
-                    newValue[newValueKey] = this.transform(subSource, subValue, type, arrayType, level + 1);
+                    newValue[newValueKey] = this.transform(subSource, subValue, type, arrayType, propertyName, level + 1);
+                    newValue[newValueKey] = this.applyCustomTransformations(newValue[newValueKey], targetType, key);
                 } else if (this.transformationType === "classToClass") {
                     newValue[newValueKey] = subValue;
+                    newValue[newValueKey] = this.applyCustomTransformations(newValue[newValueKey], targetType, key);
                 }
             }
             return newValue;
@@ -123,6 +129,42 @@ export class TransformOperationExecutor {
         } else {
             return value;
         }
+    }
+
+    private applyCustomTransformations(value: any, target: Function, key: string) {
+        let metadatas = defaultMetadataStorage.findTransformMetadatas(target, key, this.transformationType);
+
+        // apply versioning options
+        if (this.options.version !== undefined) {
+            metadatas = metadatas.filter(metadata => {
+                if (!metadata.options)
+                    return true;
+
+                return this.checkVersion(metadata.options.since, metadata.options.until);
+            });
+        }
+
+        // apply grouping options
+        if (this.options.groups && this.options.groups.length) {
+            metadatas = metadatas.filter(metadata => {
+                if (!metadata.options)
+                    return true;
+
+                return this.checkGroups(metadata.options.groups);
+            });
+        } else {
+            metadatas = metadatas.filter(metadata => {
+                return  !metadata.options ||
+                        !metadata.options.groups ||
+                        !metadata.options.groups.length;
+            });
+        }
+
+        metadatas.forEach(metadata => {
+            value = metadata.transformFn(value);
+        });
+
+        return value;
     }
 
     // preventing circular references
@@ -133,7 +175,8 @@ export class TransformOperationExecutor {
     private getKeyType(newObject: Object, object: Object, target: Function, key: string) {
         if (!target) return undefined;
         const metadata = defaultMetadataStorage.findTypeMetadata(target, key);
-        return metadata ? metadata.typeFunction({ newObject: newObject, transformingObject: object, property: key }) : undefined;
+        const options: TypeOptions = { newObject: newObject, object: object, property: key };
+        return metadata ? metadata.typeFunction(options) : undefined;
     }
 
     private getReflectedType(target: Function, propertyName: string) {
@@ -183,13 +226,7 @@ export class TransformOperationExecutor {
                     if (!exposeMetadata || !exposeMetadata.options)
                         return true;
 
-                    let decision = true;
-                    if (decision && exposeMetadata.options.since)
-                        decision = this.options.version >= exposeMetadata.options.since;
-                    if (decision && exposeMetadata.options.until)
-                        decision = this.options.version < exposeMetadata.options.until;
-
-                    return decision;
+                    return this.checkVersion(exposeMetadata.options.since, exposeMetadata.options.until);
                 });
             }
 
@@ -197,10 +234,10 @@ export class TransformOperationExecutor {
             if (this.options.groups && this.options.groups.length) {
                 keys = keys.filter(key => {
                     const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
-                    if (!exposeMetadata || !exposeMetadata.options || !exposeMetadata.options.groups)
+                    if (!exposeMetadata || !exposeMetadata.options)
                         return true;
 
-                    return this.options.groups.some(optionGroup => exposeMetadata.options.groups.indexOf(optionGroup) !== -1);
+                    return this.checkGroups(exposeMetadata.options.groups);
                 });
             } else {
                 keys = keys.filter(key => {
@@ -226,6 +263,23 @@ export class TransformOperationExecutor {
         });
 
         return keys;
+    }
+
+    private checkVersion(since: number, until: number) {
+        let decision = true;
+        if (decision && since)
+            decision = this.options.version >= since;
+        if (decision && until)
+            decision = this.options.version < until;
+
+        return decision;
+    }
+
+    private checkGroups(groups: string[]) {
+        if (!groups)
+            return true;
+
+        return this.options.groups.some(optionGroup => groups.indexOf(optionGroup) !== -1);
     }
 
 }

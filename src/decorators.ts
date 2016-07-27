@@ -1,23 +1,27 @@
 import {defaultMetadataStorage} from "./index";
 import {TypeMetadata} from "./metadata/TypeMetadata";
 import {ExposeMetadata} from "./metadata/ExposeMetadata";
-import {ExposeOptions, ExcludeOptions} from "./metadata/ExposeExcludeOptions";
+import {ExposeOptions, ExcludeOptions, TypeOptions, TransformOptions} from "./metadata/ExposeExcludeOptions";
 import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
+import {TransformMetadata} from "./metadata/TransformMetadata";
 
-export interface TypeTransformOptions {
-    newObject: any;
-    object: Object;
-    property: string;
+/**
+ * Defines a custom logic for value transformation.
+ */
+export function Transform(transformFn: (value: any) => any, options?: TransformOptions) {
+    return function(target: any, key: string) {
+        const metadata = new TransformMetadata(target.constructor, key, transformFn, options);
+        defaultMetadataStorage.addTransformMetadata(metadata);
+    };
 }
 
 /**
  * Specifies a type of the property.
  */
-export function Type(typeFunction?: (type?: TypeTransformOptions) => Function) {
+export function Type(typeFunction?: (type?: TypeOptions) => Function) {
     return function(target: any, key: string) {
         const type = (Reflect as any).getMetadata("design:type", target, key);
-        const isArray = type && typeof type === "string" ? type.toLowerCase() === "array" : false;
-        const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, isArray);
+        const metadata = new TypeMetadata(target.constructor, key, type, typeFunction);
         defaultMetadataStorage.addTypeMetadata(metadata);
     };
 }

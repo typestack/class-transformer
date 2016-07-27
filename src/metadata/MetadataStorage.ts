@@ -2,6 +2,7 @@ import {TypeMetadata} from "./TypeMetadata";
 import {ExposeMetadata} from "./ExposeMetadata";
 import {ExcludeMetadata} from "./ExcludeMetadata";
 import {TransformationType} from "../TransformOperationExecutor";
+import {TransformMetadata} from "./TransformMetadata";
 
 /**
  * Storage all library metadata.
@@ -13,6 +14,7 @@ export class MetadataStorage {
     // -------------------------------------------------------------------------
 
     private _typeMetadatas: TypeMetadata[] = [];
+    private _transformMetadatas: TransformMetadata[] = [];
     private _exposeMetadatas: ExposeMetadata[] = [];
     private _excludeMetadatas: ExcludeMetadata[] = [];
 
@@ -22,6 +24,10 @@ export class MetadataStorage {
 
     addTypeMetadata(metadata: TypeMetadata) {
         this._typeMetadatas.push(metadata);
+    }
+
+    addTransformMetadata(metadata: TransformMetadata) {
+        this._transformMetadatas.push(metadata);
     }
 
     addExposeMetadata(metadata: ExposeMetadata) {
@@ -35,6 +41,25 @@ export class MetadataStorage {
     // -------------------------------------------------------------------------
     // Public Methods
     // -------------------------------------------------------------------------
+
+    findTransformMetadatas(target: Function, propertyName: string, transformationType: TransformationType): TransformMetadata[] {
+        return this.findMetadatas(this._transformMetadatas, target, propertyName)
+            .filter(metadata => {
+                if (!metadata.options)
+                    return true;
+                if (metadata.options.toClassOnly === true && metadata.options.toPlainOnly === true)
+                    return true;
+
+                if (metadata.options.toClassOnly === true) {
+                    return transformationType === "classToClass" ||  transformationType === "plainToClass";
+                }
+                if (metadata.options.toPlainOnly === true) {
+                    return transformationType === "classToPlain";
+                }
+
+                return true;
+            });
+    }
 
     findExcludeMetadata(target: Function, propertyName: string): ExcludeMetadata {
         return this.findMetadata(this._excludeMetadatas, target, propertyName);
@@ -129,6 +154,12 @@ export class MetadataStorage {
         const metadataFromTarget = metadatas.find(meta => meta.target === target && meta.propertyName === propertyName);
         const metadataFromChildren = metadatas.find(meta => target.prototype instanceof meta.target && meta.propertyName === propertyName);
         return metadataFromTarget || metadataFromChildren;
+    }
+
+    private findMetadatas<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function, propertyName: string): T[] {
+        const metadataFromTarget = metadatas.filter(meta => meta.target === target && meta.propertyName === propertyName);
+        const metadataFromChildren = metadatas.filter(meta => target.prototype instanceof meta.target && meta.propertyName === propertyName);
+        return metadataFromChildren.reverse().concat(metadataFromTarget.reverse());
     }
 
 }
