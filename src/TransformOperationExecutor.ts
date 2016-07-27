@@ -31,14 +31,23 @@ export class TransformOperationExecutor {
               fromProperty: string,
               level: number = 0) {
 
-        if (value instanceof Array) {
+        if (value instanceof Array || value instanceof Set) {
             const newValue = arrayType && this.transformationType === "plainToClass" ? new (arrayType as any)() : [];
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
                 if (!this.isCircular(subValue, level)) {
-                    newValue.push(this.transform(subSource, subValue, targetType, undefined, String(index), level + 1));
+                    const value = this.transform(subSource, subValue, targetType, undefined, String(index), level + 1);
+                    if (newValue instanceof Set) {
+                        newValue.add(value);
+                    } else {
+                        newValue.push(value);
+                    }
                 } else if (this.transformationType === "classToClass") {
-                    newValue.push(subValue);
+                    if (newValue instanceof Set) {
+                        newValue.add(subValue);
+                    } else {
+                        newValue.push(subValue);
+                    }
                 }
             });
             return newValue;
@@ -99,8 +108,16 @@ export class TransformOperationExecutor {
                 // if value is an array try to get its custom array type
                 const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
                 // const subValueKey = operationType === "plainToClass" && newKeyName ? newKeyName : key;
-                const subValue = value[valueKey] instanceof Function ? value[valueKey]() : value[valueKey];
                 const subSource = source ? source[valueKey] : undefined;
+
+                let subValue: any = undefined;
+                if (value instanceof Map) {
+                    subValue = value.get(valueKey);
+                } else if (value[valueKey] instanceof Function) {
+                    subValue = value[valueKey]();
+                } else {
+                    subValue = value[valueKey];
+                }
 
                 // if its deserialization then type if required
                 // if we uncomment this types like string[] will not work
@@ -117,12 +134,23 @@ export class TransformOperationExecutor {
                 }
 
                 if (!this.isCircular(subValue, level)) {
-                    newValue[newValueKey] = this.transform(subSource, subValue, type, arrayType, propertyName, level + 1);
-                    newValue[newValueKey] = this.applyCustomTransformations(newValue[newValueKey], targetType, key);
+                    let finalValue = this.transform(subSource, subValue, type, arrayType, propertyName, level + 1);
+                    finalValue = this.applyCustomTransformations(finalValue, targetType, key);
+                    if (newValue instanceof Map) {
+                        newValue.set(newValueKey, finalValue);
+                    } else {
+                        newValue[newValueKey] = finalValue;
+                    }
                 } else if (this.transformationType === "classToClass") {
-                    newValue[newValueKey] = subValue;
-                    newValue[newValueKey] = this.applyCustomTransformations(newValue[newValueKey], targetType, key);
+                    let finalValue = subValue;
+                    finalValue = this.applyCustomTransformations(finalValue, targetType, key);
+                    if (newValue instanceof Map) {
+                        newValue.set(newValueKey, finalValue);
+                    } else {
+                        newValue[newValueKey] = finalValue;
+                    }
                 }
+
             }
             return newValue;
 
@@ -193,7 +221,14 @@ export class TransformOperationExecutor {
             strategy = this.options.strategy || "exposeAll"; // exposeAll is default strategy
 
         // get all keys that need to expose
-        let keys: string[] = strategy === "exposeAll" ? Object.keys(object) : [];
+        let keys: any[] = [];
+        if (strategy === "exposeAll") {
+            if (object instanceof Map) {
+                keys = Array.from(object.keys());
+            } else {
+                keys = Object.keys(object);
+            }
+        }
 
         if (!this.options.ignoreDecorators && target) {
 
