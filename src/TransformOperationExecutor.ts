@@ -1,6 +1,7 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./index";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
+import {ExposeMetadata} from "./metadata/ExposeMetadata";
 
 export type TransformationType = "plainToClass"|"classToPlain"|"classToClass";
 
@@ -28,6 +29,7 @@ export class TransformOperationExecutor {
               value: Object|Object[]|any,
               targetType: Function,
               arrayType: Function,
+              isMap: boolean,
               fromProperty: string,
               level: number = 0) {
 
@@ -36,7 +38,7 @@ export class TransformOperationExecutor {
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
                 if (!this.isCircular(subValue, level)) {
-                    const value = this.transform(subSource, subValue, targetType, undefined, String(index), level + 1);
+                    const value = this.transform(subSource, subValue, targetType, undefined, subValue instanceof Map, fromProperty + "[" + String(index) + "]", level + 1);
                     if (newValue instanceof Set) {
                         newValue.add(value);
                     } else {
@@ -52,16 +54,16 @@ export class TransformOperationExecutor {
             });
             return newValue;
 
-        } else if (targetType === String) {
+        } else if (targetType === String && !isMap) {
             return String(value);
 
-        } else if (targetType === Number) {
+        } else if (targetType === Number && !isMap) {
             return Number(value);
 
-        } else if (targetType === Boolean) {
+        } else if (targetType === Boolean && !isMap) {
             return Boolean(value);
 
-        } else if (targetType === Date || value instanceof Date) {
+        } else if ((targetType === Date || value instanceof Date) && !isMap) {
             if (value instanceof Date) {
                 return new Date(value.valueOf());
             }
@@ -79,9 +81,15 @@ export class TransformOperationExecutor {
             const keys = this.getKeys(targetType, value);
             let newValue: any = source ? source : {};
             if (!source && (this.transformationType === "plainToClass" || this.transformationType === "classToClass")) {
-                if (!targetType)
-                    throw new Error(`Cannot determine type for ${(targetType as any).name }.${fromProperty}, did you forget to specify a @Type?`);
-                newValue = new (targetType as any)();
+                if (!targetType) {
+                    console.log(value);
+                    throw new Error(`Cannot determine type for ${fromProperty}, did you forget to specify a @Type?`);
+                }
+                if (isMap) {
+                    newValue = new Map();
+                } else {
+                    newValue = new (targetType as any)();
+                }
             }
 
             // traverse over keys
@@ -103,13 +111,7 @@ export class TransformOperationExecutor {
                     }
                 }
 
-                let type = this.getKeyType(newValue, value, targetType, propertyName);
-
-                // if value is an array try to get its custom array type
-                const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
-                // const subValueKey = operationType === "plainToClass" && newKeyName ? newKeyName : key;
-                const subSource = source ? source[valueKey] : undefined;
-
+                // get a subvalue
                 let subValue: any = undefined;
                 if (value instanceof Map) {
                     subValue = value.get(valueKey);
@@ -118,6 +120,25 @@ export class TransformOperationExecutor {
                 } else {
                     subValue = value[valueKey];
                 }
+
+                // determine a type
+                let type: any = undefined, isSubValueMap = subValue instanceof Map;
+                if (targetType && isMap) {
+                    type = targetType;
+
+                } else if (targetType) {
+                    const metadata = defaultMetadataStorage.findTypeMetadata(targetType, propertyName);
+                    if (metadata) {
+                        const options: TypeOptions = { newObject: newValue, object: value, property: propertyName };
+                        type = metadata.typeFunction(options);
+                        isSubValueMap = isSubValueMap || metadata.reflectedType === Map;
+                    }
+                }
+
+                // if value is an array try to get its custom array type
+                const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
+                // const subValueKey = operationType === "plainToClass" && newKeyName ? newKeyName : key;
+                const subSource = source ? source[valueKey] : undefined;
 
                 // if its deserialization then type if required
                 // if we uncomment this types like string[] will not work
@@ -134,7 +155,7 @@ export class TransformOperationExecutor {
                 }
 
                 if (!this.isCircular(subValue, level)) {
-                    let finalValue = this.transform(subSource, subValue, type, arrayType, propertyName, level + 1);
+                    let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, (targetType as any).name + "." + propertyName, level + 1);
                     finalValue = this.applyCustomTransformations(finalValue, targetType, key);
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
@@ -198,13 +219,6 @@ export class TransformOperationExecutor {
     // preventing circular references
     private isCircular(object: Object, level: number) {
         return !!this.transformedTypes.find(transformed => transformed.object === object && transformed.level < level);
-    }
-
-    private getKeyType(newObject: Object, object: Object, target: Function, key: string) {
-        if (!target) return undefined;
-        const metadata = defaultMetadataStorage.findTypeMetadata(target, key);
-        const options: TypeOptions = { newObject: newObject, object: object, property: key };
-        return metadata ? metadata.typeFunction(options) : undefined;
     }
 
     private getReflectedType(target: Function, propertyName: string) {
