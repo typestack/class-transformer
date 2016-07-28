@@ -175,7 +175,7 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
     }
     ```
 
-### Methods
+## Methods
 
 #### plainToClass
 
@@ -235,7 +235,7 @@ import {deserializeArray} from "class-transformer";
 let photos = deserializeArray(photos);
 ```
 
-### Working with nested objects
+## Working with nested objects
 
 When you are trying to transform objects that have nested objects,
 its required to known what type of object you are trying to transform.
@@ -268,7 +268,7 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
-### Exposing getters and method return values
+## Exposing getters and method return values
 
 You can expose what your getter or method return by setting a `@Expose()` decorator to those getters or methods:
 
@@ -294,7 +294,7 @@ export class User {
 }
 ```
 
-### Exposing properties with different names
+## Exposing properties with different names
 
 If you want to expose some of properties with a different name,
 you can do it by specifying a `name` option to `@Expose` decorator:
@@ -321,7 +321,7 @@ export class User {
 }
 ```
 
-### Skipping specific properties
+## Skipping specific properties
 
 Sometimes you want to skip some properties during transformation.
 This can be done using `@Exclude` decorator:
@@ -342,7 +342,7 @@ export class User {
 
 Now when you transform a User, `password` property will be skipped and not be included in the transformed result.
 
-### Skipping depend of operation
+## Skipping depend of operation
 
 You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
 
@@ -362,7 +362,7 @@ export class User {
 
 Now `password` property will be excluded only during `classToPlain` operation. Oppositely, use `toClassOnly` option.
 
-### Skipping all properties of the class
+## Skipping all properties of the class
 
 You can skip all properties of the class, and expose only those are needed explicitly:
 
@@ -392,7 +392,7 @@ let photo = classToPlain(photo, { strategy: "excludeAll" });
 
 In this case you don't need to `@Exclude()` a whole class.
 
-### Skipping private properties, or some prefixed properties
+## Skipping private properties, or some prefixed properties
 
 If you name your private properties with a prefix, lets say with `_`, 
 then you can exclude such properties from transformation too:
@@ -438,7 +438,7 @@ const plainUser = classToPlain(user, { excludePrefixes: ["_"] });
 // { id: 1, name: "Johny Cage" }
 ```
 
-### Using groups to control excluded properties
+## Using groups to control excluded properties
 
 You can use groups to control what data will be exposed and what will not be:
 
@@ -466,7 +466,7 @@ let user1 = classToPlain(user, { groups: ["user"] }); // will contain id, name, 
 let user2 = classToPlain(user, { groups: ["admin"] }); // will contain id, name and email
 ```
 
-### Using versioning to control exposed and excluded properties
+## Using versioning to control exposed and excluded properties
 
 If you are building an API that has different versions, class-transformer has extremely useful tools for that.
 You can control which properties of your model should be exposed or excluded in what version. Example:
@@ -498,7 +498,7 @@ let user4 = classToPlain(user, { version: 2 }); // will contain id and name
 let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name nad password
 ```
 
-### Сonverting date strings into Date objects
+## Сonverting date strings into Date objects
 
 Sometimes you have a Date in your plain javascript object received in a string format.
 And you want to create a real javascript Date object from it.
@@ -525,7 +525,7 @@ Note, that dates will be converted to strings when you'll try to convert class o
 Same technique can be used with `Number`, `String`, `Boolean`
 primitive types when you want to convert your values into these types.
 
-### Working with arrays
+## Working with arrays
 
 When you are using arrays you must provide a type of the object that array contains.
 This type, you specify in a `@Type()` decorator:
@@ -566,7 +566,7 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
-### Additional data transformation
+## Additional data transformation
 
 You can perform additional data transformation using `@Transform` decorator.
 For example, you want to make your `Date` object to be a `moment` object when you are
@@ -590,14 +590,14 @@ Now when you call `plainToClass` and send a plain representation of the Photo ob
 it will convert a date value in your photo object to moment date. 
 `@Transform` decorator also supports groups and versioning.
 
-### Working with generics
+## Working with generics
 
 Generics are not supported because TypeScript does not have good reflection abilities yet.
 Once TypeScript team provide us better runtime type reelection tools, generics will be implemented.
 There are some tweaks however you can use, that maybe can solve your problem.
 [Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
 
-### How does it handle circular references?
+## How does it handle circular references?
 
 Circular references are ignored.
 For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
