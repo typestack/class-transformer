@@ -12,7 +12,8 @@ Class-transformer allows you to transform plain object to some instance of class
 Also it allows to serialize / deserialize object based on criteria.
 This tool is super useful on both frontend and backend.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). Source code is [here](https://github.com/pleerock/class-transformer-demo).
+Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
+Source code is [here](https://github.com/pleerock/class-transformer-demo).
 
 ## Installation
 
@@ -564,7 +565,7 @@ import {plainToClass} from "class-transformer";
 this.http
     .get("users.json")
     .map(res => res.json())
-    .map(res => plainToClass(User, res))
+    .map(res => plainToClass(User, res as Object[]))
     .subscribe(users => {
         // now "users" is type of User[] and each user have getName() and isAdult() methods available
         console.log(users);
@@ -572,6 +573,9 @@ this.http
 ```
 
 You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
+
+Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
+Source code is [here](https://github.com/pleerock/class-transformer-demo).
 
 ## Samples
 

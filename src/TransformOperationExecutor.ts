@@ -30,7 +30,6 @@ export class TransformOperationExecutor {
               targetType: Function,
               arrayType: Function,
               isMap: boolean,
-              fromProperty: string,
               level: number = 0) {
 
         if (value instanceof Array || value instanceof Set) {
@@ -38,7 +37,7 @@ export class TransformOperationExecutor {
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
                 if (!this.isCircular(subValue, level)) {
-                    const value = this.transform(subSource, subValue, targetType, undefined, subValue instanceof Map, fromProperty + "[" + String(index) + "]", level + 1);
+                    const value = this.transform(subSource, subValue, targetType, undefined, subValue instanceof Map, level + 1);
                     if (newValue instanceof Set) {
                         newValue.add(value);
                     } else {
@@ -81,14 +80,12 @@ export class TransformOperationExecutor {
             const keys = this.getKeys(targetType, value);
             let newValue: any = source ? source : {};
             if (!source && (this.transformationType === "plainToClass" || this.transformationType === "classToClass")) {
-                if (!targetType) {
-                    console.log(value);
-                    throw new Error(`Cannot determine type for ${fromProperty}, did you forget to specify a @Type?`);
-                }
                 if (isMap) {
                     newValue = new Map();
-                } else {
+                } else if (targetType) {
                     newValue = new (targetType as any)();
+                } else {
+                    newValue = {};
                 }
             }
 
@@ -155,7 +152,7 @@ export class TransformOperationExecutor {
                 }
 
                 if (!this.isCircular(subValue, level)) {
-                    let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, (targetType as any).name + "." + propertyName, level + 1);
+                    let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
                     finalValue = this.applyCustomTransformations(finalValue, targetType, key);
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
