@@ -10,7 +10,10 @@
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
 Also it allows to serialize / deserialize object based on criteria.
-This tool is useful on both frontend and backend.
+This tool is super useful on both frontend and backend.
+
+Example how to use [class-transformer](https://github.com/pleerock/class-transformer) with angular 2.
+See this demo in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 
 ## Installation
 
