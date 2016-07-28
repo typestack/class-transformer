@@ -13,7 +13,102 @@ Also it allows to serialize / deserialize object based on criteria.
 This tool is super useful on both frontend and backend.
 
 Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
-Source code is [here](https://github.com/pleerock/class-transformer-demo).
+Source code is available [here](https://github.com/pleerock/class-transformer-demo).
+
+## What is class-transformer
+
+In JavaScript there are two types of objects:
+
+* plain (literal) objects
+* class (constructor) objects
+
+Plain objects are objects that are instances of `Object` class.
+Sometimes they are called **literal** objects, when created via `{}` notation.
+Class objects are instances of classes with own defined constructor, properties and methods.
+Usually you define them via `class` notation.
+
+So, what is the problem?
+
+Sometimes you want to transform plain javascript object to the ES6 **classes** you have.
+For example, if you are loading a json from your backend, some api or from a json file,
+and after you `JSON.parse` it you have a plain javascript object, not instance of class you have.
+
+For example you have a list of users in your `users.json` that you are loading:
+
+```json
+[{
+  "id": 1,
+  "firstName": "Johny",
+  "lastName": "Cage",
+  "age": 27
+},
+{
+  "id": 2,
+  "firstName": "Ismoil",
+  "lastName": "Somoni",
+  "age": 50
+},
+{
+  "id": 3,
+  "firstName": "Luke",
+  "lastName": "Dacascos",
+  "age": 12
+}]
+```
+And you have a `User` class:
+
+```typescript
+export class User {
+    id: number;
+    firstName: string;
+    lastName: string;
+    age: number;
+
+    getName() {
+        return this.firstName + " " + this.lastName;
+    }
+
+    isAdult() {
+        return this.age > 36 && this.age < 60;
+    }
+}
+```
+
+You are assuming that you are downloading users of type `User` from `users.json` file and may want to write
+following code:
+
+```typescript
+fetch("users.json").then((users: User[]) => {
+    // you can use users here, and type hinting also will be available to you,
+    //  but users are not actually instances of User class
+    // this means that you can't use methods of User class
+});
+```
+
+In this code you can use `users[0].id`, you can also use `users[0].firstName` and `users[0].lastName`.
+However you cannot use `users[0].getName()` or `users[0].isAdult()` because "users" actually is
+array of plain javascript objects, not instances of User object.
+You actually lied to compiler when you said that its `users: User[]`.
+
+So what to do? How to make a `users` array of instances of `User` objects instead of plain javascript objects?
+Solution is to create new instances of User object and manually copy all properties to new objects.
+But things may go wrong very fast once you have a more complex object hierarchy.
+
+Alternatives? Yes, you can use class-transformer. Purpose of this library is to help you to map you plain javascript
+objects to the instances of classes you have.
+
+This library also great for models exposed in your APIs,
+because it provides a great tooling to control what your models are exposing in your API.
+Here is example how it will look like:
+
+```typescript
+fetch("users.json").then((users: Object[]) => {
+    const realUsers = plainToClass(users);
+    // now each user in realUsers is instance of User class 
+});
+```
+
+Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 
 ## Installation
 
@@ -80,89 +175,11 @@ Source code is [here](https://github.com/pleerock/class-transformer-demo).
     }
     ```
 
-## What is class-transformer
-
-In JavaScript there are two types of objects:
-
-* plain (literal) objects
-* class (constructor) objects
-
-Plain objects are objects that are instances of `Object` class.
-Sometimes they are called **literal** objects, when created via `{}` notation.
-Class objects are instances of classes with own defined constructor, properties and methods.
-Usually you define them via `class` notation.
-
-So, what is the problem?
-
-Sometimes you want to transform plain javascript object to the ES6 **classes** you have.
-For example, if you are loading a json from your backend, some api or from a json file.
-After you `JSON.parse` it you have a plain javascript object, not instance of class you have.
-
-For example you have a list of users in your `users.json` that you are loading:
-
-```json
-[{
-  "id": 1,
-  "firstName": "Johny",
-  "lastName": "Cage",
-  "age": 27
-},
-{
-  "id": 2,
-  "firstName": "Ismoil",
-  "lastName": "Somoni",
-  "age": 50
-},
-{
-  "id": 3,
-  "firstName": "Luke",
-  "lastName": "Dacascos",
-  "age": 12
-}]
-```
-And you have a `User` class:
-
-```typescript
-export class User {
-    id: number;
-    firstName: string;
-    lastName: string;
-    age: number;
-
-    getName() {
-        return this.firstName + " " + this.lastName;
-    }
-
-    isAdult() {
-        return this.age > 36 && this.age < 60;
-    }
-}
-```
-
-You are assuming that you are downloading users of type `User` from `users.json` file and may want to write
-following code:
-
-```typescript
-fetch("users.json").then((users: User[]) => {
-    // here you can use users[0].id, you can also use users[0].firstName and users[0].lastName
-    // however you cannot use users[0].getName() or users[0].isAdult() because "users" actually is
-    // array of plain javascript objects, not instances of User object.
-    // You actually lied to compiler when you said that `users: User[]`.
-});
-```
-
-So what to do? How to make a `users` array of instances of `User` objects instead of plain javascript objects?
-Solution is to create new instances of User object and manually copy all properties to new objects.
-
-Alternatives? Yes, you can use this library. Purpose of this library is to help you to map you plain javascript
-objects to the instances of classes you have created.
-
-This library also great for models exposed in your APIs,
-because it provides a great tooling to control what your models are exposing in your API.
-
 ### Methods
 
 #### plainToClass
+
+This method transforms a plain javascript object to instance of specific class.
 
 ```typescript
 import {plainToClass} from "class-transformer";
@@ -170,32 +187,30 @@ import {plainToClass} from "class-transformer";
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
-This allows to map plain javascript array `usersJson` to array of `User` objects.
-Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
-
 #### classToPlain
+
+This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
 
 ```typescript
 import {classToPlain} from "class-transformer";
 let photo = classToPlain(photo);
 ```
 
-This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
-
 #### classToClass
+
+This method transforms your class object into new instance of the class object.
+This maybe treated as deep clone of your objects.
 
 ```typescript
 import {classToClass} from "class-transformer";
 let photo = classToClass(photo);
 ```
 
-This method transforms your class object into new instance of the class object.
-This maybe treated as deep clone of your objects.
 You can also use a `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
 
 #### serialize
 
-You can serialize your model to right json using `serialize` method:
+You can serialize your model right to the json using `serialize` method:
 
 ```typescript
 import {serialize} from "class-transformer";
@@ -206,7 +221,7 @@ let photo = serialize(photo);
 
 #### deserialize and deserializeArray
 
-You can deserialize your model to from json using `deserialize` method:
+You can deserialize your model to from a json using `deserialize` method:
 
 ```typescript
 import {deserialize} from "class-transformer";
@@ -228,7 +243,8 @@ Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
 This is done using `@Type` decorator.
 
-Lets say we have an album with photos. And we are trying to convert album plain object to class object:
+Lets say we have an album with photos. 
+And we are trying to convert album plain object to class object:
 
 ```typescript
 import {Type, plainToClass} from "class-transformer";
@@ -254,7 +270,7 @@ let album = plainToClass(Album, albumJson);
 
 ### Exposing getters and method return values
 
-You can expose what you getter or method return by setting a `@Expose()` decorator to those getters or methods:
+You can expose what your getter or method return by setting a `@Expose()` decorator to those getters or methods:
 
 ```typescript
 import {Expose} from "class-transformer";
@@ -280,7 +296,7 @@ export class User {
 
 ### Exposing properties with different names
 
-If you want to expose some of properties with different names,
+If you want to expose some of properties with a different name,
 you can do it by specifying a `name` option to `@Expose` decorator:
 
 ```typescript
@@ -378,8 +394,8 @@ In this case you don't need to `@Exclude()` a whole class.
 
 ### Skipping private properties, or some prefixed properties
 
-If you name your private properties with a prefix, lets say with `_`, then you can exclude such properties
-from transformation too:
+If you name your private properties with a prefix, lets say with `_`, 
+then you can exclude such properties from transformation too:
 
 ```typescript
 import {classToPlain} from "class-transformer";
@@ -388,6 +404,39 @@ let photo = classToPlain(photo, { excludePrefixes: ["_"] });
 
 This will skip all properties that start with `_` prefix.
 You can pass any number of prefixes and all properties that begin with these prefixes will be ignored.
+For example:
+
+```typescript
+import {Expose} from "class-transformer";
+
+export class User {
+
+    id: number;
+    private _firstName: string;
+    private _lastName: string;
+    _password: string;
+
+    setName(firstName: string, lastName: string) {
+        this._firstName = firstName;
+        this._lastName = lastName;
+    }
+
+    @Expose()
+    get name() {
+        return this.firstName + " " + this.lastName;
+    }
+    
+}
+
+const user = new User();
+user.id = 1;
+user.setName("Johny", "Cage");
+user._password = 123;
+
+const plainUser = classToPlain(user, { excludePrefixes: ["_"] });
+// here plainUser will be equal to
+// { id: 1, name: "Johny Cage" }
+```
 
 ### Using groups to control excluded properties
 
@@ -442,11 +491,11 @@ export class User {
 
 ```typescript
 import {classToPlain} from "class-transformer";
-let user1 = classToPlain(user, { 0.5 }); // will contain id and name
-let user2 = classToPlain(user, { 0.7 }); // will contain id, name and email
-let user3 = classToPlain(user, { 1 }); // will contain id and name
-let user4 = classToPlain(user, { 2 }); // will contain id and name
-let user5 = classToPlain(user, { 2.1 }); // will contain id, name nad password
+let user1 = classToPlain(user, { version: 0.5 }); // will contain id and name
+let user2 = classToPlain(user, { version: 0.7 }); // will contain id, name and email
+let user3 = classToPlain(user, { version: 1 }); // will contain id and name
+let user4 = classToPlain(user, { version: 2 }); // will contain id and name
+let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name nad password
 ```
 
 ### Сonverting date strings into Date objects
@@ -543,7 +592,7 @@ it will convert a date value in your photo object to moment date.
 
 ### Working with generics
 
-Generics are not supported because TypeScript does not have good reflection abilities.
+Generics are not supported because TypeScript does not have good reflection abilities yet.
 Once TypeScript team provide us better runtime type reelection tools, generics will be implemented.
 There are some tweaks however you can use, that maybe can solve your problem.
 [Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
@@ -581,7 +630,6 @@ Source code is [here](https://github.com/pleerock/class-transformer-demo).
 
 Take a look on samples in [./sample](https://github.com/pleerock/class-transformer/tree/master/sample) for more examples of
 usages.
-
 
 ## Release notes
 
