@@ -129,6 +129,10 @@ export class TransformOperationExecutor {
                         const options: TypeOptions = { newObject: newValue, object: value, property: propertyName };
                         type = metadata.typeFunction(options);
                         isSubValueMap = isSubValueMap || metadata.reflectedType === Map;
+                    } else if (this.options.targetMaps) { // try to find a type in target maps
+                        this.options.targetMaps
+                            .filter(map => map.target === targetType && !!map.properties[propertyName])
+                            .forEach(map => type = map.properties[propertyName]);
                     }
                 }
 

@@ -1,4 +1,21 @@
 /**
+ * Allows to specify a map of Types in the object without using @Type decorator.
+ * This is useful when you have external classes.
+ */
+export interface TargetMap {
+
+    /**
+     * Target which Types are being specified.
+     */
+    target: Function;
+
+    /**
+     * List of properties and their Types.
+     */
+    properties: { [key: string]: Function };
+}
+
+/**
  * Options to be passed during transformation.
  */
 export interface ClassTransformOptions {
@@ -31,5 +48,12 @@ export interface ClassTransformOptions {
      * This option is useful if you want to kinda clone your object but do not apply decorators affects.
      */
     ignoreDecorators?: boolean;
+
+    /**
+     * Target maps allows to set a Types of the transforming object without using @Type decorator.
+     * This is useful when you are transforming external classes, or if you already have type metadata for
+     * objects and you don't want to set it up again.
+     */
+    targetMaps?: TargetMap[];
 
 }
