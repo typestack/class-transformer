@@ -147,11 +147,10 @@ export class TransformOperationExecutor {
                 //     throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Type?`);
 
                 // if newValue is a source object that has method that match newKeyName then skip it
-                let hasDescriptor = false;
                 if (newValue.constructor.prototype) {
                     const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
-                    hasDescriptor = !!descriptor;
-                    if ((this.transformationType === "plainToClass" || this.transformationType === "classToClass") && (newValue[newValueKey] instanceof Function || descriptor)) //  || operationType === "classToClass"
+                    if ((this.transformationType === "plainToClass" || this.transformationType === "classToClass")
+                        && (newValue[newValueKey] instanceof Function || (descriptor && !descriptor.set))) //  || operationType === "classToClass"
                         continue;
                 }
 
