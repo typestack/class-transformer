@@ -38,6 +38,10 @@ export class Gulpfile {
             .pipe(shell(["tsc"]));
     }
 
+    // -------------------------------------------------------------------------
+    // Packaging and Publishing tasks
+    // -------------------------------------------------------------------------
+
     /**
      * Publishes a package to npm from ./build/package directory.
      */

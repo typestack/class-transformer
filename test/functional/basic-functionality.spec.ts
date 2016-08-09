@@ -849,7 +849,7 @@ describe("basic functionality", () => {
             photo: {
                 id: 1,
                 name: "Me",
-                uploadDate: fromPlainUser.photo.uploadDate
+                uploadDate: user.photo.uploadDate
             }
         });
 
@@ -867,7 +867,7 @@ describe("basic functionality", () => {
                 id: 1,
                 name: "Me",
                 metadata: "taken by Camera",
-                uploadDate: fromPlainUser.photo.uploadDate
+                uploadDate: user.photo.uploadDate
             }
         });
     });
