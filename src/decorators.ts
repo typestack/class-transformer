@@ -31,9 +31,10 @@ export function Type(typeFunction?: (type?: TypeOptions) => Function) {
  * constructorToPlain and plainToConstructor transformations, however you can specify on which of transformation types
  * you want to skip this property.
  */
-export function Expose(options?: ExposeOptions) {
+export function Expose(options?: ExposeOptions|string) {
     return function(object: Object|Function, propertyName?: string) {
-        const metadata = new ExposeMetadata(object instanceof Function ? object : object.constructor, propertyName, options || {});
+        const metadata = new ExposeMetadata(object instanceof Function ? object : object.constructor, propertyName,
+            typeof options === "string" ? {name: options} : options || {});
         defaultMetadataStorage.addExposeMetadata(metadata);
     };
 }
