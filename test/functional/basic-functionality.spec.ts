@@ -1486,6 +1486,61 @@ describe("basic functionality", () => {
 
     });
 
+    it("should expose with alternative name if its given as a string parameter", () => {
+        defaultMetadataStorage.clear();
+
+        class User {
+
+            @Expose("myName")
+            firstName: string;
+
+            @Expose("secondName")
+            lastName: string;
+
+            @Exclude()
+            password: string;
+
+            @Expose()
+            get name(): string {
+                return this.firstName + " " + this.lastName;
+            }
+
+            @Expose("fullName")
+            getName(): string {
+                return this.firstName + " " + this.lastName;
+            }
+
+        }
+
+        const user = new User();
+        user.firstName = "Umed";
+        user.lastName = "Khudoiberdiev";
+        user.password = "imnosuperman";
+
+        const fromPlainUser = {
+            myName: "Umed",
+            secondName: "Khudoiberdiev",
+            password: "imnosuperman"
+        };
+
+        const plainUser: any = classToPlain(user);
+        plainUser.should.not.be.instanceOf(User);
+        plainUser.should.be.eql({
+            myName: "Umed",
+            secondName: "Khudoiberdiev",
+            name: "Umed Khudoiberdiev",
+            fullName: "Umed Khudoiberdiev"
+        });
+
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        const likeUser = new User();
+        likeUser.firstName = "Umed";
+        likeUser.lastName = "Khudoiberdiev";
+        transformedUser.should.be.eql(likeUser);
+
+    });
+
     it("should exclude all prefixed properties if prefix is given", () => {
         defaultMetadataStorage.clear();
 
