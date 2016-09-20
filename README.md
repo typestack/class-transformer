@@ -304,17 +304,17 @@ import {Expose} from "class-transformer";
 
 export class User {
 
-    @Expose("uid")
+    @Expose({ name: "uid" })
     id: number;
 
     firstName: string;
 
     lastName: string;
 
-    @Expose("secretKey")
+    @Expose({ name: "secretKey" })
     password: string;
 
-    @Expose("fullName")
+    @Expose({ name: "fullName" })
     getFullName() {
         return this.firstName + " " + this.lastName;
     }
