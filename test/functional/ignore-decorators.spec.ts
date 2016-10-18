@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import {defaultMetadataStorage, classToPlain} from "../../src/index";
+import {classToPlain} from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose} from "../../src/decorators";
 
 describe("ignoring specific decorators", () => {

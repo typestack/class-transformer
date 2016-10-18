@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import {defaultMetadataStorage, classToPlain, plainToClass} from "../../src/index";
+import {classToPlain, plainToClass} from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
 import {Type} from "../../src/decorators";
 
 describe("es6 data types", () => {

@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import {defaultMetadataStorage, classToPlain, plainToClass} from "../../src/index";
+import {classToPlain, plainToClass} from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Transform, Type} from "../../src/decorators";
 import * as moment from "moment";
 
