@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import {defaultMetadataStorage, serialize, deserialize, deserializeArray} from "../../src/index";
+import {serialize, deserialize, deserializeArray} from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude} from "../../src/decorators";
 
 describe("serialization and deserialization objects", () => {

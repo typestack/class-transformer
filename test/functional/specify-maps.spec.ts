@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import {
-    defaultMetadataStorage,
     classToPlain,
     classToPlainFromExist,
     plainToClass,
     plainToClassFromExist,
     classToClass, classToClassFromExist
 } from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
