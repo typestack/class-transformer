@@ -1,5 +1,4 @@
 import {ClassTransformer, ClassType} from "./ClassTransformer";
-import {MetadataStorage} from "./metadata/MetadataStorage";
 import {ClassTransformOptions} from "./ClassTransformOptions";
 
 export {ClassTransformer} from "./ClassTransformer";
@@ -91,8 +90,3 @@ export function deserialize<T>(cls: ClassType<T>, json: string, options?: ClassT
 export function deserializeArray<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T[] {
     return classTransformer.deserializeArray(cls, json, options);
 }
-
-/**
- * Default metadata storage is used as singleton and can be used to storage all metadatas.
- */
-export const defaultMetadataStorage = new MetadataStorage();

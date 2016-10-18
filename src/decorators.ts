@@ -1,4 +1,4 @@
-import {defaultMetadataStorage} from "./index";
+import {defaultMetadataStorage} from "./storage";
 import {TypeMetadata} from "./metadata/TypeMetadata";
 import {ExposeMetadata} from "./metadata/ExposeMetadata";
 import {ExposeOptions, ExcludeOptions, TypeOptions, TransformOptions} from "./metadata/ExposeExcludeOptions";
