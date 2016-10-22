@@ -1,5 +1,5 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
-import {defaultMetadataStorage} from "./index";
+import {defaultMetadataStorage} from "./storage";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
 import {ExposeMetadata} from "./metadata/ExposeMetadata";
 

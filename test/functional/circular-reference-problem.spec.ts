@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import {defaultMetadataStorage, classToPlain, classToClass} from "../../src/index";
+import {classToPlain, classToClass} from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
 
 describe("circular reference problem", () => {
 
