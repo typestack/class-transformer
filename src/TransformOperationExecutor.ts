@@ -66,6 +66,9 @@ export class TransformOperationExecutor {
             if (value instanceof Date) {
                 return new Date(value.valueOf());
             }
+            if (value === null || value === undefined)
+                return value;
+
             return new Date(value);
 
         } else if (value instanceof Object) {
