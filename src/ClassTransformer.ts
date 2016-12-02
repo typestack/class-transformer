@@ -1,7 +1,7 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {TransformOperationExecutor} from "./TransformOperationExecutor";
 
-export type ClassType<T> = { new (...args: any[]): T; }
+export type ClassType<T> = { new (...args: any[]): T; };
 
 export class ClassTransformer {
 
