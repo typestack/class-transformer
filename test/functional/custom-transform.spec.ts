@@ -6,6 +6,24 @@ import * as moment from "moment";
 
 describe("custom transformation decorator", () => {
 
+    it("@Expose decorator with 'name' option should work with @Transform decorator", () => {
+        defaultMetadataStorage.clear();
+
+        class User {
+
+            @Expose({name: 'user_name'})
+            @Transform(value => value.toUpperCase())
+            name: string;
+        }
+
+        let plainUser = {
+            user_name: "Johny Cage"
+        };
+
+        const classedUser = plainToClass(User, plainUser);
+        classedUser.name.should.be.equal("JOHNY CAGE");
+    });
+
     it("@Transform decorator logic should be executed depend of toPlainOnly and toClassOnly set", () => {
         defaultMetadataStorage.clear();
 
