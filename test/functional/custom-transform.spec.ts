@@ -6,12 +6,12 @@ import * as moment from "moment";
 
 describe("custom transformation decorator", () => {
 
-    it("@Expose decorator with 'name' option should work with @Transform decorator", () => {
+    it("@Expose decorator with \"name\" option should work with @Transform decorator", () => {
         defaultMetadataStorage.clear();
 
         class User {
 
-            @Expose({name: 'user_name'})
+            @Expose({name: "user_name"})
             @Transform(value => value.toUpperCase())
             name: string;
         }
