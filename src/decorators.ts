@@ -62,14 +62,7 @@ export function JsonView(params?: {}, method?: string): Function {
 
         descriptor.value = function(...args: any[]) {
             let result: any = originalMethod.apply(this, args);
-
-            let transformer: Function;
-            if (typeof method === "string" && method) {
-                transformer = classTransformer[method];
-            }
-            else {
-                transformer = classTransformer.classToPlain;
-            }
+            let transformer: Function = typeof method === "string" && method ? classTransformer[method] : classTransformer.classToPlain;
 
             result = transformer(result, params);
             return result;
