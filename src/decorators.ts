@@ -64,7 +64,7 @@ export function JsonView(params?: {}, method?: string): Function {
             let transformer: Function = typeof method === "string" && method ? classTransformer[method] : classTransformer.classToPlain;
             let result: any = originalMethod.apply(this, args);
             
-            if (!!result && (typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
+            if (!!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function") {
                 // If result is an instance of Promise.
                 return result.then((data: any) => {
                     return transformer(result, params);
