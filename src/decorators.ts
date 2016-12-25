@@ -1,4 +1,4 @@
-import { ClassTransformer } from './ClassTransformer';
+import {ClassTransformer} from "./ClassTransformer";
 import {defaultMetadataStorage} from "./storage";
 import {TypeMetadata} from "./metadata/TypeMetadata";
 import {ExposeMetadata} from "./metadata/ExposeMetadata";
@@ -54,9 +54,9 @@ export function Exclude(options?: ExcludeOptions) {
 /**
  * Return the object with the exposed properties only.
  */
-export function JsonView(params: {}, method?: string): Function {
+export function JsonView(params?: {}, method?: string): Function {
 
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: any = new ClassTransformer();
         const originalMethod = descriptor.value;
 
@@ -64,7 +64,7 @@ export function JsonView(params: {}, method?: string): Function {
             let result: any = originalMethod.apply(this, args);
 
             let transformer: Function;
-            if (typeof method === 'string' && method) {
+            if (typeof method === "string" && method) {
                 transformer = classTransformer[method];
             }
             else {
@@ -73,6 +73,6 @@ export function JsonView(params: {}, method?: string): Function {
 
             result = transformer(result, params);
             return result;
-        }
-    }
+        };
+    };
 }
