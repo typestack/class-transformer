@@ -64,13 +64,11 @@ export function JsonView(params?: {}, method?: string): Function {
             let transformer: Function = typeof method === "string" && method ? classTransformer[method] : classTransformer.classToPlain;
             let result: any = originalMethod.apply(this, args);
             
-            if (!!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function") {
-                // If result is an instance of Promise.
-                return result.then((data: any) => transformer(data, params));
-            }
+            let isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
 
-            result = transformer(result, params);
-            return result;
+            return isPromise ? 
+                result.then((data: any) => transformer(data, params)) : 
+                transformer(result, params);
         };
     };
 }
