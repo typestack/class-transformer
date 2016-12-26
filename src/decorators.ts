@@ -66,9 +66,7 @@ export function JsonView(params?: {}, method?: string): Function {
             
             let isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
 
-            return isPromise ? 
-                result.then((data: any) => transformer(data, params)) : 
-                transformer(result, params);
+            return isPromise ? result.then((data: any) => transformer(data, params)) : transformer(result, params);
         };
     };
 }
