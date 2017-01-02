@@ -71,8 +71,7 @@ export function TransformMethod(params?: ClassTransformOptions, method?: "classT
                 case "classToClass":
                     transformer = classTransformer.classToClass;
                     break;
-                case "classToPlain":
-                default:
+                case "classToPlain": default:
                     transformer = classTransformer.classToPlain;
             }
 
