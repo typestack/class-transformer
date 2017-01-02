@@ -590,6 +590,55 @@ Now when you call `plainToClass` and send a plain representation of the Photo ob
 it will convert a date value in your photo object to moment date. 
 `@Transform` decorator also supports groups and versioning.
 
+## Other decorators
+| Signature          | Example                                  | Description
+|--------------------|------------------------------------------|---------------------------------------------|
+| `@TransformMethod` | `@TransformMethod({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
+
+The `@TransformMethod` decorator accept 2 optional arguments.
+1. ClassTransformOptions - The transform options like groups, version, name
+2. the method to do the transform - classToPlain or classToClass
+
+An example:
+
+```
+@Exclude()
+class User {
+
+    id: number;
+
+    @Expose()
+    firstName: string;
+
+    @Expose()
+    lastName: string;
+
+    @Expose({ groups: ['user.email'] })
+    email: string;
+
+    password: string;
+}
+
+class UserController {
+    
+    @TransformMethod({ groups: ['user.email'] })
+    getUser() {
+        const user = new User();
+        user.firstName = "Snir";
+        user.lastName = "Segal";
+        user.password = "imnosuperman";
+
+        return user;
+    }
+}
+
+const controller = new UserController();
+const user = controller.getUser();
+```
+
+the `user` variable will contain only firstName,lastName, email properties becuase they are
+the exposed variables. email property is also exposed becuase we metioned the group "user.email".
+
 ## Working with generics
 
 Generics are not supported because TypeScript does not have good reflection abilities yet.
