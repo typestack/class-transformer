@@ -5,6 +5,7 @@ import {ExposeMetadata} from "./metadata/ExposeMetadata";
 import {ExposeOptions, ExcludeOptions, TypeOptions, TransformOptions} from "./metadata/ExposeExcludeOptions";
 import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
 import {TransformMetadata} from "./metadata/TransformMetadata";
+import {ClassTransformOptions} from "./ClassTransformOptions";
 
 /**
  * Defines a custom logic for value transformation.
@@ -54,17 +55,26 @@ export function Exclude(options?: ExcludeOptions) {
 /**
  * Return the object with the exposed properties only.
  */
-export function JsonView(params?: {}, method?: string): Function {
+export function TransformMethod(params?: ClassTransformOptions, method?: "classToPlain"|"classToClass"): Function {
 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        const classTransformer: any = new ClassTransformer();
+        const classTransformer: ClassTransformer = new ClassTransformer();
         const originalMethod = descriptor.value;
-
+        
         descriptor.value = function(...args: any[]) {
-            let transformer: Function = typeof method === "string" && method ? classTransformer[method] : classTransformer.classToPlain;
-            let result: any = originalMethod.apply(this, args);
-            
-            let isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
+            const result: any = originalMethod.apply(this, args);
+            const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
+
+            let transformer: Function;
+
+            switch (method) {
+                case "classToClass":
+                    transformer = classTransformer.classToClass;
+                    break;
+                case "classToPlain":
+                default:
+                    transformer = classTransformer.classToPlain;
+            }
 
             return isPromise ? result.then((data: any) => transformer(data, params)) : transformer(result, params);
         };

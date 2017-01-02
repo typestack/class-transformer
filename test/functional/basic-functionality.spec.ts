@@ -7,7 +7,7 @@ import {
     classToClass, classToClassFromExist
 } from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, Type, JsonView} from "../../src/decorators";
+import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
 describe("basic functionality", () => {
@@ -1679,48 +1679,6 @@ describe("basic functionality", () => {
 
         classToClassFromExistUser.should.be.eql([fromExistUserLike1, fromExistUserLike2]);
 
-    });
-    
-    it("should expose properties with json view", () => {
-        defaultMetadataStorage.clear();
-
-        @Exclude()
-        class User {
-
-            id: number;
-
-            @Expose()
-            firstName: string;
-
-            @Expose()
-            lastName: string;
-
-            password: string;
-        }
-
-        const user = new User();
-        user.firstName = "Umed";
-        user.lastName = "Khudoiberdiev";
-        user.password = "imnosuperman";
-
-        const plainUser = {
-            firstName: "Umed",
-            lastName: "Khudoiberdiev"
-        };
-
-        class UserController {
-            
-            @JsonView()
-            getUser() {
-                return user;
-            }
-        }
-        
-        const controller = new UserController();
-
-        let result = controller.getUser();
-        expect(result.password).to.be.undefined;
-        expect(result).to.be.eql(plainUser);
     });
 
 });
