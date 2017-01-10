@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, TransformMethod} from "../../src/decorators";
+import {Exclude, Expose, TransformClassToPlain, TransformClassToClass} from "../../src/decorators";
 import {expect} from "chai";
 
-describe("transformer method decorator", () => {
+describe("transformer methods decorator", () => {
 
     it("should expose non configuration properties and return User instance class", () => {
         defaultMetadataStorage.clear();
@@ -24,7 +24,7 @@ describe("transformer method decorator", () => {
 
         class UserController {
             
-            @TransformMethod({}, "classToClass")
+            @TransformClassToClass()
             getUser() {
                 const user = new User();
                 user.firstName = "Snir";
@@ -69,7 +69,7 @@ describe("transformer method decorator", () => {
 
         class UserController {
             
-            @TransformMethod()
+            @TransformClassToPlain()
             getUser() {
                 const user = new User();
                 user.firstName = "Snir";
@@ -115,7 +115,7 @@ describe("transformer method decorator", () => {
 
         class UserController {
             
-            @TransformMethod({ groups: ["user.permissions"] })
+            @TransformClassToPlain({ groups: ["user.permissions"] })
             getUserWithRoles() {
                 const user = new User();
                 user.firstName = "Snir";
@@ -167,7 +167,7 @@ describe("transformer method decorator", () => {
 
         class UserController {
 
-            @TransformMethod({ version: 1 })
+            @TransformClassToPlain({ version: 1 })
             getUserVersion1() {
                 const user = new User();
                 user.firstName = "Snir";
@@ -179,7 +179,7 @@ describe("transformer method decorator", () => {
                 return user;
             }
                     
-            @TransformMethod({ version: 2 })
+            @TransformClassToPlain({ version: 2 })
             getUserVersion2() {
                 const user = new User();
                 user.firstName = "Snir";

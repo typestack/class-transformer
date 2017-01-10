@@ -53,29 +53,39 @@ export function Exclude(options?: ExcludeOptions) {
 }
 
 /**
- * Return the object with the exposed properties only.
+ * Transform the object from class to plain object and return only with the exposed properties.
  */
-export function TransformMethod(params?: ClassTransformOptions, method?: "classToPlain"|"classToClass"): Function {
+export function TransformClassToPlain(params?: ClassTransformOptions): Function {
 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: ClassTransformer = new ClassTransformer();
+        const MethodTransformer: Function = classTransformer.classToPlain;
+        const originalMethod = descriptor.value;
+        
+        descriptor.value = function(...args: any[]) {
+            const result: any = originalMethod.apply(this, args);
+            const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";          
+
+            return isPromise ? result.then((data: any) => MethodTransformer(data, params)) : MethodTransformer(result, params);
+        };
+    };
+}
+
+/**
+ * Return the class instance only with the exposed properties.
+ */
+export function TransformClassToClass(params?: ClassTransformOptions): Function {
+
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+        const classTransformer: ClassTransformer = new ClassTransformer();
+        const MethodTransformer: Function = classTransformer.classToClass;
         const originalMethod = descriptor.value;
         
         descriptor.value = function(...args: any[]) {
             const result: any = originalMethod.apply(this, args);
             const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
 
-            let transformer: Function;
-
-            switch (method) {
-                case "classToClass":
-                    transformer = classTransformer.classToClass;
-                    break;
-                case "classToPlain": default:
-                    transformer = classTransformer.classToPlain;
-            }
-
-            return isPromise ? result.then((data: any) => transformer(data, params)) : transformer(result, params);
+            return isPromise ? result.then((data: any) => MethodTransformer(data, params)) : MethodTransformer(result, params);
         };
     };
 }
