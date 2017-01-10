@@ -593,15 +593,15 @@ it will convert a date value in your photo object to moment date.
 ## Other decorators
 | Signature          | Example                                  | Description
 |--------------------|------------------------------------------|---------------------------------------------|
-| `@TransformMethod` | `@TransformMethod({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
+| `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
+| `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class.
 
-The `@TransformMethod` decorator accept 2 optional arguments.
-1. ClassTransformOptions - The transform options like groups, version, name
-2. the method to do the transform - classToPlain or classToClass
+The above decorators accept one optional argument:
+ClassTransformOptions - The transform options like groups, version, name
 
 An example:
 
-```
+```typescript
 @Exclude()
 class User {
 
@@ -621,7 +621,7 @@ class User {
 
 class UserController {
     
-    @TransformMethod({ groups: ['user.email'] })
+    @TransformClassToPlain({ groups: ['user.email'] })
     getUser() {
         const user = new User();
         user.firstName = "Snir";
