@@ -1,5 +1,9 @@
 # Release notes
 
+**0.1.4**
+
+* added `TransformClassToPlain` and `TransformClassToClass` decorators
+
 **0.1.0**
 
 * renamed library from `constructor-utils` to `class-transformer`
