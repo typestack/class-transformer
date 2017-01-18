@@ -13,6 +13,9 @@ const ts = require("gulp-typescript");
 const sourcemaps = require("gulp-sourcemaps");
 const istanbul = require("gulp-istanbul");
 const remapIstanbul = require("remap-istanbul/lib/gulpRemapIstanbul");
+const rename = require("gulp-rename");
+const file = require("gulp-file");
+const uglify = require("gulp-uglify");
 
 @Gulpclass()
 export class Gulpfile {
@@ -38,6 +41,106 @@ export class Gulpfile {
             .pipe(shell(["tsc"]));
     }
 
+    // -------------------------------------------------------------------------
+    // Bundling task
+    // -------------------------------------------------------------------------
+
+    /**
+     * Compiles and compiles bundles.
+     */
+    @MergedTask()
+    compileBundles() {
+        const amdTsProject = ts.createProject("tsconfig.json", {
+            module: "amd",
+            outFile: "class-transformer.amd.js",
+            typescript: require("typescript")
+        });
+        const systemTsProject = ts.createProject("tsconfig.json", {
+            module: "system",
+            outFile: "class-transformer.system.js",
+            typescript: require("typescript")
+        });
+        const amdPureTsProject = ts.createProject("tsconfig.json", {
+            module: "amd",
+            outFile: "class-transformer.pure.amd.js",
+            noEmitHelpers: true,
+            noImplicitUseStrict: true,
+            typescript: require("typescript")
+        });
+        const systemPureTsProject = ts.createProject("tsconfig.json", {
+            module: "system",
+            outFile: "class-transformer.pure.system.js",
+            noEmitHelpers: true,
+            noImplicitUseStrict: true,
+            typescript: require("typescript")
+        });
+
+        return [
+            gulp.src("build/bundle/**/*.ts")
+                .pipe(amdTsProject()).js
+                .pipe(gulp.dest("build/package")),
+
+            gulp.src("build/bundle/**/*.ts")
+                .pipe(systemTsProject()).js
+                .pipe(gulp.dest("build/package")),
+
+            gulp.src("build/bundle/**/*.ts")
+                .pipe(amdPureTsProject()).js
+                .pipe(gulp.dest("build/package")),
+
+            gulp.src("build/bundle/**/*.ts")
+                .pipe(systemPureTsProject()).js
+                .pipe(gulp.dest("build/package"))
+        ];
+    }
+
+    /**
+     * Copies all source files into destination folder in a correct structure to build bundles.
+     */
+    @Task()
+    bundleCopySources() {
+        return gulp.src(["./src/**/*.ts"])
+            .pipe(gulp.dest("./build/bundle/class-transformer"));
+    }
+
+    /**
+     * Creates special main file for bundle build.
+     */
+    @Task()
+    bundleCopyMainFile() {
+        return gulp.src("./package.json", { read: false })
+            .pipe(file("class-transformer.ts", `export * from "./class-transformer/index";`))
+            .pipe(gulp.dest("./build/bundle"));
+    }
+
+    /**
+     * Uglifys bundles.
+     */
+    @MergedTask()
+    uglify() {
+        return [
+            gulp.src(`./build/package/class-transformer.pure.amd.js`)
+                .pipe(uglify())
+                .pipe(rename(`class-transformer.pure.amd.min.js`))
+                .pipe(gulp.dest("./build/package")),
+
+            gulp.src(`./build/package/class-transformer.pure.system.js`)
+                .pipe(uglify())
+                .pipe(rename(`class-transformer.pure.system.min.js`))
+                .pipe(gulp.dest("./build/package")),
+
+            gulp.src(`./build/package/class-transformer.amd.js`)
+                .pipe(uglify())
+                .pipe(rename(`class-transformer.amd.min.js`))
+                .pipe(gulp.dest("./build/package")),
+
+            gulp.src(`./build/package/class-transformer.system.js`)
+                .pipe(uglify())
+                .pipe(rename(`class-transformer.system.min.js`))
+                .pipe(gulp.dest("./build/package")),
+        ];
+    }
+    
     // -------------------------------------------------------------------------
     // Packaging and Publishing tasks
     // -------------------------------------------------------------------------
@@ -118,6 +221,9 @@ export class Gulpfile {
     package() {
         return [
             "clean",
+            ["bundleCopySources", "bundleCopyMainFile"],
+            ["compile", "compileBundles"],
+            ["uglify"],
             "packageCompile",
             "packageMoveCompiledFiles",
             "packageClearCompileDirectory",
