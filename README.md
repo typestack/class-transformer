@@ -1,5 +1,7 @@
 # class-transformer
 
+[![Join the chat at https://gitter.im/pleerock/class-transformer](https://badges.gitter.im/pleerock/class-transformer.svg)](https://gitter.im/pleerock/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/pleerock/class-transformer.svg?branch=master)](https://travis-ci.org/pleerock/class-transformer)
 [![codecov](https://codecov.io/gh/pleerock/class-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/pleerock/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
