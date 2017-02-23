@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import {classToPlain, plainToClass} from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, Transform, Type} from "../../src/decorators";
+import { classToPlain, plainToClass } from "../../src/index";
+import { defaultMetadataStorage } from "../../src/storage";
+import { Expose, Transform, Type } from "../../src/decorators";
 import * as moment from "moment";
 
 describe("custom transformation decorator", () => {
@@ -22,6 +22,8 @@ describe("custom transformation decorator", () => {
 
         const classedUser = plainToClass(User, plainUser);
         classedUser.name.should.be.equal("JOHNY CAGE");
+
+        plainToClass(User, plainUser);
     });
 
     it("@Transform decorator logic should be executed depend of toPlainOnly and toClassOnly set", () => {
@@ -33,8 +35,8 @@ describe("custom transformation decorator", () => {
 
             name: string;
 
-            @Transform(value => value.toString(), { toPlainOnly: true })
-            @Transform(value => moment(value), { toClassOnly: true })
+            @Transform(value => value.toString(), {toPlainOnly: true})
+            @Transform(value => moment(value), {toClassOnly: true})
             date: Date;
 
         }
@@ -66,8 +68,9 @@ describe("custom transformation decorator", () => {
 
     });
 
-    it("versions and groups should work with @Transform decorator too", () => {
+    it("Non class objects should not break if transform is used", () => {
         defaultMetadataStorage.clear();
+
 
         class User {
 
@@ -75,52 +78,40 @@ describe("custom transformation decorator", () => {
 
             name: string;
 
-            @Type(() => Date)
-            @Transform(value => moment(value), { since: 1, until: 2 })
-            date: Date;
+            @Type(() => Test)
+            @Transform(value => ArrayUtil.toArray<Test>(value))
+            date: Test[];
 
             @Type(() => Date)
-            @Transform(value => value.toString(), { groups: ["user"] })
             lastVisitDate: Date;
 
         }
 
-        let plainUser = {
-            id: 1,
-            name: "Johny Cage",
-            date: new Date().valueOf(),
-            lastVisitDate: new Date().valueOf()
+        class ArrayUtil {
+            public static toArray<T>(object: T): T[] {
+                let obj = new Array<any>();
+
+                if (!(object instanceof Array)) {
+                    obj.push(object);
+                } else {
+                    obj = object;
+                }
+
+                return obj;
+            }
+        }
+
+
+        class Test {
+            test: string;
+        }
+
+        let plainBuilding = {
+            address: "1234 Purple Drive"
         };
 
-        const classedUser1 = plainToClass(User, plainUser);
-        classedUser1.should.be.instanceOf(User);
-        classedUser1.id.should.be.equal(1);
-        classedUser1.name.should.be.equal("Johny Cage");
-        moment.isMoment(classedUser1.date).should.be.true;
-
-        const classedUser2 = plainToClass(User, plainUser, { version: 0.5 });
-        classedUser2.should.be.instanceOf(User);
-        classedUser2.id.should.be.equal(1);
-        classedUser2.name.should.be.equal("Johny Cage");
-        classedUser2.date.should.be.instanceof(Date);
-
-        const classedUser3 = plainToClass(User, plainUser, { version: 1 });
-        classedUser3.should.be.instanceOf(User);
-        classedUser3.id.should.be.equal(1);
-        classedUser3.name.should.be.equal("Johny Cage");
-        moment.isMoment(classedUser3.date).should.be.true;
-
-        const classedUser4 = plainToClass(User, plainUser, { version: 2 });
-        classedUser4.should.be.instanceOf(User);
-        classedUser4.id.should.be.equal(1);
-        classedUser4.name.should.be.equal("Johny Cage");
-        classedUser4.date.should.be.instanceof(Date);
-
-        const classedUser5 = plainToClass(User, plainUser, { groups: ["user"] });
-        classedUser5.should.be.instanceOf(User);
-        classedUser5.id.should.be.equal(1);
-        classedUser5.name.should.be.equal("Johny Cage");
-        classedUser5.lastVisitDate.should.be.equal(new Date(plainUser.lastVisitDate).toString());
+        let test = classToPlain({"success": true});
+        test.should.be.eql({"success": true});
     });
 
 
