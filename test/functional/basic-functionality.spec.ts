@@ -1681,4 +1681,45 @@ describe("basic functionality", () => {
 
     });
 
+    it("should avoid conflicts in expose rules", function () {
+
+        defaultMetadataStorage.clear();
+
+        @Exclude()
+        class User {
+
+            @Expose({ toClassOnly: true, groups: ["create", "update"] })
+            @Expose({ toPlainOnly: true })
+            public email?: string;
+
+            @Expose({ toClassOnly: true, groups: ["create", "update"] })
+            @Expose({ toPlainOnly: true })
+            public firstName?: string;
+
+            @Expose({ toClassOnly: true, groups: ["create"] })
+            @Expose({ toPlainOnly: true })
+            public password?: string;
+
+        }
+
+        const user = plainToClass(User, {
+            email: "email@example.com",
+            firstName: "John",
+            password: "12345"
+        }, { groups: ["update"] });
+
+        user.should.deep.equal({
+            email: "email@example.com",
+            firstName: "John"
+        });
+
+        const plain = classToPlain(user);
+
+        plain.should.deep.equal({
+            email: "email@example.com",
+            firstName: "John"
+        });
+
+    });
+
 });
