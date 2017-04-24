@@ -1681,4 +1681,27 @@ describe("basic functionality", () => {
 
     });
 
+    it("should ignore extra properties", function () {
+
+        defaultMetadataStorage.clear();
+
+        class User {
+            public email?: string;
+            public firstName?: string;
+        }
+
+        const userFromPlain = plainToClass(User, {
+            email: "email@example.com",
+            firstName: "John",
+            extra: "foo"
+        });
+
+        const testUser = new User();
+        testUser.email = "email@example.com";
+        testUser.firstName = "John";
+
+        userFromPlain.should.be.deep.equal(testUser);
+
+    });
+
 });
