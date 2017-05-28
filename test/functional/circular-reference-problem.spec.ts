@@ -1,6 +1,9 @@
 import "reflect-metadata";
-import {classToPlain, classToClass} from "../../src/index";
+import {classToPlain, classToClass, plainToClass} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
+import {TransformOperationExecutor} from "../../src/TransformOperationExecutor";
+import {assert} from "chai";
+import * as sinon from "sinon";
 
 describe("circular reference problem", () => {
 
@@ -93,4 +96,42 @@ describe("circular reference problem", () => {
 
     });
 
+    describe("skipCircularCheck option", () => {
+        class Photo {
+            id: number;
+            filename: string;
+        }
+
+        class User {
+            id: number;
+            firstName: string;
+            photos: Photo[];
+        }
+        let isCircularSpy: sinon.SinonSpy;
+        const photo1 = new Photo();
+        photo1.id = 1;
+        photo1.filename = "me.jpg";
+
+        const user = new User();
+        user.firstName = "Umed Khudoiberdiev";
+        user.photos = [photo1];
+
+        beforeEach(() => {
+            isCircularSpy = sinon.spy(TransformOperationExecutor.prototype, "isCircular");
+        });
+
+        afterEach(() => {
+            isCircularSpy.restore();
+        });
+
+        it("skipCircularCheck option is true", () => {
+            const result = plainToClass<User, Object>(User, user, { skipCircularCheck: true}); 
+            sinon.assert.notCalled(isCircularSpy);
+        });
+
+        it("skipCircularCheck option is undefined", () => {
+            const result = plainToClass<User, Object>(User, user); 
+            sinon.assert.called(isCircularSpy);
+        });        
+    });
 });

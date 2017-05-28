@@ -36,7 +36,7 @@ export class TransformOperationExecutor {
             const newValue = arrayType && this.transformationType === "plainToClass" ? new (arrayType as any)() : [];
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
-                if (!this.isCircular(subValue, level)) {
+                if (this.options.skipCircularCheck || !this.isCircular(subValue, level)) {
                     const value = this.transform(subSource, subValue, targetType, undefined, subValue instanceof Map, level + 1);
                     if (newValue instanceof Set) {
                         newValue.add(value);
@@ -157,7 +157,7 @@ export class TransformOperationExecutor {
                         continue;
                 }
 
-                if (!this.isCircular(subValue, level)) {
+                if (this.options.skipCircularCheck || !this.isCircular(subValue, level)) {
                     let transformKey = this.transformationType === "plainToClass" ? newValueKey : key;
                     let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
                     finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey);
