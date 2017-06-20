@@ -40,7 +40,7 @@ describe("circular reference problem", () => {
         photo1.users = [user];
         photo2.users = [user];
 
-        const plainUser = classToPlain(user);
+        const plainUser = classToPlain(user, { enableCircularCheck: true });
         plainUser.should.be.eql({
             firstName: "Umed Khudoiberdiev",
             photos: [{
@@ -89,14 +89,14 @@ describe("circular reference problem", () => {
         photo1.users = [user];
         photo2.users = [user];
 
-        const classUser = classToClass(user);
+        const classUser = classToClass(user, { enableCircularCheck: true });
         classUser.should.not.be.equal(user);
         classUser.should.be.instanceOf(User);
         classUser.should.be.eql(user);
 
     });
 
-    describe("skipCircularCheck option", () => {
+    describe("enableCircularCheck option", () => {
         class Photo {
             id: number;
             filename: string;
@@ -124,14 +124,14 @@ describe("circular reference problem", () => {
             isCircularSpy.restore();
         });
 
-        it("skipCircularCheck option is true", () => {
-            const result = plainToClass<User, Object>(User, user, { skipCircularCheck: true}); 
+        it("enableCircularCheck option is undefined (default)", () => {
+            const result = plainToClass<User, Object>(User, user); 
             sinon.assert.notCalled(isCircularSpy);
         });
 
-        it("skipCircularCheck option is undefined", () => {
-            const result = plainToClass<User, Object>(User, user); 
+        it("enableCircularCheck option is true", () => {
+            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true }); 
             sinon.assert.called(isCircularSpy);
-        });        
+        });
     });
 });

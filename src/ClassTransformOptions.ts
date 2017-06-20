@@ -58,8 +58,8 @@ export interface ClassTransformOptions {
 
 
     /**
-     * If set to true then class transformer will not perform a circular check.
-     * This option is useful when you know for sure that your types can't have a circular dependency. You usually use this option to boost the transform operation.
+     * If set to true then class transformer will perform a circular check. (circular check is turned off by default)
+     * This option is useful when you know for sure that your types might have a circular dependency.
      */
-    skipCircularCheck?: boolean;
+    enableCircularCheck?: boolean;
 }
