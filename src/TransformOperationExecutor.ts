@@ -11,7 +11,7 @@ export class TransformOperationExecutor {
     // Private Properties
     // -------------------------------------------------------------------------
 
-    private transformedTypes: { level: number, object: Object }[] = [];
+    private transformedTypesMap = new Map<Object, { level: number, object: Object }>();
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -77,8 +77,10 @@ export class TransformOperationExecutor {
             if (!targetType && value.constructor !== Object/* && operationType === "classToPlain"*/) targetType = value.constructor;
             if (!targetType && source) targetType = source.constructor;
 
-            // add transformed type to prevent circular references
-            this.transformedTypes.push({ level: level, object: value });
+            if (this.options.enableCircularCheck) {
+                // add transformed type to prevent circular references
+                this.transformedTypesMap.set(value, { level: level, object: value });
+            }
 
             const keys = this.getKeys(targetType, value);
             let newValue: any = source ? source : {};
@@ -222,7 +224,8 @@ export class TransformOperationExecutor {
 
     // preventing circular references
     private isCircular(object: Object, level: number) {
-        return !!this.transformedTypes.find(transformed => transformed.object === object && transformed.level < level);
+        const transformed = this.transformedTypesMap.get(object);
+        return transformed !== undefined && transformed.level < level;
     }
 
     private getReflectedType(target: Function, propertyName: string) {
