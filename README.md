@@ -581,6 +581,7 @@ export class Photo {
 
     id: number;
 
+    @Type(() => Date)
     @Transform(value => moment(value), { toClassOnly: true })
     date: Moment;
 }

@@ -26,6 +26,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "@types/chai": "^3.4.34",
     "@types/es6-shim": "^0.31.32",
     "@types/mocha": "^2.2.33",
