@@ -30,6 +30,7 @@
     "@types/es6-shim": "^0.31.32",
     "@types/mocha": "^2.2.33",
     "@types/node": "0.0.2",
+    "@types/sinon": "^2.2.2",
     "chai": "^3.4.1",
     "chai-as-promised": "^6.0.0",
     "del": "^2.2.1",

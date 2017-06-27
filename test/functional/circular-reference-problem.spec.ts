@@ -1,6 +1,9 @@
 import "reflect-metadata";
-import {classToPlain, classToClass} from "../../src/index";
+import {classToPlain, classToClass, plainToClass} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
+import {TransformOperationExecutor} from "../../src/TransformOperationExecutor";
+import {assert} from "chai";
+import * as sinon from "sinon";
 
 describe("circular reference problem", () => {
 
@@ -37,7 +40,7 @@ describe("circular reference problem", () => {
         photo1.users = [user];
         photo2.users = [user];
 
-        const plainUser = classToPlain(user);
+        const plainUser = classToPlain(user, { enableCircularCheck: true });
         plainUser.should.be.eql({
             firstName: "Umed Khudoiberdiev",
             photos: [{
@@ -86,11 +89,49 @@ describe("circular reference problem", () => {
         photo1.users = [user];
         photo2.users = [user];
 
-        const classUser = classToClass(user);
+        const classUser = classToClass(user, { enableCircularCheck: true });
         classUser.should.not.be.equal(user);
         classUser.should.be.instanceOf(User);
         classUser.should.be.eql(user);
 
     });
 
+    describe("enableCircularCheck option", () => {
+        class Photo {
+            id: number;
+            filename: string;
+        }
+
+        class User {
+            id: number;
+            firstName: string;
+            photos: Photo[];
+        }
+        let isCircularSpy: sinon.SinonSpy;
+        const photo1 = new Photo();
+        photo1.id = 1;
+        photo1.filename = "me.jpg";
+
+        const user = new User();
+        user.firstName = "Umed Khudoiberdiev";
+        user.photos = [photo1];
+
+        beforeEach(() => {
+            isCircularSpy = sinon.spy(TransformOperationExecutor.prototype, "isCircular");
+        });
+
+        afterEach(() => {
+            isCircularSpy.restore();
+        });
+
+        it("enableCircularCheck option is undefined (default)", () => {
+            const result = plainToClass<User, Object>(User, user); 
+            sinon.assert.notCalled(isCircularSpy);
+        });
+
+        it("enableCircularCheck option is true", () => {
+            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true }); 
+            sinon.assert.called(isCircularSpy);
+        });
+    });
 });

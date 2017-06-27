@@ -56,4 +56,10 @@ export interface ClassTransformOptions {
      */
     targetMaps?: TargetMap[];
 
+
+    /**
+     * If set to true then class transformer will perform a circular check. (circular check is turned off by default)
+     * This option is useful when you know for sure that your types might have a circular dependency.
+     */
+    enableCircularCheck?: boolean;
 }
