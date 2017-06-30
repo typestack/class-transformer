@@ -11,8 +11,8 @@ import { MetadataStorage } from "./metadata/MetadataStorage";
  * Metadata args storage follows the best practices and stores metadata in a global variable.
  */
 export function getDefaultMetadataStorage(): MetadataStorage {
-    if (!(global as any).routingControllersMetadataArgsStorage)
-        (global as any).routingControllersMetadataArgsStorage = new MetadataStorage();
+    if (!(global as any).classTranformerMetadataStorage)
+        (global as any).classTranformerMetadataStorage = new MetadataStorage();
 
-    return (global as any).routingControllersMetadataArgsStorage;
+    return (global as any).classTranformerMetadataStorage;
 }
