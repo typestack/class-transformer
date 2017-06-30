@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {classToPlain, classToClass, plainToClass} from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
+import {getDefaultMetadataStorage} from "../../src/storage";
 import {TransformOperationExecutor} from "../../src/TransformOperationExecutor";
 import {assert} from "chai";
 import * as sinon from "sinon";
@@ -8,7 +8,7 @@ import * as sinon from "sinon";
 describe("circular reference problem", () => {
 
     it("should skip circular reference objects", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
             id: number;
@@ -57,7 +57,7 @@ describe("circular reference problem", () => {
     });
 
     it("should not skip circular reference objects, but handle it correctly in classToClass operation", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
             id: number;
@@ -125,12 +125,12 @@ describe("circular reference problem", () => {
         });
 
         it("enableCircularCheck option is undefined (default)", () => {
-            const result = plainToClass<User, Object>(User, user); 
+            const result = plainToClass<User, Object>(User, user);
             sinon.assert.notCalled(isCircularSpy);
         });
 
         it("enableCircularCheck option is true", () => {
-            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true }); 
+            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true });
             sinon.assert.called(isCircularSpy);
         });
     });

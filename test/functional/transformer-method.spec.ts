@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {defaultMetadataStorage} from "../../src/storage";
+import {getDefaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, TransformClassToPlain, TransformClassToClass} from "../../src/decorators";
 import {expect} from "chai";
 
 describe("transformer methods decorator", () => {
 
     it("should expose non configuration properties and return User instance class", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -23,7 +23,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToClass()
             getUser() {
                 const user = new User();
@@ -51,7 +51,7 @@ describe("transformer methods decorator", () => {
     });
 
     it("should expose non configuration properties", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -68,7 +68,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToPlain()
             getUser() {
                 const user = new User();
@@ -94,7 +94,7 @@ describe("transformer methods decorator", () => {
     });
 
     it("should expose non configuration properties and properties with specific groups", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -114,7 +114,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToPlain({ groups: ["user.permissions"] })
             getUserWithRoles() {
                 const user = new User();
@@ -143,7 +143,7 @@ describe("transformer methods decorator", () => {
     });
 
     it("should expose non configuration properties with specific version", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -178,7 +178,7 @@ describe("transformer methods decorator", () => {
 
                 return user;
             }
-                    
+
             @TransformClassToPlain({ version: 2 })
             getUserVersion2() {
                 const user = new User();

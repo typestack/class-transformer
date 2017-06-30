@@ -6,14 +6,14 @@ import {
     plainToClassFromExist,
     classToClass, classToClassFromExist
 } from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
+import {getDefaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
 describe("specifying target maps", () => {
 
     it("should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
             id: number;
@@ -95,7 +95,7 @@ describe("specifying target maps", () => {
     });
 
     it("should exclude all objects marked with @Exclude() decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
             id: number;
@@ -174,7 +174,7 @@ describe("specifying target maps", () => {
     });
 
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -239,7 +239,7 @@ describe("specifying target maps", () => {
     });
 
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator, but include properties marked with @Expose() decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -323,7 +323,7 @@ describe("specifying target maps", () => {
     });
 
     it("should exclude all properties from object if its defined via transformation options, but include properties marked with @Expose() decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -406,7 +406,7 @@ describe("specifying target maps", () => {
     });
 
     it("should expose all properties from object if its defined via transformation options, but exclude properties marked with @Exclude() decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -484,7 +484,7 @@ describe("specifying target maps", () => {
     });
 
     it("should convert values to specific types if they are set via @Type decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -607,7 +607,7 @@ describe("specifying target maps", () => {
     });
 
     it("should transform nested objects too and make sure their decorators are used too", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
 
@@ -687,7 +687,7 @@ describe("specifying target maps", () => {
     });
 
     it("should transform nested objects too and make sure given type is used instead of automatically guessed one", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
 
@@ -750,7 +750,7 @@ describe("specifying target maps", () => {
     });
 
     it("should convert given plain object to class instance object", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
 
@@ -873,7 +873,7 @@ describe("specifying target maps", () => {
     });
 
     it("should expose only properties that match given group", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
             id: number;
@@ -1141,7 +1141,7 @@ describe("specifying target maps", () => {
     });
 
     it("should expose only properties that match given version", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
             id: number;
@@ -1381,7 +1381,7 @@ describe("specifying target maps", () => {
     });
 
     it("should expose method and accessors that have @Expose()", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
             firstName: string;
@@ -1432,7 +1432,7 @@ describe("specifying target maps", () => {
     });
 
     it("should expose with alternative name if its given", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -1487,7 +1487,7 @@ describe("specifying target maps", () => {
     });
 
     it("should exclude all prefixed properties if prefix is given", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class Photo {
             id: number;
@@ -1556,7 +1556,7 @@ describe("specifying target maps", () => {
     });
 
     it("should be able to transform array too", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
 
         class User {

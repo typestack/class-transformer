@@ -6,14 +6,14 @@ import {
     plainToClassFromExist,
     classToClass, classToClassFromExist
 } from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
+import {getDefaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
 describe("filtering by transformation option", () => {
 
     it("@Exclude with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -54,7 +54,7 @@ describe("filtering by transformation option", () => {
     });
 
     it("@Exclude with toClassOnly set to true then it should be excluded only during plainToClass and plainToClassFromExist operations", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -95,7 +95,7 @@ describe("filtering by transformation option", () => {
     });
 
     it("@Expose with toClassOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {
@@ -137,7 +137,7 @@ describe("filtering by transformation option", () => {
     });
 
     it("@Expose with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         @Exclude()
         class User {

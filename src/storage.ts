@@ -1,6 +1,18 @@
-import {MetadataStorage} from "./metadata/MetadataStorage";
+import { MetadataStorage } from "./metadata/MetadataStorage";
 
 /**
  * Default metadata storage is used as singleton and can be used to storage all metadatas.
  */
-export const defaultMetadataStorage = new MetadataStorage();
+// export const getDefaultMetadataStorage() = new MetadataStorage();
+
+
+/**
+ * Gets metadata args storage.
+ * Metadata args storage follows the best practices and stores metadata in a global variable.
+ */
+export function getDefaultMetadataStorage(): MetadataStorage {
+    if (!(global as any).routingControllersMetadataArgsStorage)
+        (global as any).routingControllersMetadataArgsStorage = new MetadataStorage();
+
+    return (global as any).routingControllersMetadataArgsStorage;
+}

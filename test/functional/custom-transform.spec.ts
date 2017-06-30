@@ -1,13 +1,13 @@
 import "reflect-metadata";
 import {classToPlain, plainToClass} from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
+import {getDefaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Transform, Type} from "../../src/decorators";
 import * as moment from "moment";
 
 describe("custom transformation decorator", () => {
 
     it("@Expose decorator with \"name\" option should work with @Transform decorator", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -25,7 +25,7 @@ describe("custom transformation decorator", () => {
     });
 
     it("@Transform decorator logic should be executed depend of toPlainOnly and toClassOnly set", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 
@@ -67,7 +67,7 @@ describe("custom transformation decorator", () => {
     });
 
     it("versions and groups should work with @Transform decorator too", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
 

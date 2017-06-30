@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import {serialize, deserialize, deserializeArray} from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
+import {getDefaultMetadataStorage} from "../../src/storage";
 import {Exclude} from "../../src/decorators";
 
 describe("serialization and deserialization objects", () => {
 
     it("should perform serialization and deserialization properly", () => {
-        defaultMetadataStorage.clear();
+        getDefaultMetadataStorage().clear();
 
         class User {
             firstName: string;
