@@ -13,29 +13,44 @@ export class MetadataStorage {
     // Properties
     // -------------------------------------------------------------------------
 
-    private _typeMetadatas: TypeMetadata[] = [];
-    private _transformMetadatas: TransformMetadata[] = [];
-    private _exposeMetadatas: ExposeMetadata[] = [];
-    private _excludeMetadatas: ExcludeMetadata[] = [];
+    private _typeMetadatas = new Map<Function, Map<string, TypeMetadata>>();
+    private _transformMetadatas = new Map<Function, Map<string, TransformMetadata[]>>();
+    private _exposeMetadatas = new Map<Function, Map<string, ExposeMetadata>>();
+    private _excludeMetadatas = new Map<Function, Map<string, ExcludeMetadata>>();
 
     // -------------------------------------------------------------------------
     // Adder Methods
     // -------------------------------------------------------------------------
 
     addTypeMetadata(metadata: TypeMetadata) {
-        this._typeMetadatas.push(metadata);
+        if (!this._typeMetadatas.has(metadata.target)) {
+            this._typeMetadatas.set(metadata.target, new Map<string, TypeMetadata>());
+        }
+        this._typeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
     }
 
     addTransformMetadata(metadata: TransformMetadata) {
-        this._transformMetadatas.push(metadata);
+        if (!this._transformMetadatas.has(metadata.target)) {
+            this._transformMetadatas.set(metadata.target, new Map<string, TransformMetadata[]>());
+        }
+        if (!this._transformMetadatas.get(metadata.target).has(metadata.propertyName)) {
+            this._transformMetadatas.get(metadata.target).set(metadata.propertyName, []);
+        }
+        this._transformMetadatas.get(metadata.target).get(metadata.propertyName).push(metadata);
     }
 
     addExposeMetadata(metadata: ExposeMetadata) {
-        this._exposeMetadatas.push(metadata);
+        if (!this._exposeMetadatas.has(metadata.target)) {
+            this._exposeMetadatas.set(metadata.target, new Map<string, ExposeMetadata>());
+        }
+        this._exposeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
     }
 
     addExcludeMetadata(metadata: ExcludeMetadata) {
-        this._excludeMetadatas.push(metadata);
+        if (!this._excludeMetadatas.has(metadata.target)) {
+            this._excludeMetadatas.set(metadata.target, new Map<string, ExcludeMetadata>());
+        }
+        this._excludeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
     }
 
     // -------------------------------------------------------------------------
@@ -80,8 +95,10 @@ export class MetadataStorage {
     }
 
     getStrategy(target: Function): "excludeAll"|"exposeAll"|"none" {
-        const exclude = this._excludeMetadatas.find(metadata => metadata.target === target && metadata.propertyName === undefined);
-        const expose = this._exposeMetadatas.find(metadata => metadata.target === target && metadata.propertyName === undefined);
+        const excludeMap = this._excludeMetadatas.get(target);
+        const exclude = excludeMap && excludeMap.get(undefined);
+        const exposeMap = this._exposeMetadatas.get(target);
+        const expose = exposeMap && exposeMap.get(undefined);
         if ((exclude && expose) || (!exclude && !expose)) return "none";
         return exclude ? "excludeAll" : "exposeAll";
     }
@@ -135,31 +152,41 @@ export class MetadataStorage {
     }
 
     clear() {
-        this._typeMetadatas = [];
-        this._exposeMetadatas = [];
-        this._excludeMetadatas = [];
+        this._typeMetadatas.clear();
+        this._exposeMetadatas.clear();
+        this._excludeMetadatas.clear();
     }
 
     // -------------------------------------------------------------------------
     // Private Methods
     // -------------------------------------------------------------------------
 
-    private getMetadata<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function): T[] {
-        const metadataFromTarget = metadatas.filter(meta => meta.target === target && meta.propertyName !== undefined);
-        const metadataFromChildren = metadatas.filter(meta => target.prototype instanceof meta.target && meta.propertyName !== undefined);
-        return metadataFromChildren.concat(metadataFromTarget);
+    private getMetadata<T extends { target: Function, propertyName: string }>(
+        metadatas: Map<Function, Map<String, T>>,
+        target: Function): T[] {
+        let metadataFromTargetMap = metadatas.get(target);
+        let metadataFromTarget: T[];
+        if (metadataFromTargetMap) {
+            metadataFromTarget = Array.from(metadataFromTargetMap.values()).filter(meta => meta.propertyName !== undefined);
+        }
+        return metadataFromTarget || [];
     }
 
-    private findMetadata<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function, propertyName: string): T {
-        const metadataFromTarget = metadatas.find(meta => meta.target === target && meta.propertyName === propertyName);
-        const metadataFromChildren = metadatas.find(meta => target.prototype instanceof meta.target && meta.propertyName === propertyName);
-        return metadataFromTarget || metadataFromChildren;
+    private findMetadata<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T>>, target: Function, propertyName: string): T {
+        let metadataFromTargetMap = metadatas.get(target);
+        let metadataFromTarget: T;
+        if (metadataFromTargetMap) {
+            metadataFromTarget = metadataFromTargetMap.get(propertyName);  
+        }
+        return metadataFromTarget;
     }
 
-    private findMetadatas<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function, propertyName: string): T[] {
-        const metadataFromTarget = metadatas.filter(meta => meta.target === target && meta.propertyName === propertyName);
-        const metadataFromChildren = metadatas.filter(meta => target.prototype instanceof meta.target && meta.propertyName === propertyName);
-        return metadataFromChildren.reverse().concat(metadataFromTarget.reverse());
+    private findMetadatas<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T[]>>, target: Function, propertyName: string): T[] {
+        let metadataFromTargetMap = metadatas.get(target);
+        let metadataFromTarget: T[];
+        if (metadataFromTargetMap) {
+            metadataFromTarget = metadataFromTargetMap.get(propertyName);    
+        }
+        return metadataFromTarget && metadataFromTarget.reverse() || [];
     }
-
 }
