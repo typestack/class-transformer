@@ -164,7 +164,7 @@ export class MetadataStorage {
     private getMetadata<T extends { target: Function, propertyName: string }>(
         metadatas: Map<Function, Map<String, T>>,
         target: Function): T[] {
-        let metadataFromTargetMap = metadatas.get(target);
+        const metadataFromTargetMap = metadatas.get(target);
         let metadataFromTarget: T[];
         if (metadataFromTargetMap) {
             metadataFromTarget = Array.from(metadataFromTargetMap.values()).filter(meta => meta.propertyName !== undefined);
@@ -173,7 +173,7 @@ export class MetadataStorage {
     }
 
     private findMetadata<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T>>, target: Function, propertyName: string): T {
-        let metadataFromTargetMap = metadatas.get(target);
+        const metadataFromTargetMap = metadatas.get(target);
         let metadataFromTarget: T;
         if (metadataFromTargetMap) {
             metadataFromTarget = metadataFromTargetMap.get(propertyName);  
@@ -182,7 +182,7 @@ export class MetadataStorage {
     }
 
     private findMetadatas<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T[]>>, target: Function, propertyName: string): T[] {
-        let metadataFromTargetMap = metadatas.get(target);
+        const metadataFromTargetMap = metadatas.get(target);
         let metadataFromTarget: T[];
         if (metadataFromTargetMap) {
             metadataFromTarget = metadataFromTargetMap.get(propertyName);    
