@@ -17,6 +17,7 @@ export class MetadataStorage {
     private _transformMetadatas = new Map<Function, Map<string, TransformMetadata[]>>();
     private _exposeMetadatas = new Map<Function, Map<string, ExposeMetadata>>();
     private _excludeMetadatas = new Map<Function, Map<string, ExcludeMetadata>>();
+    private _ancestorsMap = new Map<Function, Function[]>();
 
     // -------------------------------------------------------------------------
     // Adder Methods
@@ -155,6 +156,7 @@ export class MetadataStorage {
         this._typeMetadatas.clear();
         this._exposeMetadatas.clear();
         this._excludeMetadatas.clear();
+        this._ancestorsMap.clear();
     }
 
     // -------------------------------------------------------------------------
@@ -169,16 +171,35 @@ export class MetadataStorage {
         if (metadataFromTargetMap) {
             metadataFromTarget = Array.from(metadataFromTargetMap.values()).filter(meta => meta.propertyName !== undefined);
         }
-        return metadataFromTarget || [];
+        let metadataFromAncestors: T[] = [];
+        for (const ancestor of this.getAncestors(target)) {
+            const ancestorMetadataMap = metadatas.get(ancestor);
+            if (ancestorMetadataMap) {
+                const metadataFromAncestor = Array.from(ancestorMetadataMap.values()).filter(meta => meta.propertyName !== undefined);
+                metadataFromAncestors.push(...metadataFromAncestor);
+            }
+        }        
+        return metadataFromAncestors.concat(metadataFromTarget || []);
     }
 
     private findMetadata<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T>>, target: Function, propertyName: string): T {
         const metadataFromTargetMap = metadatas.get(target);
-        let metadataFromTarget: T;
         if (metadataFromTargetMap) {
-            metadataFromTarget = metadataFromTargetMap.get(propertyName);  
+            const metadataFromTarget = metadataFromTargetMap.get(propertyName);  
+            if (metadataFromTarget) {
+                return metadataFromTarget;
+            }
         }
-        return metadataFromTarget;
+        for (const ancestor of this.getAncestors(target)) {
+            const ancestorMetadataMap = metadatas.get(ancestor);
+            if (ancestorMetadataMap) {
+                const ancestorResult = ancestorMetadataMap.get(propertyName);
+                if (ancestorResult) {
+                  return ancestorResult;
+                }
+            }
+        }
+        return undefined;
     }
 
     private findMetadatas<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T[]>>, target: Function, propertyName: string): T[] {
@@ -187,6 +208,28 @@ export class MetadataStorage {
         if (metadataFromTargetMap) {
             metadataFromTarget = metadataFromTargetMap.get(propertyName);    
         }
-        return metadataFromTarget && metadataFromTarget.reverse() || [];
+        let metadataFromAncestorsTarget: T[] = [];
+        for (const ancestor of this.getAncestors(target)) {
+            const ancestorMetadataMap = metadatas.get(ancestor);
+            if (ancestorMetadataMap) {
+                if (ancestorMetadataMap.has(propertyName)) {
+                  metadataFromAncestorsTarget.push(...ancestorMetadataMap.get(propertyName));
+                }
+            }
+        }
+        return (metadataFromAncestorsTarget).reverse().concat((metadataFromTarget || []).reverse());
+    }
+
+    private getAncestors(target: Function): Function[] {
+        if (!this._ancestorsMap.has(target)) {
+            let ancestors: Function[] = [];
+            for (let baseClass = Object.getPrototypeOf(target.prototype.constructor);
+                 typeof baseClass.prototype !== "undefined";
+                 baseClass = Object.getPrototypeOf(baseClass.prototype.constructor)) {
+                ancestors.push(baseClass);
+            }
+            this._ancestorsMap.set(target, ancestors);
+        }
+        return this._ancestorsMap.get(target);
     }
 }
