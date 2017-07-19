@@ -117,7 +117,7 @@ describe("circular reference problem", () => {
         user.photos = [photo1];
 
         beforeEach(() => {
-            isCircularSpy = sinon.spy(TransformOperationExecutor.prototype, "isCircular");
+            isCircularSpy = sinon.spy(TransformOperationExecutor.prototype, <keyof TransformOperationExecutor>"isCircular");
         });
 
         afterEach(() => {
@@ -125,12 +125,12 @@ describe("circular reference problem", () => {
         });
 
         it("enableCircularCheck option is undefined (default)", () => {
-            const result = plainToClass<User, Object>(User, user); 
+            const result = plainToClass<User, Object>(User, user);
             sinon.assert.notCalled(isCircularSpy);
         });
 
         it("enableCircularCheck option is true", () => {
-            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true }); 
+            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true });
             sinon.assert.called(isCircularSpy);
         });
     });
