@@ -666,7 +666,7 @@ this.http
     .map(res => res.json())
     .map(res => plainToClass(User, res as Object[]))
     .subscribe(users => {
-        // now "users" is type of User[] and each user have getName() and isAdult() methods available
+        // now "users" is type of User[] and each user has getName() and isAdult() methods available
         console.log(users);
     });
 ```
