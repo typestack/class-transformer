@@ -6,11 +6,12 @@ import {ExposeOptions, ExcludeOptions, TypeOptions, TransformOptions} from "./me
 import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
 import {TransformMetadata} from "./metadata/TransformMetadata";
 import {ClassTransformOptions} from "./ClassTransformOptions";
+import {TransformationType} from "./TransformOperationExecutor";
 
 /**
  * Defines a custom logic for value transformation.
  */
-export function Transform(transformFn: (value: any, obj: any) => any, options?: TransformOptions) {
+export function Transform(transformFn: (value: any, obj: any, transformationType: TransformationType) => any, options?: TransformOptions) {
     return function(target: any, key: string) {
         const metadata = new TransformMetadata(target.constructor, key, transformFn, options);
         defaultMetadataStorage.addTransformMetadata(metadata);
@@ -60,10 +61,10 @@ export function TransformClassToPlain(params?: ClassTransformOptions): Function 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: ClassTransformer = new ClassTransformer();
         const originalMethod = descriptor.value;
-        
+
         descriptor.value = function(...args: any[]) {
             const result: any = originalMethod.apply(this, args);
-            const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";          
+            const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
 
             return isPromise ? result.then((data: any) => classTransformer.classToPlain(data, params)) : classTransformer.classToPlain(result, params);
         };
@@ -78,7 +79,7 @@ export function TransformClassToClass(params?: ClassTransformOptions): Function 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: ClassTransformer = new ClassTransformer();
         const originalMethod = descriptor.value;
-        
+
         descriptor.value = function(...args: any[]) {
             const result: any = originalMethod.apply(this, args);
             const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
