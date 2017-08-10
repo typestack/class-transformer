@@ -10,7 +10,7 @@ import {ClassTransformOptions} from "./ClassTransformOptions";
 /**
  * Defines a custom logic for value transformation.
  */
-export function Transform(transformFn: (value: any) => any, options?: TransformOptions) {
+export function Transform(transformFn: (value: any, obj: any) => any, options?: TransformOptions) {
     return function(target: any, key: string) {
         const metadata = new TransformMetadata(target.constructor, key, transformFn, options);
         defaultMetadataStorage.addTransformMetadata(metadata);

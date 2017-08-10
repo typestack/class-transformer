@@ -123,5 +123,36 @@ describe("custom transformation decorator", () => {
         classedUser5.lastVisitDate.should.be.equal(new Date(plainUser.lastVisitDate).toString());
     });
 
+    it("@Transform decorator callback should be given the source object as second argument", () => {
+        defaultMetadataStorage.clear();
+
+        let objArgToClass: any;
+        let objArgToPlain: any;
+
+        class User {
+            @Transform((value, obj) => {
+                objArgToPlain = obj;
+                return value;
+            }, {toPlainOnly: true})
+            @Transform((value, obj) => {
+                objArgToClass = obj;
+                return value;
+            }, {toClassOnly: true})
+            name: string;
+        }
+
+        let plainUser = {
+            name: "Johny Cage",
+        };
+
+        const user = new User();
+        user.name = "Johny Cage";
+
+        plainToClass(User, plainUser);
+        classToPlain(user);
+
+        objArgToPlain.should.be.equal(user);
+        objArgToClass.should.be.equal(plainUser);
+    });
 
 });

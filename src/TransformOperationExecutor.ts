@@ -1,7 +1,6 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./storage";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
-import {ExposeMetadata} from "./metadata/ExposeMetadata";
 
 export type TransformationType = "plainToClass"|"classToPlain"|"classToClass";
 
@@ -162,7 +161,7 @@ export class TransformOperationExecutor {
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
                     let transformKey = this.transformationType === "plainToClass" ? newValueKey : key;
                     let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
-                    finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey);
+                    finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value);
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
                     } else {
@@ -170,7 +169,7 @@ export class TransformOperationExecutor {
                     }
                 } else if (this.transformationType === "classToClass") {
                     let finalValue = subValue;
-                    finalValue = this.applyCustomTransformations(finalValue, targetType, key);
+                    finalValue = this.applyCustomTransformations(finalValue, targetType, key, value);
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
                     } else {
@@ -186,7 +185,7 @@ export class TransformOperationExecutor {
         }
     }
 
-    private applyCustomTransformations(value: any, target: Function, key: string) {
+    private applyCustomTransformations(value: any, target: Function, key: string, obj: any) {
         let metadatas = defaultMetadataStorage.findTransformMetadatas(target, key, this.transformationType);
 
         // apply versioning options
@@ -216,7 +215,7 @@ export class TransformOperationExecutor {
         }
 
         metadatas.forEach(metadata => {
-            value = metadata.transformFn(value);
+            value = metadata.transformFn(value, obj);
         });
 
         return value;
