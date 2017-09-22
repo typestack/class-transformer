@@ -62,9 +62,4 @@ export interface ClassTransformOptions {
      * This option is useful when you know for sure that your types might have a circular dependency.
      */
     enableCircularCheck?: boolean;
-
-    /**
-     * Skip function properties
-     */
-    skipFunctions?: boolean;
 }

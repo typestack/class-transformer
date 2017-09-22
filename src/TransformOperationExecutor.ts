@@ -1,9 +1,9 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./storage";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
-import {ExposeMetadata} from "./metadata/ExposeMetadata";
+import Decimal from 'decimal.js'
 
-export type TransformationType = "plainToClass"|"classToPlain"|"classToClass";
+export type TransformationType = "plainToClass" | "classToPlain" | "classToClass";
 
 export class TransformOperationExecutor {
 
@@ -25,8 +25,8 @@ export class TransformOperationExecutor {
     // Public Methods
     // -------------------------------------------------------------------------
 
-    transform(source: Object|Object[]|any,
-              value: Object|Object[]|any,
+    transform(source: Object | Object[] | any,
+              value: Object | Object[] | any,
               targetType: Function,
               arrayType: Function,
               isMap: boolean,
@@ -71,7 +71,10 @@ export class TransformOperationExecutor {
 
             return new Date(value);
 
-        } else if (value instanceof Object) {
+        } else if(value instanceof Decimal) {
+            return (value as decimal.Decimal).toNumber();
+        }
+        else if (value instanceof Object) {
 
             // try to guess the type
             if (!targetType && value.constructor !== Object/* && operationType === "classToPlain"*/) targetType = value.constructor;
@@ -79,7 +82,7 @@ export class TransformOperationExecutor {
 
             if (this.options.enableCircularCheck) {
                 // add transformed type to prevent circular references
-                this.transformedTypesMap.set(value, { level: level, object: value });
+                this.transformedTypesMap.set(value, {level: level, object: value});
             }
 
             const keys = this.getKeys(targetType, value);
@@ -117,7 +120,7 @@ export class TransformOperationExecutor {
                 let subValue: any = undefined;
                 if (value instanceof Map) {
                     subValue = value.get(valueKey);
-                } else if (!this.options.skipFunctions && value[valueKey] instanceof Function) {
+                } else if (value[valueKey] instanceof Function) {
                     subValue = value[valueKey]();
                 } else {
                     subValue = value[valueKey];
@@ -131,7 +134,7 @@ export class TransformOperationExecutor {
                 } else if (targetType) {
                     const metadata = defaultMetadataStorage.findTypeMetadata(targetType, propertyName);
                     if (metadata) {
-                        const options: TypeOptions = { newObject: newValue, object: value, property: propertyName };
+                        const options: TypeOptions = {newObject: newValue, object: value, property: propertyName};
                         type = metadata.typeFunction(options);
                         isSubValueMap = isSubValueMap || metadata.reflectedType === Map;
                     } else if (this.options.targetMaps) { // try to find a type in target maps
@@ -209,9 +212,9 @@ export class TransformOperationExecutor {
             });
         } else {
             metadatas = metadatas.filter(metadata => {
-                return  !metadata.options ||
-                        !metadata.options.groups ||
-                        !metadata.options.groups.length;
+                return !metadata.options ||
+                    !metadata.options.groups ||
+                    !metadata.options.groups.length;
             });
         }
 
@@ -298,10 +301,10 @@ export class TransformOperationExecutor {
             } else {
                 keys = keys.filter(key => {
                     const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
-                    return  !exposeMetadata ||
-                            !exposeMetadata.options ||
-                            !exposeMetadata.options.groups ||
-                            !exposeMetadata.options.groups.length;
+                    return !exposeMetadata ||
+                        !exposeMetadata.options ||
+                        !exposeMetadata.options.groups ||
+                        !exposeMetadata.options.groups.length;
                 });
             }
         }
