@@ -568,6 +568,8 @@ Library will handle proper transformation automatically.
 
 ## Additional data transformation
 
+### Basic usage
+
 You can perform additional data transformation using `@Transform` decorator.
 For example, you want to make your `Date` object to be a `moment` object when you are
 transforming object from plain to class:
@@ -590,6 +592,20 @@ export class Photo {
 Now when you call `plainToClass` and send a plain representation of the Photo object, 
 it will convert a date value in your photo object to moment date. 
 `@Transform` decorator also supports groups and versioning.
+
+### Advanced usage
+
+The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
+
+```
+@Transform((value, obj, type) => value)
+```
+
+| Argument          | Description
+|--------------------|---------------------------------------------------------------------------------|
+| `value` | The property value before the transformation.
+| `obj` | The transformation source object. 
+| `type` | The transformation type.
 
 ## Other decorators
 | Signature          | Example                                  | Description

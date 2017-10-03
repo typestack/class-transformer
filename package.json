@@ -59,6 +59,7 @@
     "typescript": "^2.0.10"
   },
   "scripts": {
-    "test": "gulp tests"
+    "test": "gulp tests",
+    "package": "gulp package"
   }
 }
