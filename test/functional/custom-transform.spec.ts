@@ -81,7 +81,7 @@ describe("custom transformation decorator", () => {
             date: Date;
 
             @Type(() => Date)
-            @Transform(value => value.toString(), {groups: ["user"]})
+            @Transform(value => (new Date(value)).toString(), {groups: ["user"]})
             lastVisitDate: Date;
 
         }
