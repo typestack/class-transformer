@@ -190,20 +190,18 @@ describe("custom transformation decorator", () => {
         class Singleton {
             @Type(() => Person)
             // this works
-            @Transform(item => item.toCsv(), { toPlainOnly: true })
-            @Transform(item => Person.fromCsv(item), { toClassOnly: true })
+            @Transform(item => item.toCsv(), {toPlainOnly: true})
+            @Transform(item => Person.fromCsv(item), {toClassOnly: true})
             person: Person;
         }
 
         const people = new People();
         people.persons = [Person.fromCsv("123,abc")];
 
-        // deserialization works without an issue
         const expectedSerialized = {persons: ["123,abc"]};
         const deserialized = plainToClass(People, expectedSerialized);
         deserialized.should.deep.equal(people);
 
-        // serialization has an issue however
         const actualSerialized = classToPlain(people);
         actualSerialized.should.to.deep.equal(expectedSerialized);
     });
