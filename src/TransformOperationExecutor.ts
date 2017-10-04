@@ -1,6 +1,7 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./storage";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
+import {Messages} from "./utils/messages";
 
 export enum TransformationType {
     PLAIN_TO_CLASS,
@@ -14,7 +15,7 @@ export class TransformOperationExecutor {
     // Private Properties
     // -------------------------------------------------------------------------
 
-    private transformedTypesMap = new Map<Object, {level: number, object: Object}>();
+    private transformedTypesMap = new Map<Object, { level: number, object: Object }>();
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -28,8 +29,8 @@ export class TransformOperationExecutor {
     // Public Methods
     // -------------------------------------------------------------------------
 
-    transform(source: Object|Object[]|any,
-              value: Object|Object[]|any,
+    transform(source: Object | Object[] | any,
+              value: Object | Object[] | any,
               targetType: Function,
               arrayType: Function,
               isMap: boolean,
@@ -164,16 +165,29 @@ export class TransformOperationExecutor {
 
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
                     let transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
-                    let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
-                    finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
+
+                    let finalValue;
+
+                    try {
+                        finalValue = this.applyCustomTransformations(subValue, targetType, transformKey, value);
+                    } catch (e) {
+                        finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+                    }
+
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
                     } else {
                         newValue[newValueKey] = finalValue;
                     }
                 } else if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
-                    let finalValue = subValue;
-                    finalValue = this.applyCustomTransformations(finalValue, targetType, key, value, this.transformationType);
+                    let finalValue;
+
+                    try {
+                        finalValue = this.applyCustomTransformations(subValue, targetType, key, value);
+                    } catch (e) {
+                        finalValue = subValue;
+                    }
+
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
                     } else {
@@ -189,7 +203,7 @@ export class TransformOperationExecutor {
         }
     }
 
-    private applyCustomTransformations(value: any, target: Function, key: string, obj: any, transformationType: TransformationType) {
+    private applyCustomTransformations(value: any, target: Function, key: string, obj: any) {
         let metadatas = defaultMetadataStorage.findTransformMetadatas(target, key, this.transformationType);
 
         // apply versioning options
@@ -216,8 +230,12 @@ export class TransformOperationExecutor {
             });
         }
 
+        if (metadatas.length <= 0) {
+            throw Error(Messages.NO_CUSTOM_TRANSFORMERS);
+        }
+
         metadatas.forEach(metadata => {
-            value = metadata.transformFn(value, obj, transformationType);
+            value = metadata.transformFn(value, obj, this.transformationType);
         });
 
         return value;
