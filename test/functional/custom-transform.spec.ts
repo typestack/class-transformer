@@ -158,4 +158,54 @@ describe("custom transformation decorator", () => {
         typeArg.should.be.equal(TransformationType.CLASS_TO_PLAIN);
     });
 
+    it("should allow array transformations", () => {
+        class Person {
+            prop1: string;
+            prop2: string;
+
+            static fromCsv(csv: string) {
+                const child = new Person();
+                [child.prop1, child.prop2] = csv.split(",");
+                return child;
+            }
+
+            toCsv() {
+                return [this.prop1, this.prop2].join(",");
+            }
+        }
+
+        class People {
+            @Type(() => Person)
+            @Transform((values: string[]) => values.map(value => Person.fromCsv(value)), {toClassOnly: true})
+            @Transform((values: Person[]) => {
+                console.log("Values:     " + JSON.stringify(values));
+                console.log("1st value:  " + JSON.stringify(values[0]));
+                console.log("is a Person: " + (values[0] instanceof Person));
+                console.log("type:       " + (typeof values[0]));
+                return values.map(value => value.toCsv());
+            }, {toPlainOnly: true})
+            persons: Person[];
+        }
+
+        class Singleton {
+            @Type(() => Person)
+            // this works
+            @Transform(item => item.toCsv(), { toPlainOnly: true })
+            @Transform(item => Person.fromCsv(item), { toClassOnly: true })
+            person: Person;
+        }
+
+        const people = new People();
+        people.persons = [Person.fromCsv("123,abc")];
+
+        // deserialization works without an issue
+        const expectedSerialized = {persons: ["123,abc"]};
+        const deserialized = plainToClass(People, expectedSerialized);
+        deserialized.should.deep.equal(people);
+
+        // serialization has an issue however
+        const actualSerialized = classToPlain(people);
+        actualSerialized.should.to.deep.equal(expectedSerialized);
+    });
+
 });
