@@ -71,7 +71,7 @@ export class TransformOperationExecutor {
 
             return new Date(value);
 
-        } else if(value instanceof Decimal || value.constructor.Decimal) {
+        } else if(value instanceof Decimal || (value && value.constructor && value.constructor.Decimal)) {
             return (value as decimal.Decimal).toNumber();
         }
         else if (value instanceof Object) {
