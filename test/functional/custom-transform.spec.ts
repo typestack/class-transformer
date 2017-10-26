@@ -160,22 +160,22 @@ describe("custom transformation decorator", () => {
     });
     
     let model: any;
-    it ('should serialize json into model instance of class Person', () => {
+    it ("should serialize json into model instance of class Person", () => {
         expect(() => {
             const json = {
-                name: 'John Doe',
+                name: "John Doe",
                 address: {
-                    street: 'Main Street 25',
-                    tel: '5454-534-645',
+                    street: "Main Street 25",
+                    tel: "5454-534-645",
                     zip: 10353,
-                    country: 'West Samoa'
+                    country: "West Samoa"
                 },
                 age: 25,
                 hobbies: [
-                    { type: 'sport', name: 'sailing' },
-                    { type: 'relax', name: 'reading' },
-                    { type: 'sport', name: 'jogging' },
-                    { type: 'relax', name: 'movies'  }
+                    { type: "sport", name: "sailing" },
+                    { type: "relax", name: "reading" },
+                    { type: "sport", name: "jogging" },
+                    { type: "relax", name: "movies"  }
                 ]
             };
             class Hobby {
@@ -185,7 +185,7 @@ describe("custom transformation decorator", () => {
             class Address {
                 public street: string;
                 
-                @Expose({ name: 'tel' }) 
+                @Expose({ name: "tel" }) 
                 public telephone: string;
                 
                 public zip: number;
@@ -199,7 +199,7 @@ describe("custom transformation decorator", () => {
                 public address: Address;
                 
                 @Type(() => Hobby)
-                @Transform(value => value.filter((hobby: any) => hobby.type === 'sport'), { toClassOnly: true })
+                @Transform(value => value.filter((hobby: any) => hobby.type === "sport"), { toClassOnly: true })
                 public hobbies: Hobby[];
                 
                 public age: number;
@@ -207,11 +207,11 @@ describe("custom transformation decorator", () => {
             model = plainToClass(Person, json);
             expect(model instanceof Person);
             expect(model.address instanceof Address);
-            model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === 'sport'));
+            model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === "sport"));
         }).to.not.throw();
     });
     
-    it ('should serialize a model into json', () => {
+    it ("should serialize a model into json", () => {
         expect(() => {
             classToPlain(model);
         }).to.not.throw();
