@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import {expect} from "chai";
 import {classToPlain, plainToClass} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
 import {Expose, Transform, Type} from "../../src/decorators";
@@ -198,7 +199,7 @@ describe("custom transformation decorator", () => {
                 public address: Address;
                 
                 @Type(() => Hobby)
-                @Transform(value => value.filter(hobby => hobby.type === 'sport'), { toClassOnly: true })
+                @Transform(value => value.filter(hobby: any => hobby.type === 'sport'), { toClassOnly: true })
                 public hobbies: Hobby[];
                 
                 public age: number;
@@ -206,7 +207,7 @@ describe("custom transformation decorator", () => {
             model = plainToClass(Person, json);
             expect(model instanceof Person);
             expect(model.address instanceof Address);
-            model.hobbies.forEach(hobby => expect(hobby instanceof Hobby && hobby.type === 'sport'));
+            model.hobbies.forEach(hobby: any => expect(hobby instanceof Hobby && hobby.type === 'sport'));
         }).not.toThrowError();
     });
     
