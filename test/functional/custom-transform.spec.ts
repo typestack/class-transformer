@@ -199,7 +199,7 @@ describe("custom transformation decorator", () => {
                 public address: Address;
                 
                 @Type(() => Hobby)
-                @Transform(value => value.filter((hobby) => hobby.type === 'sport'), { toClassOnly: true })
+                @Transform(value => value.filter((hobby: any) => hobby.type === 'sport'), { toClassOnly: true })
                 public hobbies: Hobby[];
                 
                 public age: number;
@@ -207,14 +207,14 @@ describe("custom transformation decorator", () => {
             model = plainToClass(Person, json);
             expect(model instanceof Person);
             expect(model.address instanceof Address);
-            model.hobbies.forEach((hobby) => expect(hobby instanceof Hobby && hobby.type === 'sport'));
+            model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === 'sport'));
         }).not.toThrowError();
     });
     
     it ('should serialize a model into json', () => {
         expect(() => {
             classToPlain(model);
-        }).not.toThrowError();
+        }).to.not.throw();
     });
 
 });
