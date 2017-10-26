@@ -208,7 +208,7 @@ describe("custom transformation decorator", () => {
             expect(model instanceof Person);
             expect(model.address instanceof Address);
             model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === 'sport'));
-        }).not.toThrowError();
+        }).to.not.throw();
     });
     
     it ('should serialize a model into json', () => {
