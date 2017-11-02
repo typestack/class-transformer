@@ -22,6 +22,17 @@ export class ClassTransformer {
     }
 
     /**
+     * Converts class (constructor) object with a type to plain (literal) object. Also works with arrays.
+     * Enables decorators to operate properly for conversions to plain objects
+     */
+    classToPlainWithType<T>(cls: ClassType<T>, object: T, options?: ClassTransformOptions): Object;
+    classToPlainWithType<T>(cls: ClassType<T>, object: T[], options?: ClassTransformOptions): Object[];
+    classToPlainWithType<T>(cls: ClassType<T>, object: T|T[], options?: ClassTransformOptions): Object|Object[] {
+        const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
+        return executor.transform(undefined, object, cls, undefined, undefined, undefined);
+    }
+
+    /**
      * Converts class (constructor) object to plain (literal) object.
      * Uses given plain object as source object (it means fills given plain object with data from class object).
      * Also works with arrays.

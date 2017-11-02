@@ -16,6 +16,16 @@ export function classToPlain<T>(object: T[], options?: ClassTransformOptions): O
 export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
     return classTransformer.classToPlain(object, options);
 }
+/**
+ * Converts class (constructor) object with a type to plain (literal) object. Also works with arrays.
+ * Enables decorators to operate properly for conversions to plain objects
+ */
+export function classToPlainWithType<T>(cls: ClassType<T>, object: T, options?: ClassTransformOptions): Object;
+export function classToPlainWithType<T>(cls: ClassType<T>, object: T[], options?: ClassTransformOptions): Object[];
+export function classToPlainWithType<T>(cls: ClassType<T>, object: T|T[], options?: ClassTransformOptions): Object|Object[] {
+    return classTransformer.classToPlainWithType(cls, object, options);
+}
+
 
 /**
  * Converts class (constructor) object to plain (literal) object.
