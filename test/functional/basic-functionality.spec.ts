@@ -507,6 +507,9 @@ describe("basic functionality", () => {
 
             @Type(type => String)
             lastVisitDate: string;
+
+            @Type(type => String)
+            signature?: null | string;
         }
 
         const date = new Date();
@@ -517,6 +520,7 @@ describe("basic functionality", () => {
         user.isActive = "1" as any;
         user.registrationDate = date.toString() as any;
         user.lastVisitDate = date as any;
+        user.signature = null as any;
 
         const fromPlainUser = {
             firstName: 321,
@@ -524,7 +528,8 @@ describe("basic functionality", () => {
             password: "123",
             isActive: "1",
             registrationDate: date.toString(),
-            lastVisitDate: date
+            lastVisitDate: date,
+            signature: null as null | string,
         };
 
         const fromExistUser = new User();
@@ -539,6 +544,7 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            signature: null,
         });
 
         const existUser = { id: 1, age: 27 };
@@ -553,6 +559,7 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            signature: null,
         });
         plainUser2.should.be.equal(existUser);
 
@@ -565,6 +572,7 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            signature: null,
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
@@ -577,6 +585,7 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            signature: null,
         });
 
         const classToClassUser = classToClass(user, { strategy: "exposeAll" });
@@ -589,6 +598,7 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            signature: null,
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
@@ -603,6 +613,7 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            signature: null,
         });
     });
 

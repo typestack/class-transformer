@@ -57,12 +57,18 @@ export class TransformOperationExecutor {
             return newValue;
 
         } else if (targetType === String && !isMap) {
+            if (value === null || value === undefined)
+                return value;
             return String(value);
 
         } else if (targetType === Number && !isMap) {
+            if (value === null || value === undefined)
+                return value;
             return Number(value);
 
         } else if (targetType === Boolean && !isMap) {
+            if (value === null || value === undefined)
+                return value;
             return Boolean(value);
 
         } else if ((targetType === Date || value instanceof Date) && !isMap) {
