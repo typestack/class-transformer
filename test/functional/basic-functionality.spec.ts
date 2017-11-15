@@ -509,7 +509,16 @@ describe("basic functionality", () => {
             lastVisitDate: string;
 
             @Type(type => String)
-            signature?: null | string;
+            nullableString?: null | string;
+
+            @Type(type => Number)
+            nullableNumber?: null | number;
+
+            @Type(type => Boolean)
+            nullableBoolean?: null | boolean;
+
+            @Type(type => Date)
+            nullableDate?: null | Date;
         }
 
         const date = new Date();
@@ -520,7 +529,10 @@ describe("basic functionality", () => {
         user.isActive = "1" as any;
         user.registrationDate = date.toString() as any;
         user.lastVisitDate = date as any;
-        user.signature = null as any;
+        user.nullableString = null as any;
+        user.nullableNumber = null as any;
+        user.nullableBoolean = null as any;
+        user.nullableDate = null as any;
 
         const fromPlainUser = {
             firstName: 321,
@@ -529,7 +541,10 @@ describe("basic functionality", () => {
             isActive: "1",
             registrationDate: date.toString(),
             lastVisitDate: date,
-            signature: null as null | string,
+            nullableString: null as null | string,
+            nullableNumber: null as null | string,
+            nullableBoolean: null as null | string,
+            nullableDate: null as null | string,
         };
 
         const fromExistUser = new User();
@@ -544,7 +559,10 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
-            signature: null,
+            nullableString: null,
+            nullableNumber: null,
+            nullableBoolean: null,
+            nullableDate: null,
         });
 
         const existUser = { id: 1, age: 27 };
@@ -559,7 +577,10 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
-            signature: null,
+            nullableString: null,
+            nullableNumber: null,
+            nullableBoolean: null,
+            nullableDate: null,
         });
         plainUser2.should.be.equal(existUser);
 
@@ -572,7 +593,10 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
-            signature: null,
+            nullableString: null,
+            nullableNumber: null,
+            nullableBoolean: null,
+            nullableDate: null,
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
@@ -585,7 +609,10 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
-            signature: null,
+            nullableString: null,
+            nullableNumber: null,
+            nullableBoolean: null,
+            nullableDate: null,
         });
 
         const classToClassUser = classToClass(user, { strategy: "exposeAll" });
@@ -598,7 +625,10 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
-            signature: null,
+            nullableString: null,
+            nullableNumber: null,
+            nullableBoolean: null,
+            nullableDate: null,
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
@@ -613,7 +643,10 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
-            signature: null,
+            nullableString: null,
+            nullableNumber: null,
+            nullableBoolean: null,
+            nullableDate: null,
         });
     });
 
