@@ -1,7 +1,9 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./storage";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
-import Decimal from 'decimal.js'
+import Decimal from 'decimal.js';
+import * as moment from 'moment';
+import {Moment} from 'moment';
 
 export type TransformationType = "plainToClass" | "classToPlain" | "classToClass";
 
@@ -73,7 +75,10 @@ export class TransformOperationExecutor {
 
         } else if(value instanceof Decimal || (value && value.constructor && value.constructor.Decimal)) {
             return (value as decimal.Decimal).toNumber();
+        } else if( moment.isMoment( value )) {
+            return value.toJSON();
         }
+
         else if (value instanceof Object) {
 
             // try to guess the type
