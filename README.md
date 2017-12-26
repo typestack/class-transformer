@@ -224,14 +224,14 @@ You can deserialize your model to from a json using `deserialize` method:
 
 ```typescript
 import {deserialize} from "class-transformer";
-let photo = deserialize(photo);
+let photo = deserialize(Photo, photo);
 ```
 
 To make deserialization to work with arrays use `deserializeArray` method:
 
 ```typescript
 import {deserializeArray} from "class-transformer";
-let photos = deserializeArray(photos);
+let photos = deserializeArray(Photo, photos);
 ```
 
 ## Working with nested objects
