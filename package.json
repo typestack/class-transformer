@@ -1,6 +1,6 @@
 {
   "name": "@epic/class-transformer",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "license": "MIT",
   "readmeFilename": "README.md",
@@ -24,8 +24,7 @@
     "typescript-serializer"
   ],
   "dependencies": {
-    "@types/decimal.js": "0.0.31",
-    "decimal.js": "7.2.4"
+    "decimal.js": "9.0.1"
   },
   "devDependencies": {
     "@types/moment": "^2.13.0",

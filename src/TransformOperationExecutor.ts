@@ -73,8 +73,8 @@ export class TransformOperationExecutor {
 
             return new Date(value);
 
-        } else if(value instanceof Decimal || (value && value.constructor && value.constructor.Decimal)) {
-            return (value as decimal.Decimal).toNumber();
+        } else if(Decimal.isDecimal(value)) {
+            return (value as Decimal).toNumber();
         } else if( moment.isMoment( value )) {
             return value.toJSON();
         }
