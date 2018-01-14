@@ -173,6 +173,33 @@ describe("basic functionality", () => {
         });
     });
 
+    it("should call onDeserialize method if defined", () => {
+        defaultMetadataStorage.clear();
+
+        let callCount: number = 0;
+
+        class Card {
+            public id: number;
+            public level: number;
+
+            onDeserialize()  { callCount++; }
+        }
+
+        class Deck {
+            @Type(() => Card)
+            public cards: Card[];
+        }
+
+        const jsCard: {} = { id: 1 };
+        const deck = { cards: [jsCard, jsCard ] };
+
+        const classInstanceDeck = plainToClass(Deck, deck);
+
+        callCount.should.be.equal(2, "the onDeserialize method was not called often enough (or too often)");
+        classInstanceDeck.cards.length.should.be.equal(2, "we didn't deserialize enough cards into the deck");
+
+    });
+
     it("should exclude all properties from object if whole class is marked with @Exclude() decorator", () => {
         defaultMetadataStorage.clear();
 
