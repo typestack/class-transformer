@@ -1,10 +1,10 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {classToPlain, plainToClass} from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
-import {Expose, Transform, Type} from "../../src/decorators";
+import { expect } from "chai";
+import { classToPlain, plainToClass } from "../../src/index";
+import { defaultMetadataStorage } from "../../src/storage";
+import { Expose, Transform, Type } from "../../src/decorators";
 import * as moment from "moment";
-import {TransformationType} from "../../src/TransformOperationExecutor";
+import { TransformationType } from "../../src/TransformOperationExecutor";
 
 describe("custom transformation decorator", () => {
 
@@ -13,7 +13,7 @@ describe("custom transformation decorator", () => {
 
         class User {
 
-            @Expose({name: "user_name"})
+            @Expose({ name: "user_name" })
             @Transform(value => value.toUpperCase())
             name: string;
         }
@@ -35,8 +35,8 @@ describe("custom transformation decorator", () => {
 
             name: string;
 
-            @Transform(value => value.toString(), {toPlainOnly: true})
-            @Transform(value => moment(value), {toClassOnly: true})
+            @Transform(value => value.toString(), { toPlainOnly: true })
+            @Transform(value => moment(value), { toClassOnly: true })
             date: Date;
 
         }
@@ -78,11 +78,11 @@ describe("custom transformation decorator", () => {
             name: string;
 
             @Type(() => Date)
-            @Transform(value => moment(value), {since: 1, until: 2})
+            @Transform(value => moment(value), { since: 1, until: 2 })
             date: Date;
 
             @Type(() => Date)
-            @Transform(value => value.toString(), {groups: ["user"]})
+            @Transform(value => value.toString(), { groups: ["user"] })
             lastVisitDate: Date;
 
         }
@@ -100,25 +100,25 @@ describe("custom transformation decorator", () => {
         classedUser1.name.should.be.equal("Johny Cage");
         moment.isMoment(classedUser1.date).should.be.true;
 
-        const classedUser2 = plainToClass(User, plainUser, {version: 0.5});
+        const classedUser2 = plainToClass(User, plainUser, { version: 0.5 });
         classedUser2.should.be.instanceOf(User);
         classedUser2.id.should.be.equal(1);
         classedUser2.name.should.be.equal("Johny Cage");
         classedUser2.date.should.be.instanceof(Date);
 
-        const classedUser3 = plainToClass(User, plainUser, {version: 1});
+        const classedUser3 = plainToClass(User, plainUser, { version: 1 });
         classedUser3.should.be.instanceOf(User);
         classedUser3.id.should.be.equal(1);
         classedUser3.name.should.be.equal("Johny Cage");
         moment.isMoment(classedUser3.date).should.be.true;
 
-        const classedUser4 = plainToClass(User, plainUser, {version: 2});
+        const classedUser4 = plainToClass(User, plainUser, { version: 2 });
         classedUser4.should.be.instanceOf(User);
         classedUser4.id.should.be.equal(1);
         classedUser4.name.should.be.equal("Johny Cage");
         classedUser4.date.should.be.instanceof(Date);
 
-        const classedUser5 = plainToClass(User, plainUser, {groups: ["user"]});
+        const classedUser5 = plainToClass(User, plainUser, { groups: ["user"] });
         classedUser5.should.be.instanceOf(User);
         classedUser5.id.should.be.equal(1);
         classedUser5.name.should.be.equal("Johny Cage");
@@ -138,8 +138,8 @@ describe("custom transformation decorator", () => {
         }
 
         class User {
-            @Transform(transformCallback, {toPlainOnly: true})
-            @Transform(transformCallback, {toClassOnly: true})
+            @Transform(transformCallback, { toPlainOnly: true })
+            @Transform(transformCallback, { toClassOnly: true })
             name: string;
         }
 
@@ -158,9 +158,9 @@ describe("custom transformation decorator", () => {
         objArg.should.be.equal(user);
         typeArg.should.be.equal(TransformationType.CLASS_TO_PLAIN);
     });
-    
+
     let model: any;
-    it ("should serialize json into model instance of class Person", () => {
+    it("should serialize json into model instance of class Person", () => {
         expect(() => {
             const json = {
                 name: "John Doe",
@@ -175,7 +175,7 @@ describe("custom transformation decorator", () => {
                     { type: "sport", name: "sailing" },
                     { type: "relax", name: "reading" },
                     { type: "sport", name: "jogging" },
-                    { type: "relax", name: "movies"  }
+                    { type: "relax", name: "movies" }
                 ]
             };
             class Hobby {
@@ -184,24 +184,24 @@ describe("custom transformation decorator", () => {
             }
             class Address {
                 public street: string;
-                
-                @Expose({ name: "tel" }) 
+
+                @Expose({ name: "tel" })
                 public telephone: string;
-                
+
                 public zip: number;
-                
+
                 public country: string;
             }
             class Person {
                 public name: string;
-                
+
                 @Type(() => Address)
                 public address: Address;
-                
+
                 @Type(() => Hobby)
                 @Transform(value => value.filter((hobby: any) => hobby.type === "sport"), { toClassOnly: true })
                 public hobbies: Hobby[];
-                
+
                 public age: number;
             }
             model = plainToClass(Person, json);
@@ -210,8 +210,231 @@ describe("custom transformation decorator", () => {
             model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === "sport"));
         }).to.not.throw();
     });
-    
-    it ("should serialize a model into json", () => {
+
+    it("should serialize json into model instance of class Person with different types in array (polymorphism)", () => {
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobbies: [
+                    { type: "sport", name: "sailing" },
+                    { type: "relax", name: "reading" },
+                    { type: "sport", name: "jogging" },
+                    { type: "relax", name: "movies" },
+                    { type: "program", name: "typescript coding", specialAbility: "testing" }
+                ]
+            };
+            abstract class Hobby {
+                public type: string;
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => [isSports, isRelaxing, isProgramming])
+                public hobbies: any[];
+            }
+
+            function isSports(val: any): Function | false {
+                if (val.type === "sport") {
+                    return Sports;
+                } else {
+                    return false;
+                }
+            }
+
+            function isRelaxing(val: any): Function | false {
+                if (val.type === "relax") {
+                    return Relaxing;
+                } else {
+                    return false;
+                }
+            }
+
+            function isProgramming(val: any): Function | false {
+                if (val.type === "program") {
+                    return Programming;
+                } else {
+                    return false;
+                }
+            }
+
+            const model: Person = plainToClass(Person, json);
+            expect(model).to.be.instanceof(Person);
+            expect(model.hobbies[0]).to.be.instanceof(Sports);
+            expect(model.hobbies[1]).to.be.instanceof(Relaxing);
+            expect(model.hobbies[2]).to.be.instanceof(Sports);
+            expect(model.hobbies[3]).to.be.instanceof(Relaxing);
+            expect(model.hobbies[4]).to.be.instanceof(Programming);
+            expect(model.hobbies[4].specialAbility).to.be.equal("TESTING");
+        }).to.not.throw();
+    });
+
+    it("should throw an error when none of the given discriminator functions return a type for an object nested in an array (polymorphism)", () => {
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobbies: [
+                    { type: "sport", name: "sailing" },
+                    { type: "relax", name: "reading" },
+                    { type: "sport", name: "jogging" },
+                    { type: "relax", name: "movies" },
+                    { type: "program", name: "typescript coding", specialAbility: "testing" }
+                ]
+            };
+            abstract class Hobby {
+                public type: string;
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => [isSports, isRelaxing, isProgramming])
+                public hobbies: any[];
+            }
+
+            function isSports(val: any): Function | false {
+                if (val.type === "sport") {
+                    return Sports;
+                } else {
+                    return false;
+                }
+            }
+
+            function isRelaxing(val: any): Function | false {
+                if (val.type === "relax") {
+                    return Relaxing;
+                } else {
+                    return false;
+                }
+            }
+
+            function isProgramming(val: any): Function | false {
+                return false;
+            }
+
+            const model: Person = plainToClass(Person, json);
+        }).to.throw(Error, "None of the given discriminator functions did return a constructor for a type.");
+    });
+
+    it("should serialize json into model instance of class Person with different type options for one property (polymorphism)", () => {
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobby: { type: "sport", name: "sailing" },
+                otherHobby: { type: "program", name: "typescript coding", specialAbility: "testing" }
+            };
+            abstract class Hobby {
+                public type: string;
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => [isSports, isRelaxing, isProgramming])
+                public hobby: Sports | Relaxing | Programming;
+
+                @Type(() => [isSports, isRelaxing, isProgramming])
+                public otherHobby: Sports | Relaxing | Programming;
+            }
+
+            function isSports(val: any): Function | false {
+                if (val.type === "sport") {
+                    return Sports;
+                } else {
+                    return false;
+                }
+            }
+
+            function isRelaxing(val: any): Function | false {
+                if (val.type === "relax") {
+                    return Relaxing;
+                } else {
+                    return false;
+                }
+            }
+
+            function isProgramming(val: any): Function | false {
+                if (val.type === "program") {
+                    return Programming;
+                } else {
+                    return false;
+                }
+            }
+
+            const model: Person = plainToClass(Person, json);
+            expect(model).to.be.instanceof(Person);
+            expect(model.hobby).to.be.instanceof(Sports);
+            expect(model.otherHobby).to.be.instanceof(Programming);
+            expect((model.otherHobby as Programming).specialAbility).to.be.equal("TESTING");
+        }).to.not.throw();
+    });
+
+    it("should throw an error when none of the given discriminator functions return a type for single property (polymorphism)", () => {
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobby: { type: "sport", name: "sailing" }
+            };
+            abstract class Hobby {
+                public type: string;
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => [isProgramming])
+                public hobby: Sports | Relaxing | Programming;
+            }
+
+            function isProgramming(val: any): Function | false {
+                return false;
+            }
+
+            const model: Person = plainToClass(Person, json);
+        }).to.throw(Error, "None of the given discriminator functions did return a constructor for a type.");
+    });
+
+    it("should serialize a model into json", () => {
         expect(() => {
             classToPlain(model);
         }).to.not.throw();

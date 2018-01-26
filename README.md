@@ -267,6 +267,118 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
+### Providing more than one type option
+
+In case the nested object can be of different types, you can provide an array of
+discriminator functions instead of a single type definition. These functions are then used
+to determine the correct target type for the nested object.
+
+Lets say we have an album that has a top photo. But this photo can be of certain different types.
+And we are trying to convert album plain object to class object:
+
+```typescript
+import {Type, plainToClass} from "class-transformer";
+
+export abstract class Photo {
+    id: number;
+    filename: string;
+}
+
+export class Landscape extends Photo {
+    panorama: boolean;
+}
+
+export class Portrait extends Photo {
+    person: Person;
+}
+
+export class UnderWater extends Photo {
+    depth: number;
+}
+
+function isLandscape(value: any): Function | false {
+    return value.panorama !== undefined ? Landscape : false;
+}
+
+function isPortrait(value: any): Function | false {
+    return value.person !== undefined ? Portrait : false;
+}
+
+function isUnderWater(value: any): Function | false {
+    return value.depth !== undefined ? UnderWater : false;
+}
+
+export class Album {
+
+    id: number;
+    name: string;
+
+    @Type(() => [ isLandscape, isPortrait, isUnderWater ])
+    topPhoto: Landscape | Portrait | UnderWater;
+
+}
+
+let album = plainToClass(Album, albumJson);
+// now album is Album object with Landscape, Portrait and UnderWater objects inside
+```
+
+### Working with an array that holds more than one nested object type
+
+In case you have to deal with an array that holds different kinds of nested objects,
+the `@Type` decorator can be used, too. Here you just give an array of discriminator functions
+instead of a single type definition, in order to be able to determine which type each object has.
+
+Lets stick to the photo album example from above, but here we got different photo types.
+And we are trying to convert the whole album plain object to its class.
+
+```typescript
+import {Type, plainToClass} from "class-transformer";
+
+export abstract class Photo {
+    id: number;
+    filename: string;
+}
+
+export class Landscape extends Photo {
+    panorama: boolean;
+}
+
+export class Portrait extends Photo {
+    person: Person;
+}
+
+export class UnderWater extends Photo {
+    depth: number;
+}
+
+function isLandscape(value: any): Function | false {
+    return value.panorama !== undefined ? Landscape : false;
+}
+
+function isPortrait(value: any): Function | false {
+    return value.person !== undefined ? Portrait : false;
+}
+
+function isUnderWater(value: any): Function | false {
+    return value.depth !== undefined ? UnderWater : false;
+}
+
+export class Album {
+
+    id: number;
+    name: string;
+
+    @Type(() => [ isLandscape, isPortrait, isUnderWater ])
+    photos: (Landscape | Portrait | UnderWater)[];
+}
+
+let album = plainToClass(Album, albumJson);
+// now album is Album object with Landscape, Portrait and UnderWater objects inside
+```
+
+Hint: You can also provide a special discriminator function, which returns a standard type,
+as the last element of the type array such that it gets a type for sure.
+
 ## Exposing getters and method return values
 
 You can expose what your getter or method return by setting a `@Expose()` decorator to those getters or methods:

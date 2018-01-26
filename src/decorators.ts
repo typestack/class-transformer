@@ -1,6 +1,6 @@
 import {ClassTransformer} from "./ClassTransformer";
 import {defaultMetadataStorage} from "./storage";
-import {TypeMetadata} from "./metadata/TypeMetadata";
+import {TypeMetadata, DiscrimnatorFunction} from "./metadata/TypeMetadata";
 import {ExposeMetadata} from "./metadata/ExposeMetadata";
 import {ExposeOptions, ExcludeOptions, TypeOptions, TransformOptions} from "./metadata/ExposeExcludeOptions";
 import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
@@ -20,8 +20,10 @@ export function Transform(transformFn: (value: any, obj: any, transformationType
 
 /**
  * Specifies a type of the property.
+ * The given TypeFunction can return a constructor or in case of an array of different types
+ * an array of discriminator functions can be provided.
  */
-export function Type(typeFunction?: (type?: TypeOptions) => Function) {
+export function Type(typeFunction?: (type?: TypeOptions) => Function | DiscrimnatorFunction[]) {
     return function(target: any, key: string) {
         const type = (Reflect as any).getMetadata("design:type", target, key);
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction);
