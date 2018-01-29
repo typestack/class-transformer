@@ -182,6 +182,10 @@ export class TransformOperationExecutor {
                 }
 
             }
+
+            if (newValue["onDeserialize"] !== undefined)
+                newValue["onDeserialize"]();
+
             return newValue;
 
         } else {
