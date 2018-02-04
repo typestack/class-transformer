@@ -74,7 +74,7 @@ export class TransformOperationExecutor {
 
             return new Date(value);
 
-        } else if (value instanceof Object) {
+        } else if (typeof value === "object" && value !== null) {
 
             // try to guess the type
             if (!targetType && value.constructor !== Object/* && TransformationType === TransformationType.CLASS_TO_PLAIN*/) targetType = value.constructor;
