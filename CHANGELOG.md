@@ -1,50 +1,75 @@
-# Release notes
+# Changelog and release notes
 
-**0.1.4**
+### 0.1.9
 
-* added `TransformClassToPlain` and `TransformClassToClass` decorators
+#### Fixed
 
-**0.1.0**
+- objects with `null` prototype are converted properly now
+- objects with unknown non primitive properties are converted properly now
+- corrected a typo in the README.md
+- fixed the deserialize example in the README.md
 
-* renamed library from `constructor-utils` to `class-transformer`
-* completely renamed most of names
-* renamed all main methods: `plainToConstructor` now is `plainToClass`
- and `constructorToPlain` is `classToPlain`, etc.
-* `plainToConstructorArray` method removed - now `plainToClass` handles it
-* `@Skip()` decorator renamed to `@Exclude()`
-* added `@Expose` decorator
-* added lot of new options: groups, versioning, custom names, etc.
-* methods and getters that should be exposed must be decorated with `@Expose` decorator
-* added `excludedPrefix` to class transform options that allows exclude properties that start with one of the given prefix
+### 0.1.4
 
-**0.0.22**
+#### Added
 
-* bugfix when array with primitive types is being converted
+- added `TransformClassToPlain` and `TransformClassToClass` decorators
 
-**0.0.18 >> 0.0.21**
+### 0.1.0
 
-* fixed bugs when getters are not converted with es6 target
+#### Added
 
-**0.0.17**
+- renamed library from `constructor-utils` to `class-transformer`
+- completely renamed most of names
+- renamed all main methods: `plainToConstructor` now is `plainToClass` and `constructorToPlain` is `classToPlain`, etc.
+- `plainToConstructorArray` method removed - now `plainToClass` handles it
+- `@Skip()` decorator renamed to `@Exclude()`
+- added `@Expose` decorator
+- added lot of new options: groups, versioning, custom names, etc.
+- methods and getters that should be exposed must be decorated with `@Expose` decorator
+- added `excludedPrefix` to class transform options that allows exclude properties that start with one of the given prefix
 
-* fixed issue #4
-* added type guessing during transformation from constructor to plain object
-* added sample with generics
+### 0.0.22
 
-**0.0.16**
+#### Fixed
 
-* renamed `constructor-utils/constructor-utils` to `constructor-utils` package namespace.
+- fixed array with primitive types being converted
 
-**0.0.15**
+### 0.0.18-0.0.21
 
-* removed code mappings from package.
+#### Fixed
 
-**0.0.14**
+- fixed bugs when getters are not converted with es6 target
 
-* removed `import "reflect-metadata"` from source code. Now reflect metadata should be included like any other
-user's shims.
+### 0.0.17
 
-**0.0.13**
+#### Fixed
 
-* Library has changed its name from `serializer.ts` to `constructor-utils`.
-* Added `constructor-utils` namespace.
+- fixed issue #4
+- added type guessing during transformation from constructor to plain object
+- added sample with generics
+
+### 0.0.16
+
+#### Changed
+
+- renamed `constructor-utils/constructor-utils` to `constructor-utils` package namespace
+
+### 0.0.15
+
+#### Removed
+
+- removed code mappings from package
+
+### 0.0.14
+
+#### Removed
+
+- removed `import "reflect-metadata"` from source code. Now reflect metadata should be included like any other shims.
+
+### 0.0.13
+
+#### Changed
+
+- Library has changed its name from `serializer.ts` to `constructor-utils`.
+- Added `constructor-utils` namespace.
