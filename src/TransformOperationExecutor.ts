@@ -37,6 +37,10 @@ export class TransformOperationExecutor {
 
         if (value instanceof Array || value instanceof Set) {
             const newValue = arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS ? new (arrayType as any)() : [];
+            if (!(newValue instanceof Set) && !newValue.push) {
+                newValue = [];
+            }
+
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
