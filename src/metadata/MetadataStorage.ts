@@ -219,6 +219,7 @@ export class MetadataStorage {
     }
 
     private getAncestors(target: Function): Function[] {
+        if (!target) return [];
         if (!this._ancestorsMap.has(target)) {
             let ancestors: Function[] = [];
             for (let baseClass = Object.getPrototypeOf(target.prototype.constructor);
