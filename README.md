@@ -269,12 +269,29 @@ let album = plainToClass(Album, albumJson);
 
 ### Providing more than one type option
 
-In case the nested object can be of different types, you can provide an array of
-discriminator functions instead of a single type definition. These functions are then used
-to determine the correct target type for the nested object.
+In case the nested object can be of different types, you can provide an additional options object,
+that specifies a discriminator. The discriminator option must define a `property` that holds the sub
+type name for the object and the possible `subTypes`, the nested object can converted to. A sub type
+has a `value`, that holds the constructor of the Type and the `name`, that can match with the `property`
+of the discriminator.
 
 Lets say we have an album that has a top photo. But this photo can be of certain different types.
-And we are trying to convert album plain object to class object:
+And we are trying to convert album plain object to class object. The plain object input has to define
+the additional property `__type`. This property is removed during transformation by default:
+
+**JSON input**:
+```json
+{
+    "id": 1,
+    "name": "foo",
+    "topPhoto": {
+        "id": 9,
+        "filename": "cool_wale.jpg",
+        "depth": 1245,
+        "__type": "underwater"
+    }
+}
+```
 
 ```typescript
 import {Type, plainToClass} from "class-transformer";
@@ -296,88 +313,31 @@ export class UnderWater extends Photo {
     depth: number;
 }
 
-function isLandscape(value: any): Function | false {
-    return value.panorama !== undefined ? Landscape : false;
-}
-
-function isPortrait(value: any): Function | false {
-    return value.person !== undefined ? Portrait : false;
-}
-
-function isUnderWater(value: any): Function | false {
-    return value.depth !== undefined ? UnderWater : false;
-}
-
 export class Album {
 
     id: number;
     name: string;
 
-    @Type(() => [ isLandscape, isPortrait, isUnderWater ])
+    @Type(() => Photo, {
+        discriminator: {
+            property: "__type",
+            subTypes: [
+                { value: Landscape, name: "landscape" },
+                { value: Portrait, name: "portrait" },
+                { value: UnderWater, name: "underwater" }
+            ]
+        }
+    })
     topPhoto: Landscape | Portrait | UnderWater;
 
 }
 
 let album = plainToClass(Album, albumJson);
-// now album is Album object with Landscape, Portrait and UnderWater objects inside
+// now album is Album object with a UnderWater object without `__type` property.
 ```
 
-### Working with an array that holds more than one nested object type
-
-In case you have to deal with an array that holds different kinds of nested objects,
-the `@Type` decorator can be used, too. Here you just give an array of discriminator functions
-instead of a single type definition, in order to be able to determine which type each object has.
-
-Lets stick to the photo album example from above, but here we got different photo types.
-And we are trying to convert the whole album plain object to its class.
-
-```typescript
-import {Type, plainToClass} from "class-transformer";
-
-export abstract class Photo {
-    id: number;
-    filename: string;
-}
-
-export class Landscape extends Photo {
-    panorama: boolean;
-}
-
-export class Portrait extends Photo {
-    person: Person;
-}
-
-export class UnderWater extends Photo {
-    depth: number;
-}
-
-function isLandscape(value: any): Function | false {
-    return value.panorama !== undefined ? Landscape : false;
-}
-
-function isPortrait(value: any): Function | false {
-    return value.person !== undefined ? Portrait : false;
-}
-
-function isUnderWater(value: any): Function | false {
-    return value.depth !== undefined ? UnderWater : false;
-}
-
-export class Album {
-
-    id: number;
-    name: string;
-
-    @Type(() => [ isLandscape, isPortrait, isUnderWater ])
-    photos: (Landscape | Portrait | UnderWater)[];
-}
-
-let album = plainToClass(Album, albumJson);
-// now album is Album object with Landscape, Portrait and UnderWater objects inside
-```
-
-Hint: You can also provide a special discriminator function, which returns a standard type,
-as the last element of the type array such that it gets a type for sure.
+Hint: The same applies for arrays with different sub types. Moreover you can specify `keepDiscriminatorProperty: true`
+in the options to keep the discriminator property also inside your resulting class.
 
 ## Exposing getters and method return values
 

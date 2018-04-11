@@ -1,13 +1,12 @@
-import {TypeOptions} from "./ExposeExcludeOptions";
+import {TypeHelpOptions, Discriminator, TypeOptions} from "./ExposeExcludeOptions";
 
 export class TypeMetadata {
 
     constructor(public target: Function,
                 public propertyName: string,
                 public reflectedType: any,
-                public typeFunction: (options?: TypeOptions) => Function | DiscrimnatorFunction[]) {
+                public typeFunction: (options?: TypeHelpOptions) => Function,
+                public options: TypeOptions) {
     }
 
 }
-
-export type DiscrimnatorFunction = (value: any) => Function | false;

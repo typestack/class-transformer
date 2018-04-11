@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { expect } from "chai";
-import { classToPlain, plainToClass } from "../../src/index";
+import { classToPlain, plainToClass, classToClass } from "../../src/index";
 import { defaultMetadataStorage } from "../../src/storage";
 import { Expose, Transform, Type } from "../../src/decorators";
 import * as moment from "moment";
@@ -161,6 +161,7 @@ describe("custom transformation decorator", () => {
 
     let model: any;
     it("should serialize json into model instance of class Person", () => {
+        defaultMetadataStorage.clear();
         expect(() => {
             const json = {
                 name: "John Doe",
@@ -211,20 +212,63 @@ describe("custom transformation decorator", () => {
         }).to.not.throw();
     });
 
+    it("should serialize json into model instance of class Person with different possibilities for type of one property (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobby: { __type: "program", name: "typescript coding", specialAbility: "testing" }
+            };
+
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    }
+                })
+                public hobby: any;
+            }
+
+            const expectedHobby = { name: "typescript coding", specialAbility: "TESTING" };
+
+            const model: Person = plainToClass(Person, json);
+            expect(model).to.be.instanceof(Person);
+            expect(model.hobby).to.be.instanceof(Programming);
+            expect(model.hobby).to.have.not.property("__type");
+            expect(model.hobby).to.have.property("specialAbility", "TESTING");
+        }).to.not.throw();
+    });
+
     it("should serialize json into model instance of class Person with different types in array (polymorphism)", () => {
+        defaultMetadataStorage.clear();
         expect(() => {
             const json = {
                 name: "John Doe",
                 hobbies: [
-                    { type: "sport", name: "sailing" },
-                    { type: "relax", name: "reading" },
-                    { type: "sport", name: "jogging" },
-                    { type: "relax", name: "movies" },
-                    { type: "program", name: "typescript coding", specialAbility: "testing" }
+                    { __type: "program", name: "typescript coding", specialAbility: "testing" },
+                    { __type: "relax", name: "sun" }
                 ]
             };
+
             abstract class Hobby {
-                public type: string;
                 public name: string;
             }
 
@@ -240,59 +284,38 @@ describe("custom transformation decorator", () => {
             class Person {
                 public name: string;
 
-                @Type(() => [isSports, isRelaxing, isProgramming])
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    }
+                })
                 public hobbies: any[];
             }
 
-            function isSports(val: any): Function | false {
-                if (val.type === "sport") {
-                    return Sports;
-                } else {
-                    return false;
-                }
-            }
-
-            function isRelaxing(val: any): Function | false {
-                if (val.type === "relax") {
-                    return Relaxing;
-                } else {
-                    return false;
-                }
-            }
-
-            function isProgramming(val: any): Function | false {
-                if (val.type === "program") {
-                    return Programming;
-                } else {
-                    return false;
-                }
-            }
 
             const model: Person = plainToClass(Person, json);
             expect(model).to.be.instanceof(Person);
-            expect(model.hobbies[0]).to.be.instanceof(Sports);
+            expect(model.hobbies[0]).to.be.instanceof(Programming);
             expect(model.hobbies[1]).to.be.instanceof(Relaxing);
-            expect(model.hobbies[2]).to.be.instanceof(Sports);
-            expect(model.hobbies[3]).to.be.instanceof(Relaxing);
-            expect(model.hobbies[4]).to.be.instanceof(Programming);
-            expect(model.hobbies[4].specialAbility).to.be.equal("TESTING");
+            expect(model.hobbies[0]).to.have.not.property("__type");
+            expect(model.hobbies[1]).to.have.not.property("__type");
+            expect(model.hobbies[1]).to.have.property("name", "sun");
+            expect(model.hobbies[0]).to.have.property("specialAbility", "TESTING");
         }).to.not.throw();
     });
 
-    it("should throw an error when none of the given discriminator functions return a type for an object nested in an array (polymorphism)", () => {
+    it("should serialize json into model instance of class Person with different possibilities for type of one property AND keeps discriminator property (polymorphism)", () => {
+        defaultMetadataStorage.clear();
         expect(() => {
             const json = {
                 name: "John Doe",
-                hobbies: [
-                    { type: "sport", name: "sailing" },
-                    { type: "relax", name: "reading" },
-                    { type: "sport", name: "jogging" },
-                    { type: "relax", name: "movies" },
-                    { type: "program", name: "typescript coding", specialAbility: "testing" }
-                ]
+                hobby: { __type: "program", name: "typescript coding", specialAbility: "testing" }
             };
+
             abstract class Hobby {
-                public type: string;
                 public name: string;
             }
 
@@ -308,105 +331,38 @@ describe("custom transformation decorator", () => {
             class Person {
                 public name: string;
 
-                @Type(() => [isSports, isRelaxing, isProgramming])
-                public hobbies: any[];
-            }
-
-            function isSports(val: any): Function | false {
-                if (val.type === "sport") {
-                    return Sports;
-                } else {
-                    return false;
-                }
-            }
-
-            function isRelaxing(val: any): Function | false {
-                if (val.type === "relax") {
-                    return Relaxing;
-                } else {
-                    return false;
-                }
-            }
-
-            function isProgramming(val: any): Function | false {
-                return false;
-            }
-
-            const model: Person = plainToClass(Person, json);
-        }).to.throw(Error, "None of the given discriminator functions did return a constructor for a type.");
-    });
-
-    it("should serialize json into model instance of class Person with different type options for one property (polymorphism)", () => {
-        expect(() => {
-            const json = {
-                name: "John Doe",
-                hobby: { type: "sport", name: "sailing" },
-                otherHobby: { type: "program", name: "typescript coding", specialAbility: "testing" }
-            };
-            abstract class Hobby {
-                public type: string;
-                public name: string;
-            }
-
-            class Sports extends Hobby { }
-
-            class Relaxing extends Hobby { }
-
-            class Programming extends Hobby {
-                @Transform((value: string) => value.toUpperCase())
-                specialAbility: string;
-            }
-
-            class Person {
-                public name: string;
-
-                @Type(() => [isSports, isRelaxing, isProgramming])
-                public hobby: Sports | Relaxing | Programming;
-
-                @Type(() => [isSports, isRelaxing, isProgramming])
-                public otherHobby: Sports | Relaxing | Programming;
-            }
-
-            function isSports(val: any): Function | false {
-                if (val.type === "sport") {
-                    return Sports;
-                } else {
-                    return false;
-                }
-            }
-
-            function isRelaxing(val: any): Function | false {
-                if (val.type === "relax") {
-                    return Relaxing;
-                } else {
-                    return false;
-                }
-            }
-
-            function isProgramming(val: any): Function | false {
-                if (val.type === "program") {
-                    return Programming;
-                } else {
-                    return false;
-                }
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    },
+                    keepDiscriminatorProperty: true
+                })
+                public hobby: any;
             }
 
             const model: Person = plainToClass(Person, json);
             expect(model).to.be.instanceof(Person);
-            expect(model.hobby).to.be.instanceof(Sports);
-            expect(model.otherHobby).to.be.instanceof(Programming);
-            expect((model.otherHobby as Programming).specialAbility).to.be.equal("TESTING");
+            expect(model.hobby).to.be.instanceof(Programming);
+            expect(model.hobby).to.have.property("__type");
+            expect(model.hobby).to.have.property("specialAbility", "TESTING");
         }).to.not.throw();
     });
 
-    it("should throw an error when none of the given discriminator functions return a type for single property (polymorphism)", () => {
+    it("should serialize json into model instance of class Person with different types in array AND keeps discriminator property (polymorphism)", () => {
+        defaultMetadataStorage.clear();
         expect(() => {
             const json = {
                 name: "John Doe",
-                hobby: { type: "sport", name: "sailing" }
+                hobbies: [
+                    { __type: "program", name: "typescript coding", specialAbility: "testing" },
+                    { __type: "relax", name: "sun" }
+                ]
             };
+
             abstract class Hobby {
-                public type: string;
                 public name: string;
             }
 
@@ -422,16 +378,301 @@ describe("custom transformation decorator", () => {
             class Person {
                 public name: string;
 
-                @Type(() => [isProgramming])
-                public hobby: Sports | Relaxing | Programming;
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    },
+                    keepDiscriminatorProperty: true
+                })
+                public hobbies: any[];
             }
 
-            function isProgramming(val: any): Function | false {
-                return false;
+
+            const model: Person = plainToClass(Person, json);
+            expect(model).to.be.instanceof(Person);
+            expect(model.hobbies[0]).to.be.instanceof(Programming);
+            expect(model.hobbies[1]).to.be.instanceof(Relaxing);
+            expect(model.hobbies[0]).to.have.property("__type");
+            expect(model.hobbies[1]).to.have.property("__type");
+            expect(model.hobbies[1]).to.have.property("name", "sun");
+            expect(model.hobbies[0]).to.have.property("specialAbility", "TESTING");
+        }).to.not.throw();
+    });
+
+    it("should deserialize class Person into json with different possibilities for type of one property (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    }
+                })
+                public hobby: any;
+            }
+
+            const model: Person = new Person();
+            const program = new Programming();
+            program.name = "typescript coding";
+            program.specialAbility = "testing";
+            model.name = "John Doe";
+            model.hobby = program;
+            const json: any = classToPlain(model);
+            expect(json).to.be.not.instanceof(Person);
+            expect(json.hobby).to.have.property("__type", "program");
+
+        }).to.not.throw();
+    });
+
+    it("should deserialize class Person into json with different types in array (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    }
+                })
+                public hobbies: any[];
+            }
+
+            const model: Person = new Person();
+            const sport = new Sports();
+            sport.name = "Football";
+            const program = new Programming();
+            program.name = "typescript coding";
+            program.specialAbility = "testing";
+            model.name = "John Doe";
+            model.hobbies = [
+                sport,
+                program
+            ];
+            const json: any = classToPlain(model);
+            expect(json).to.be.not.instanceof(Person);
+            expect(json.hobbies[0]).to.have.property("__type", "sports");
+            expect(json.hobbies[1]).to.have.property("__type", "program");
+
+        }).to.not.throw();
+    });
+
+    it("should transform class Person into class OtherPerson with different possibilities for type of one property (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    }
+                })
+                public hobby: any;
+            }
+
+            const model: Person = new Person();
+            const program = new Programming();
+            program.name = "typescript coding";
+            program.specialAbility = "testing";
+            model.name = "John Doe";
+            model.hobby = program;
+            const person: Person = classToClass(model);
+            expect(person).to.be.instanceof(Person);
+            expect(person.hobby).to.have.not.property("__type");
+
+        }).to.not.throw();
+    });
+
+    it("should transform class Person into class OtherPerson with different types in array (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: [
+                            { value: Sports, name: "sports" }, { value: Relaxing, name: "relax" }, { value: Programming, name: "program" }
+                        ]
+                    }
+                })
+                public hobbies: any[];
+            }
+
+            const model: Person = new Person();
+            const sport = new Sports();
+            sport.name = "Football";
+            const program = new Programming();
+            program.name = "typescript coding";
+            program.specialAbility = "testing";
+            model.name = "John Doe";
+            model.hobbies = [
+                sport,
+                program
+            ];
+            const person: Person = classToClass(model);
+            expect(person).to.be.instanceof(Person);
+            expect(person.hobbies[0]).to.not.have.property("__type");
+            expect(person.hobbies[1]).to.not.have.property("__type");
+
+        }).to.not.throw();
+    });
+
+    it("should serialize json into model instance of class Person with different possibilities for type of one property AND uses default as fallback (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobby: { __type: "program", name: "typescript coding", specialAbility: "testing" }
+            };
+
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: []
+                    },
+                })
+                public hobby: any;
             }
 
             const model: Person = plainToClass(Person, json);
-        }).to.throw(Error, "None of the given discriminator functions did return a constructor for a type.");
+            expect(model).to.be.instanceof(Person);
+            expect(model.hobby).to.be.instanceof(Hobby);
+            expect(model.hobby).to.not.have.property("__type");
+            expect(model.hobby).to.have.property("specialAbility", "testing");
+        }).to.not.throw();
+    });
+
+    it("should serialize json into model instance of class Person with different types in array AND uses default as fallback (polymorphism)", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            const json = {
+                name: "John Doe",
+                hobbies: [
+                    { __type: "program", name: "typescript coding", specialAbility: "testing" },
+                    { __type: "relax", name: "sun" }
+                ]
+            };
+
+            abstract class Hobby {
+                public name: string;
+            }
+
+            class Sports extends Hobby { }
+
+            class Relaxing extends Hobby { }
+
+            class Programming extends Hobby {
+                @Transform((value: string) => value.toUpperCase())
+                specialAbility: string;
+            }
+
+            class Person {
+                public name: string;
+
+                @Type(() => Hobby, {
+                    discriminator: {
+                        property: "__type",
+                        subTypes: []
+                    },
+                })
+                public hobbies: any[];
+            }
+
+
+            const model: Person = plainToClass(Person, json);
+            expect(model).to.be.instanceof(Person);
+            expect(model.hobbies[0]).to.be.instanceof(Hobby);
+            expect(model.hobbies[1]).to.be.instanceof(Hobby);
+            expect(model.hobbies[0]).to.not.have.property("__type");
+            expect(model.hobbies[1]).to.not.have.property("__type");
+            expect(model.hobbies[1]).to.have.property("name", "sun");
+            expect(model.hobbies[0]).to.have.property("specialAbility", "testing");
+        }).to.not.throw();
     });
 
     it("should serialize a model into json", () => {
