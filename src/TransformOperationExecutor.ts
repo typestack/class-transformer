@@ -97,9 +97,17 @@ export class TransformOperationExecutor {
                 }
             }
 
+            const catchNotExposedMetadata = defaultMetadataStorage.findCatchNotExposedMetadata(targetType);
+            let catchNotExposedCallback = catchNotExposedMetadata ? catchNotExposedMetadata.propertyName : undefined;
+            console.log('catchNotExposedCallback ' + catchNotExposedCallback);
+
             // traverse over keys
             for (let key of keys) {
 
+                const triggerCatchNotExposedCallback = catchNotExposedCallback
+                    ? undefined === defaultMetadataStorage.findExposeMetadata(targetType, key)
+                    : false;
+                console.log('triggerCatchNotExposedCallback ' + triggerCatchNotExposedCallback);
                 let valueKey = key, newValueKey = key, propertyName = key;
                 if (!this.options.ignoreDecorators && targetType) {
                     if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
@@ -166,18 +174,26 @@ export class TransformOperationExecutor {
                     let transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
                     let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
                     finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
-                    if (newValue instanceof Map) {
-                        newValue.set(newValueKey, finalValue);
+                    if (triggerCatchNotExposedCallback) {
+                        newValue[catchNotExposedCallback](newValueKey, finalValue);
                     } else {
-                        newValue[newValueKey] = finalValue;
+                        if (newValue instanceof Map) {
+                            newValue.set(newValueKey, finalValue);
+                        } else {
+                            newValue[newValueKey] = finalValue;
+                        }
                     }
                 } else if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
                     let finalValue = subValue;
                     finalValue = this.applyCustomTransformations(finalValue, targetType, key, value, this.transformationType);
-                    if (newValue instanceof Map) {
-                        newValue.set(newValueKey, finalValue);
+                    if (triggerCatchNotExposedCallback) {
+                        newValue[catchNotExposedCallback](newValueKey, finalValue);
                     } else {
-                        newValue[newValueKey] = finalValue;
+                        if (newValue instanceof Map) {
+                            newValue.set(newValueKey, finalValue);
+                        } else {
+                            newValue[newValueKey] = finalValue;
+                        }
                     }
                 }
 

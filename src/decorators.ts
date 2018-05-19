@@ -7,6 +7,7 @@ import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
 import {TransformMetadata} from "./metadata/TransformMetadata";
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {TransformationType} from "./TransformOperationExecutor";
+import {CatchNotExposedMetadata} from "./metadata/CatchNotExposedMetadata";
 
 /**
  * Defines a custom logic for value transformation.
@@ -50,6 +51,13 @@ export function Exclude(options?: ExcludeOptions) {
     return function(object: Object|Function, propertyName?: string) {
         const metadata = new ExcludeMetadata(object instanceof Function ? object : object.constructor, propertyName, options || {});
         defaultMetadataStorage.addExcludeMetadata(metadata);
+    };
+}
+
+export function CatchNotExposed() {
+    return function(target: any, key: string) {
+        const metadata = new CatchNotExposedMetadata(target.constructor, key);
+        defaultMetadataStorage.addCatchNotExposedMetadata(metadata);
     };
 }
 

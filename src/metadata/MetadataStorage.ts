@@ -3,6 +3,7 @@ import {ExposeMetadata} from "./ExposeMetadata";
 import {ExcludeMetadata} from "./ExcludeMetadata";
 import {TransformationType} from "../TransformOperationExecutor";
 import {TransformMetadata} from "./TransformMetadata";
+import {CatchNotExposedMetadata} from "./CatchNotExposedMetadata";
 
 /**
  * Storage all library metadata.
@@ -17,6 +18,7 @@ export class MetadataStorage {
     private _transformMetadatas: TransformMetadata[] = [];
     private _exposeMetadatas: ExposeMetadata[] = [];
     private _excludeMetadatas: ExcludeMetadata[] = [];
+    private _catchNotExposedMetadatas: CatchNotExposedMetadata[] = [];
 
     // -------------------------------------------------------------------------
     // Adder Methods
@@ -36,6 +38,10 @@ export class MetadataStorage {
 
     addExcludeMetadata(metadata: ExcludeMetadata) {
         this._excludeMetadatas.push(metadata);
+    }
+
+    addCatchNotExposedMetadata(metadata: CatchNotExposedMetadata) {
+        this._catchNotExposedMetadatas.push(metadata);
     }
 
     // -------------------------------------------------------------------------
@@ -77,6 +83,10 @@ export class MetadataStorage {
 
     findTypeMetadata(target: Function, propertyName: string) {
         return this.findMetadata(this._typeMetadatas, target, propertyName);
+    }
+
+    findCatchNotExposedMetadata(target: Function) {
+        return this.getMetadata(this._catchNotExposedMetadatas, target)[0];
     }
 
     getStrategy(target: Function): "excludeAll"|"exposeAll"|"none" {
