@@ -99,7 +99,6 @@ export class TransformOperationExecutor {
 
             const catchNotExposedMetadata = defaultMetadataStorage.findCatchNotExposedMetadata(targetType);
             let catchNotExposedCallback = catchNotExposedMetadata ? catchNotExposedMetadata.propertyName : undefined;
-            console.log('catchNotExposedCallback ' + catchNotExposedCallback);
 
             // traverse over keys
             for (let key of keys) {
@@ -107,7 +106,6 @@ export class TransformOperationExecutor {
                 const triggerCatchNotExposedCallback = catchNotExposedCallback
                     ? undefined === defaultMetadataStorage.findExposeMetadata(targetType, key)
                     : false;
-                console.log('triggerCatchNotExposedCallback ' + triggerCatchNotExposedCallback);
                 let valueKey = key, newValueKey = key, propertyName = key;
                 if (!this.options.ignoreDecorators && targetType) {
                     if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
