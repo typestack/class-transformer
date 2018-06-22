@@ -1,9 +1,9 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {defaultMetadataStorage} from "./storage";
 import {TypeOptions} from "./metadata/ExposeExcludeOptions";
-import Decimal from 'decimal.js';
-import * as moment from 'moment';
-import {Moment} from 'moment';
+import Decimal from "decimal.js";
+import * as moment from "moment";
+import {Moment} from "moment";
 
 export enum TransformationType {
     PLAIN_TO_CLASS,
@@ -76,9 +76,9 @@ export class TransformOperationExecutor {
                 return value;
 
             return new Date(value);
-        } else if(Decimal.isDecimal(value)) {
+        } else if (Decimal.isDecimal(value)) {
             return (value as Decimal).toNumber();
-        } else if( moment.isMoment( value )) {
+        } else if ( moment.isMoment( value )) {
             return value.toJSON();
         } else if (typeof value === "object" && value !== null) {
 
