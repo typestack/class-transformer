@@ -51,10 +51,10 @@ export class MetadataStorage {
                     return true;
 
                 if (metadata.options.toClassOnly === true) {
-                    return transformationType === "classToClass" ||  transformationType === "plainToClass";
+                    return transformationType === TransformationType.CLASS_TO_CLASS ||  transformationType === TransformationType.PLAIN_TO_CLASS;
                 }
                 if (metadata.options.toPlainOnly === true) {
-                    return transformationType === "classToPlain";
+                    return transformationType === TransformationType.CLASS_TO_PLAIN;
                 }
 
                 return true;
@@ -103,10 +103,10 @@ export class MetadataStorage {
                     return true;
 
                 if (metadata.options.toClassOnly === true) {
-                    return transformationType === "classToClass" ||  transformationType === "plainToClass";
+                    return transformationType === TransformationType.CLASS_TO_CLASS ||  transformationType === TransformationType.PLAIN_TO_CLASS;
                 }
                 if (metadata.options.toPlainOnly === true) {
-                    return transformationType === "classToPlain";
+                    return transformationType === TransformationType.CLASS_TO_PLAIN;
                 }
 
                 return true;
@@ -123,10 +123,10 @@ export class MetadataStorage {
                     return true;
 
                 if (metadata.options.toClassOnly === true) {
-                    return transformationType === "classToClass" ||  transformationType === "plainToClass";
+                    return transformationType === TransformationType.CLASS_TO_CLASS ||  transformationType === TransformationType.PLAIN_TO_CLASS;
                 }
                 if (metadata.options.toPlainOnly === true) {
-                    return transformationType === "classToPlain";
+                    return transformationType === TransformationType.CLASS_TO_PLAIN;
                 }
 
                 return true;
@@ -146,19 +146,19 @@ export class MetadataStorage {
 
     private getMetadata<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function): T[] {
         const metadataFromTarget = metadatas.filter(meta => meta.target === target && meta.propertyName !== undefined);
-        const metadataFromChildren = metadatas.filter(meta => target.prototype instanceof meta.target && meta.propertyName !== undefined);
+        const metadataFromChildren = metadatas.filter(meta => target && target.prototype instanceof meta.target && meta.propertyName !== undefined);
         return metadataFromChildren.concat(metadataFromTarget);
     }
 
     private findMetadata<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function, propertyName: string): T {
         const metadataFromTarget = metadatas.find(meta => meta.target === target && meta.propertyName === propertyName);
-        const metadataFromChildren = metadatas.find(meta => target.prototype instanceof meta.target && meta.propertyName === propertyName);
+        const metadataFromChildren = metadatas.find(meta => target && target.prototype instanceof meta.target && meta.propertyName === propertyName);
         return metadataFromTarget || metadataFromChildren;
     }
 
     private findMetadatas<T extends { target: Function, propertyName: string }>(metadatas: T[], target: Function, propertyName: string): T[] {
         const metadataFromTarget = metadatas.filter(meta => meta.target === target && meta.propertyName === propertyName);
-        const metadataFromChildren = metadatas.filter(meta => target.prototype instanceof meta.target && meta.propertyName === propertyName);
+        const metadataFromChildren = metadatas.filter(meta => target && target.prototype instanceof meta.target && meta.propertyName === propertyName);
         return metadataFromChildren.reverse().concat(metadataFromTarget.reverse());
     }
 

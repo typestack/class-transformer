@@ -85,4 +85,26 @@ describe("serialization and deserialization objects", () => {
         classedUsers.should.be.eql([userLike1, userLike2]);
     });
 
+    it("should successfully deserialize object with unknown nested properties ", () => {
+        defaultMetadataStorage.clear();
+
+        class TestObject {
+            prop: string;
+        }
+
+        const payload = {
+            prop: "Hi",
+            extra: {
+                anotherProp: "let's see how this works out!"
+            }
+        };
+
+        const result = deserialize(TestObject, JSON.stringify(payload));
+
+        result.should.be.instanceof(TestObject);
+        result.prop.should.be.eql("Hi");
+        // We should strip, but it's a breaking change
+        // (<any>result).extra.should.be.undefined;
+    });
+
 });
