@@ -162,7 +162,7 @@ export class TransformOperationExecutor {
                     if (metadata) {
                         const options: TypeHelpOptions = { newObject: newValue, object: value, property: propertyName };
                         const newType = metadata.typeFunction(options);
-                        if (metadata.options && metadata.options.discriminator && metadata.options.discriminator.property && metadata.options.discriminator.subTypes) {
+                        if (subValue !== undefined && subValue !== null && metadata.options && metadata.options.discriminator && metadata.options.discriminator.property && metadata.options.discriminator.subTypes) {
                             if (!(value[valueKey] instanceof Array)) {
                                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                                     type = metadata.options.discriminator.subTypes.find((subType) => subType.name === subValue[metadata.options.discriminator.property]);
