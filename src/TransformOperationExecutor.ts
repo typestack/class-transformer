@@ -45,7 +45,7 @@ export class TransformOperationExecutor {
                 const subSource = source ? source[index] : undefined;
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
                     let realTargetType;
-                    if (typeof targetType !== "function" && targetType && targetType.options && targetType.options.discriminator && targetType.options.discriminator.property && targetType.options.discriminator.subTypes) {
+                    if (subValue !== null && subValue !== undefined && typeof targetType !== "function" && targetType && targetType.options && targetType.options.discriminator && targetType.options.discriminator.property && targetType.options.discriminator.subTypes) {
                         if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                             realTargetType = targetType.options.discriminator.subTypes.find((subType) => subType.name === subValue[(targetType as { options: TypeOptions }).options.discriminator.property]);
                             const options: TypeHelpOptions = { newObject: newValue, object: subValue, property: undefined };
