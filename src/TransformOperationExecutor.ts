@@ -164,7 +164,14 @@ export class TransformOperationExecutor {
 
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
                     let transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
-                    let finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+                    let finalValue;
+
+                    if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
+                        finalValue = value[transformKey];
+                    } else {
+                        finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+                    }
+                    
                     finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
