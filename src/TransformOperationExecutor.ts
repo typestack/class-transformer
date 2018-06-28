@@ -168,11 +168,15 @@ export class TransformOperationExecutor {
 
                     if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
                         finalValue = value[transformKey];
+                        finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
+                        finalValue = (value[transformKey] === finalValue) ? subValue : finalValue;
+                        // value[transformKey] = finalValue;
+                        finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
                     } else {
                         finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+                        finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
                     }
-                    
-                    finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
+
                     if (newValue instanceof Map) {
                         newValue.set(newValueKey, finalValue);
                     } else {
