@@ -1,5 +1,5 @@
 {
-  "name": "class-transformer",
+  "name": "vv-class-transformer",
   "version": "0.1.9",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "license": "MIT",
@@ -9,6 +9,12 @@
     "name": "Umed Khudoiberdiev",
     "email": "pleerock.me@gmail.com"
   },
+  "maintainers": [
+    {
+      "name": "Ricardo Azzi Silva",
+      "email": "ricardo.azzi@viavarejo.com.br"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/pleerock/class-transformer.git"
