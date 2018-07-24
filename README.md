@@ -4,6 +4,7 @@
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
 [![Dependency Status](https://david-dm.org/typestack/class-transformer.svg)](https://david-dm.org/typestack/class-transformer)
 [![Join the chat at https://gitter.im/typestack/class-transformer](https://badges.gitter.im/typestack/class-transformer.svg)](https://gitter.im/typestack/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This library is a fork of class-transform, a very important library for the Front-End projects of Via Varejo. Recently those responsible for the maintenance have been busy with other demands and, with one or another inconvenient problem in the library, we decided to bring the maintenance indoors, that is, only for the correction of critical bugs.
 Every fix here must be associated with an issue and must have this issue and Pull Request replicated in the github of the original library so that when official maintainers are reestablished, they can review our changes, request a change at one or another point and then add these (or not) to the original project.
 
