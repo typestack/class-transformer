@@ -1,5 +1,12 @@
 # Changelog and release notes
 
+### 0.1.10
+
+#### Fixed
+
+- intermittent run time exception when reflecting array types
+
+
 ### 0.1.9
 
 #### Fixed
