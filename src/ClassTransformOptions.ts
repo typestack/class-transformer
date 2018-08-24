@@ -21,6 +21,11 @@ export interface TargetMap {
 export interface ClassTransformOptions {
 
     /**
+     * Context is passed into factory on serialization
+     */
+    context?: any;
+
+    /**
      * Exclusion strategy. By default exposeAll is used, which means that it will expose all properties are transformed
      * by default.
      */

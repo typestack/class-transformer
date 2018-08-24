@@ -7,6 +7,8 @@ import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
 import {TransformMetadata} from "./metadata/TransformMetadata";
 import {ClassTransformOptions} from "./ClassTransformOptions";
 import {TransformationType} from "./TransformOperationExecutor";
+import { IdentifierMetadata } from "./metadata/IdentifierMetadata";
+import { FactoryMetadata } from "./metadata/FactoryMetadata";
 
 /**
  * Defines a custom logic for value transformation.
@@ -26,6 +28,20 @@ export function Type(typeFunction?: (type?: TypeOptions) => Function) {
         const type = (Reflect as any).getMetadata("design:type", target, key);
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction);
         defaultMetadataStorage.addTypeMetadata(metadata);
+    };
+}
+
+export function Identifier() {
+    return function(object: Object|Function, propertyName?: string) {
+        const metadata = new IdentifierMetadata(object instanceof Function ? object : object.constructor, propertyName);
+        defaultMetadataStorage.addIdentifierMetadata(metadata);
+    };
+}
+
+export function Factory() {
+    return function(object: Object|Function, propertyName?: string) {
+        const metadata = new FactoryMetadata(object instanceof Function ? object : object.constructor, propertyName);
+        defaultMetadataStorage.addFactoryMetadata(metadata);
     };
 }
 

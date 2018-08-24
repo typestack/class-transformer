@@ -3,7 +3,8 @@ import {ExposeMetadata} from "./ExposeMetadata";
 import {ExcludeMetadata} from "./ExcludeMetadata";
 import {TransformationType} from "../TransformOperationExecutor";
 import {TransformMetadata} from "./TransformMetadata";
-
+import {FactoryMetadata} from "./FactoryMetadata";
+import {IdentifierMetadata} from "./IdentifierMetadata";
 /**
  * Storage all library metadata.
  */
@@ -17,10 +18,19 @@ export class MetadataStorage {
     private _transformMetadatas: TransformMetadata[] = [];
     private _exposeMetadatas: ExposeMetadata[] = [];
     private _excludeMetadatas: ExcludeMetadata[] = [];
-
+    private _factoryMetadatas: FactoryMetadata[] = [];
+    private _identifierMetadatas: IdentifierMetadata[] = [];
     // -------------------------------------------------------------------------
     // Adder Methods
     // -------------------------------------------------------------------------
+
+    addFactoryMetadata(metadata: FactoryMetadata) {
+        this._factoryMetadatas.push(metadata);
+    }
+
+    addIdentifierMetadata(metadata: IdentifierMetadata) {
+        this._identifierMetadatas.push(metadata);
+    }
 
     addTypeMetadata(metadata: TypeMetadata) {
         this._typeMetadatas.push(metadata);
@@ -84,6 +94,14 @@ export class MetadataStorage {
         const expose = this._exposeMetadatas.find(metadata => metadata.target === target && metadata.propertyName === undefined);
         if ((exclude && expose) || (!exclude && !expose)) return "none";
         return exclude ? "excludeAll" : "exposeAll";
+    }
+
+    getIdentifierMetadatas(target: Function): IdentifierMetadata[] {
+        return this.getMetadata(this._identifierMetadatas, target);
+    }
+
+    getFactoryMetadatas(target: Function): FactoryMetadata[] {
+        return this.getMetadata(this._factoryMetadatas, target);
     }
 
     getExposedMetadatas(target: Function): ExposeMetadata[] {

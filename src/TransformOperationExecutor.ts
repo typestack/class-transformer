@@ -14,6 +14,7 @@ export class TransformOperationExecutor {
     // Private Properties
     // -------------------------------------------------------------------------
 
+    private alreadyVisted = new Set<any>();
     private transformedTypesMap = new Map<Object, {level: number, object: Object}>();
 
     // -------------------------------------------------------------------------
@@ -75,7 +76,6 @@ export class TransformOperationExecutor {
             return new Date(value);
 
         } else if (typeof value === "object" && value !== null) {
-
             // try to guess the type
             if (!targetType && value.constructor !== Object/* && TransformationType === TransformationType.CLASS_TO_PLAIN*/) targetType = value.constructor;
             if (!targetType && source) targetType = source.constructor;
@@ -84,18 +84,26 @@ export class TransformOperationExecutor {
                 // add transformed type to prevent circular references
                 this.transformedTypesMap.set(value, {level: level, object: value});
             }
-
+            if (TransformationType.CLASS_TO_PLAIN && this.alreadyVisted.has(value) && defaultMetadataStorage.getIdentifierMetadatas(targetType).length > 0) {
+                const obj: any = {};
+                defaultMetadataStorage.getIdentifierMetadatas(targetType).forEach(metadata => {
+                    obj[metadata.propertyName] = value[metadata.propertyName];
+                });
+                return obj;
+            }
             const keys = this.getKeys(targetType, value);
+
             let newValue: any = source ? source : {};
             if (!source && (this.transformationType === TransformationType.PLAIN_TO_CLASS || this.transformationType === TransformationType.CLASS_TO_CLASS)) {
                 if (isMap) {
                     newValue = new Map();
                 } else if (targetType) {
-                    newValue = new (targetType as any)();
+                    newValue = this.createInstance(value, targetType, this.options);
                 } else {
                     newValue = {};
                 }
             }
+            this.alreadyVisted.add(value);
 
             // traverse over keys
             for (let key of keys) {
@@ -187,6 +195,16 @@ export class TransformOperationExecutor {
         } else {
             return value;
         }
+    }
+
+    private createInstance(value: any, targetType: Function, options: ClassTransformOptions) {
+        const factoryMethods = defaultMetadataStorage.getFactoryMetadatas(targetType);
+        if (factoryMethods.length > 0) {
+            const metadata = factoryMethods[0];
+            const j: any = targetType;
+            return j[metadata.propertyName](value, options.context);
+        }
+        return new (targetType as any)();
     }
 
     private applyCustomTransformations(value: any, target: Function, key: string, obj: any, transformationType: TransformationType) {
