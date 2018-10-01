@@ -23,9 +23,9 @@ export function Transform(transformFn: (value: any, obj: any, transformationType
  * The given TypeFunction can return a constructor. A discriminator can be given in the options.
  */
 export function Type(typeFunction: (type?: TypeHelpOptions) => Function, options?: TypeOptions) {
-    return function(target: any, key: string) {
-        const type = (Reflect as any).getMetadata("design:type", target, key);
-        const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, options);
+    return function(target: Object | Function, propertyName?: string) {
+        const type = (Reflect as any).getMetadata("design:type", target, propertyName);
+        const metadata = new TypeMetadata(target instanceof Function ? target : target.constructor, propertyName, type, typeFunction, options);
         defaultMetadataStorage.addTypeMetadata(metadata);
     };
 }
