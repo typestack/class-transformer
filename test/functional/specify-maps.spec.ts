@@ -914,6 +914,83 @@ describe("specifying target maps", () => {
         expect(plainUser.photo.name).to.be.undefined;
     });
 
+    it("should transform array items to correct polymorphic type for classes with class-level @Type decorator", () => {
+        defaultMetadataStorage.clear();
+
+        const getPhotoType = (value: any) => {
+            const discriminator = value.discriminator;
+            let resolvedType =
+                  discriminator === "landscape" ? LandscapePhoto
+                : discriminator === "portrait" ? PortraitPhoto
+                : undefined;
+            if (resolvedType === undefined) {
+                throw new Error(`Unknown photo discriminator value ${discriminator}`);
+            }
+            return resolvedType;
+        };
+
+        @Type(opts => getPhotoType(opts.object))
+        class Photo {
+            discriminator: "landscape" | "portrait";
+
+            id: number;
+
+            name: string;
+
+            @Exclude()
+            filename: string;
+        }
+
+        class LandscapePhoto extends Photo {
+            location: string;
+
+        }
+
+        class Person {
+            id: string;
+            name: string;
+        }
+        class PortraitPhoto extends Photo {
+            @Type(() => Person)
+            person: Person;
+        }
+
+        class Album {
+
+            id: number;
+
+            name: string;
+
+            @Type(() => Photo)
+            photos: Photo[];
+        }
+
+        const plainAlbum = {
+            id: 1,
+            name: "Album",
+            photos: [
+                { discriminator: "landscape", id: 1, name: "Landscape 1", filename: "landscape1.jpg", location: "Somewhere" },
+                { discriminator: "portrait", id: 2, name: "Portrait 1", filename: "portrait1.jpg", person: { id: 1, name: "Someone" } },
+            ]
+        };
+
+        const album = plainToClass(Album, plainAlbum);
+        album.should.be.instanceOf(Album);
+        album.should.not.equal(plainAlbum);
+        album.should.be.eql({
+            id: 1,
+            name: "Album",
+            photos: [
+                { constructor: LandscapePhoto, discriminator: "landscape", id: 1, name: "Landscape 1", location: "Somewhere" },
+                { constructor: PortraitPhoto, discriminator: "portrait", id: 2, name: "Portrait 1", person: { id: 1, name: "Someone" } },
+            ]
+        });
+        album.photos[0].should.be.instanceOf(LandscapePhoto);
+        album.photos[1].should.be.instanceOf(PortraitPhoto);
+        const portrait = album.photos[1] as PortraitPhoto;
+        portrait.person.should.be.instanceOf(Person);
+    });
+
     it("should convert given plain object to class instance object", () => {
         defaultMetadataStorage.clear();
 
