@@ -1,5 +1,12 @@
 # Changelog and release notes
 
+### 0.1.10
+
+#### Fixed
+
+- improve MetadataStorage perf by changing from Arrays to ES6 Maps by @sheiidan
+- fixed getAncestor issue with unknown nested properties by @247GradLabs
+
 ### 0.1.9
 
 #### Fixed
