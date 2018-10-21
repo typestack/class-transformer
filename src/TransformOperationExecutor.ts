@@ -191,7 +191,7 @@ export class TransformOperationExecutor {
                 }
 
                 // if value is an array try to get its custom array type
-                const arrayType = Array.isArray(value[valueKey]) ? this.getReflectedType(targetType, propertyName) : undefined;
+                const arrayType = Array.isArray(value[valueKey]) ? this.getReflectedType((targetType as Function), propertyName) : undefined;
 
                 // const subValueKey = TransformationType === TransformationType.PLAIN_TO_CLASS && newKeyName ? newKeyName : key;
                 const subSource = source ? source[valueKey] : undefined;
@@ -217,14 +217,14 @@ export class TransformOperationExecutor {
                         // Get original value
                         finalValue = value[transformKey];
                         // Apply custom transformation
-                        finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
+                        finalValue = this.applyCustomTransformations(finalValue, (targetType as Function), transformKey, value, this.transformationType);
                         // If nothing change, it means no custom transformation was applied, so use the subValue.
                         finalValue = (value[transformKey] === finalValue) ? subValue : finalValue;
                         // Apply the default transformation
                         finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
                     } else {
                         finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
-                        finalValue = this.applyCustomTransformations(finalValue, targetType, transformKey, value, this.transformationType);
+                        finalValue = this.applyCustomTransformations(finalValue, (targetType as Function), transformKey, value, this.transformationType);
                     }
 
                     if (newValue instanceof Map) {
