@@ -36,7 +36,7 @@ export class TransformOperationExecutor {
               isMap: boolean,
               level: number = 0) {
 
-        if (value instanceof Array || value instanceof Set) {
+        if (Array.isArray(value) || value instanceof Set) {
             const newValue = arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS ? new (arrayType as any)() : [];
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
@@ -75,7 +75,7 @@ export class TransformOperationExecutor {
 
             return new Date(value);
 
-        } else if (value instanceof Object) {
+        } else if (typeof value === "object" && value !== null) {
 
             // try to guess the type
             if (!targetType && value.constructor !== Object/* && TransformationType === TransformationType.CLASS_TO_PLAIN*/) targetType = value.constructor;
@@ -146,7 +146,7 @@ export class TransformOperationExecutor {
                 }
 
                 // if value is an array try to get its custom array type
-                const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
+                const arrayType = Array.isArray(value[valueKey]) ? this.getReflectedType(targetType, propertyName) : undefined;
                 // const subValueKey = TransformationType === TransformationType.PLAIN_TO_CLASS && newKeyName ? newKeyName : key;
                 const subSource = source ? source[valueKey] : undefined;
 

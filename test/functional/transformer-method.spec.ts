@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, TransformClassToClass, TransformClassToPlain} from "../../src/decorators";
+import {Exclude, Expose, TransformClassToPlain, TransformClassToClass, TransformPlainToClass} from "../../src/decorators";
 import {expect} from "chai";
 
 describe("transformer methods decorator", () => {
@@ -47,6 +47,49 @@ describe("transformer methods decorator", () => {
 
 
         expect(result).to.be.eql(plainUser);
+        expect(result).to.be.instanceof(User);
+    });
+
+    it("should expose non configuration properties and return User instance class instead of plain object", () => {
+        defaultMetadataStorage.clear();
+
+        @Exclude()
+        class User {
+
+            id: number;
+
+            @Expose()
+            firstName: string;
+
+            @Expose()
+            lastName: string;
+
+            password: string;
+        }
+
+        class UserController {
+
+            @TransformPlainToClass(User)
+            getUser() {
+                const user: any = {};
+                user.firstName = "Snir";
+                user.lastName = "Segal";
+                user.password = "imnosuperman";
+
+                return user;
+            }
+        }
+
+        const controller = new UserController();
+
+        const result = controller.getUser();
+        expect(result.password).to.be.undefined;
+
+        const user = new User();
+        user.firstName = "Snir";
+        user.lastName = "Segal";
+
+        expect(result).to.be.eql(user);
         expect(result).to.be.instanceof(User);
     });
 

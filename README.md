@@ -1,10 +1,10 @@
 # class-transformer
 
-[![Build Status](https://travis-ci.org/pleerock/class-transformer.svg?branch=master)](https://travis-ci.org/pleerock/class-transformer)
-[![codecov](https://codecov.io/gh/pleerock/class-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/pleerock/class-transformer)
+[![Build Status](https://travis-ci.org/typestack/class-transformer.svg?branch=master)](https://travis-ci.org/typestack/class-transformer)
+[![codecov](https://codecov.io/gh/typestack/class-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
-[![Dependency Status](https://david-dm.org/pleerock/class-transformer.svg)](https://david-dm.org/pleerock/class-transformer)
-[![Join the chat at https://gitter.im/pleerock/class-transformer](https://badges.gitter.im/pleerock/class-transformer.svg)](https://gitter.im/pleerock/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Dependency Status](https://david-dm.org/typestack/class-transformer.svg)](https://david-dm.org/typestack/class-transformer)
+[![Join the chat at https://gitter.im/typestack/class-transformer](https://badges.gitter.im/typestack/class-transformer.svg)](https://gitter.im/typestack/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
@@ -224,14 +224,14 @@ You can deserialize your model to from a json using `deserialize` method:
 
 ```typescript
 import {deserialize} from "class-transformer";
-let photo = deserialize(photo);
+let photo = deserialize(Photo, photo);
 ```
 
 To make deserialization to work with arrays use `deserializeArray` method:
 
 ```typescript
 import {deserializeArray} from "class-transformer";
-let photos = deserializeArray(photos);
+let photos = deserializeArray(Photo, photos);
 ```
 
 ## Working with nested objects
@@ -565,6 +565,29 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
+ES6 collections `Set` and `Map` also require the `@Type` decorator:
+
+```typescript
+export class Skill {
+    name: string;
+}
+
+export class Weapon {
+    name: string;
+    range: number;
+}
+
+export class Player {
+    name: string;
+
+    @Type(() => Skill)
+    skills: Set<Skill>;
+
+    @Type(() => Weapon)
+    weapons: Map<string, Weapon>;
+}
+```
+
 ## Additional data transformation
 
 ### Basic usage
@@ -611,6 +634,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 |--------------------|------------------------------------------|---------------------------------------------|
 | `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
 | `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class.
+| `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class.
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
@@ -658,7 +682,7 @@ the exposed variables. email property is also exposed becuase we metioned the gr
 ## Working with generics
 
 Generics are not supported because TypeScript does not have good reflection abilities yet.
-Once TypeScript team provide us better runtime type reelection tools, generics will be implemented.
+Once TypeScript team provide us better runtime type reflection tools, generics will be implemented.
 There are some tweaks however you can use, that maybe can solve your problem.
 [Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
 
