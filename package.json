@@ -1,6 +1,6 @@
 {
   "name": "class-transformer",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "license": "MIT",
   "readmeFilename": "README.md",
@@ -59,6 +59,7 @@
     "typescript": "^2.0.10"
   },
   "scripts": {
-    "test": "gulp tests"
+    "test": "gulp tests",
+    "package": "gulp package"
   }
 }

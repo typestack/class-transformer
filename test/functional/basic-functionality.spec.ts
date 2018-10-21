@@ -1555,7 +1555,7 @@ describe("basic functionality", () => {
 
     });
 
-    it("should be able to transform array too", () => {
+    it("should transform array", () => {
         defaultMetadataStorage.clear();
 
 
@@ -1679,6 +1679,19 @@ describe("basic functionality", () => {
 
         classToClassFromExistUser.should.be.eql([fromExistUserLike1, fromExistUserLike2]);
 
+    });
+
+    it("should transform objects with null prototype", () => {
+        class TestClass {
+            prop: string;
+        }
+
+        const obj = Object.create(null);
+        obj.a = "JS FTW";
+
+        const transformedClass = plainToClass(TestClass, obj);
+
+        transformedClass.should.be.instanceOf(TestClass);
     });
 
 });
