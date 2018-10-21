@@ -634,6 +634,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 |--------------------|------------------------------------------|---------------------------------------------|
 | `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
 | `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class.
+| `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class.
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
