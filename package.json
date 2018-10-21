@@ -1,6 +1,6 @@
 {
   "name": "class-transformer",
-  "version": "0.1.6",
+  "version": "0.1.10",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "license": "MIT",
   "readmeFilename": "README.md",
@@ -26,10 +26,12 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "@types/chai": "^3.4.34",
     "@types/es6-shim": "^0.31.32",
     "@types/mocha": "^2.2.33",
     "@types/node": "0.0.2",
+    "@types/sinon": "^2.2.2",
     "chai": "^3.4.1",
     "chai-as-promised": "^6.0.0",
     "del": "^2.2.1",
@@ -57,6 +59,7 @@
     "typescript": "^2.0.10"
   },
   "scripts": {
-    "test": "gulp tests"
+    "test": "gulp tests",
+    "package": "gulp package"
   }
 }

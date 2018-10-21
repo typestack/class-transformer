@@ -90,3 +90,13 @@ export function deserialize<T>(cls: ClassType<T>, json: string, options?: ClassT
 export function deserializeArray<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T[] {
     return classTransformer.deserializeArray(cls, json, options);
 }
+
+/**
+ * Enum representing the different transformation types.
+ */
+
+export enum TransformationType {
+    PLAIN_TO_CLASS,
+    CLASS_TO_PLAIN,
+    CLASS_TO_CLASS
+}

@@ -1,7 +1,9 @@
 import {ClassTransformOptions} from "./ClassTransformOptions";
-import {TransformOperationExecutor} from "./TransformOperationExecutor";
+import {TransformOperationExecutor, TransformationType} from "./TransformOperationExecutor";
 
-export type ClassType<T> = { new (...args: any[]): T; };
+export type ClassType<T> = {
+    new (...args: any[]): T;
+};
 
 export class ClassTransformer {
 
@@ -15,7 +17,7 @@ export class ClassTransformer {
     classToPlain<T extends Object>(object: T, options?: ClassTransformOptions): Object;
     classToPlain<T extends Object>(object: T[], options?: ClassTransformOptions): Object[];
     classToPlain<T extends Object>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
-        const executor = new TransformOperationExecutor("classToPlain", options || {});
+        const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
         return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
     }
 
@@ -27,7 +29,7 @@ export class ClassTransformer {
     classToPlainFromExist<T extends Object, P>(object: T, plainObject: P, options?: ClassTransformOptions): T;
     classToPlainFromExist<T extends Object, P>(object: T, plainObjects: P[], options?: ClassTransformOptions): T[];
     classToPlainFromExist<T extends Object, P>(object: T, plainObject: P|P[], options?: ClassTransformOptions): T|T[] {
-        const executor = new TransformOperationExecutor("classToPlain", options || {});
+        const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
         return executor.transform(plainObject, object, undefined, undefined, undefined, undefined);
     }
 
@@ -37,7 +39,7 @@ export class ClassTransformer {
     plainToClass<T extends Object, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T[];
     plainToClass<T extends Object, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
     plainToClass<T extends Object, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): T|T[] {
-        const executor = new TransformOperationExecutor("plainToClass", options || {});
+        const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, options || {});
         return executor.transform(undefined, plain, cls, undefined, undefined, undefined);
     }
 
@@ -49,7 +51,7 @@ export class ClassTransformer {
     plainToClassFromExist<T extends Object, V extends Array<any>>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
     plainToClassFromExist<T extends Object, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T[];
     plainToClassFromExist<T extends Object, V>(clsObject: T, plain: V|V[], options?: ClassTransformOptions): T|T[] {
-        const executor = new TransformOperationExecutor("plainToClass", options || {});
+        const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, options || {});
         return executor.transform(clsObject, plain, undefined, undefined, undefined, undefined);
     }
 
@@ -59,7 +61,7 @@ export class ClassTransformer {
     classToClass<T>(object: T, options?: ClassTransformOptions): T;
     classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
     classToClass<T>(object: T|T[], options?: ClassTransformOptions): T|T[] {
-        const executor = new TransformOperationExecutor("classToClass", options || {});
+        const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, options || {});
         return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
     }
 
@@ -71,7 +73,7 @@ export class ClassTransformer {
     classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
     classToClassFromExist<T>(object: T, fromObjects: T[], options?: ClassTransformOptions): T[];
     classToClassFromExist<T>(object: T, fromObject: T|T[], options?: ClassTransformOptions): T|T[] {
-        const executor = new TransformOperationExecutor("classToClass", options || {});
+        const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, options || {});
         return executor.transform(fromObject, object, undefined, undefined, undefined, undefined);
     }
 
