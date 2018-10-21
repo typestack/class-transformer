@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {defaultMetadataStorage} from "../../src/storage";
-import { Exclude, Expose, TransformClassToPlain, TransformClassToClass, TransformPlainToClass } from "../../src/decorators";
+import {Exclude, Expose, TransformClassToPlain, TransformClassToClass, TransformPlainToClass} from "../../src/decorators";
 import {expect} from "chai";
 
 describe("transformer methods decorator", () => {
@@ -23,7 +23,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToClass()
             getUser() {
                 const user = new User();
@@ -111,7 +111,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToPlain()
             getUser() {
                 const user = new User();
@@ -126,7 +126,7 @@ describe("transformer methods decorator", () => {
         const controller = new UserController();
 
         const result = controller.getUser();
-            expect(result.password).to.be.undefined;
+        expect(result.password).to.be.undefined;
 
         const plainUser = {
             firstName: "Snir",
@@ -150,15 +150,15 @@ describe("transformer methods decorator", () => {
             @Expose()
             lastName: string;
 
-            @Expose({ groups: ["user.permissions"] })
+            @Expose({groups: ["user.permissions"]})
             roles: string[];
 
             password: string;
         }
 
         class UserController {
-            
-            @TransformClassToPlain({ groups: ["user.permissions"] })
+
+            @TransformClassToPlain({groups: ["user.permissions"]})
             getUserWithRoles() {
                 const user = new User();
                 user.firstName = "Snir";
@@ -199,10 +199,10 @@ describe("transformer methods decorator", () => {
             @Expose()
             lastName: string;
 
-            @Expose({ groups: ["user.permissions"] })
+            @Expose({groups: ["user.permissions"]})
             roles: string[];
 
-            @Expose({ since: 2 })
+            @Expose({since: 2})
             websiteUrl?: string;
 
             password: string;
@@ -210,7 +210,7 @@ describe("transformer methods decorator", () => {
 
         class UserController {
 
-            @TransformClassToPlain({ version: 1 })
+            @TransformClassToPlain({version: 1})
             getUserVersion1() {
                 const user = new User();
                 user.firstName = "Snir";
@@ -221,8 +221,8 @@ describe("transformer methods decorator", () => {
 
                 return user;
             }
-                    
-            @TransformClassToPlain({ version: 2 })
+
+            @TransformClassToPlain({version: 2})
             getUserVersion2() {
                 const user = new User();
                 user.firstName = "Snir";
