@@ -565,6 +565,29 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
+ES6 collections `Set` and `Map` also require the `@Type` decorator:
+
+```typescript
+export class Skill {
+    name: string;
+}
+
+export class Weapon {
+    name: string;
+    range: number;
+}
+
+export class Player {
+    name: string;
+
+    @Type(() => Skill)
+    skills: Set<Skill>;
+
+    @Type(() => Weapon)
+    weapons: Map<string, Weapon>;
+}
+```
+
 ## Additional data transformation
 
 ### Basic usage
