@@ -637,6 +637,29 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
+ES6 collections `Set` and `Map` also require the `@Type` decorator:
+
+```typescript
+export class Skill {
+    name: string;
+}
+
+export class Weapon {
+    name: string;
+    range: number;
+}
+
+export class Player {
+    name: string;
+
+    @Type(() => Skill)
+    skills: Set<Skill>;
+
+    @Type(() => Weapon)
+    weapons: Map<string, Weapon>;
+}
+```
+
 ## Additional data transformation
 
 ### Basic usage
@@ -683,6 +706,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 |--------------------|------------------------------------------|---------------------------------------------|
 | `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
 | `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class.
+| `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class.
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
@@ -730,7 +754,7 @@ the exposed variables. email property is also exposed becuase we metioned the gr
 ## Working with generics
 
 Generics are not supported because TypeScript does not have good reflection abilities yet.
-Once TypeScript team provide us better runtime type reelection tools, generics will be implemented.
+Once TypeScript team provide us better runtime type reflection tools, generics will be implemented.
 There are some tweaks however you can use, that maybe can solve your problem.
 [Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
 
