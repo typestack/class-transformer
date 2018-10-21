@@ -530,7 +530,7 @@ When you are using arrays you must provide a type of the object that array conta
 This type, you specify in a `@Type()` decorator:
 
 ```typescript
-import {ArrayType} from "class-transformer";
+import {Type} from "class-transformer";
 
 export class Photo {
 
@@ -546,7 +546,7 @@ export class Photo {
 You can also use custom array types:
 
 ```typescript
-import {ArrayType} from "class-transformer";
+import {Type} from "class-transformer";
 
 export class AlbumCollection extends Array<Album> {
     // custom array functions ...
