@@ -14,7 +14,7 @@ export class TransformOperationExecutor {
     // Private Properties
     // -------------------------------------------------------------------------
 
-    private transformedTypesMap = new Map<Object, {level: number, object: Object}>();
+    private recursionStack = new Set<Object>();
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -39,7 +39,7 @@ export class TransformOperationExecutor {
             const newValue = arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS ? new (arrayType as any)() : [];
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
-                if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
+                if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
                     const value = this.transform(subSource, subValue, targetType, undefined, subValue instanceof Map, level + 1);
                     if (newValue instanceof Set) {
                         newValue.add(value);
@@ -88,7 +88,7 @@ export class TransformOperationExecutor {
 
             if (this.options.enableCircularCheck) {
                 // add transformed type to prevent circular references
-                this.transformedTypesMap.set(value, {level: level, object: value});
+                this.recursionStack.add(value);
             }
 
             const keys = this.getKeys(targetType, value);
@@ -168,7 +168,7 @@ export class TransformOperationExecutor {
                         continue;
                 }
 
-                if (!this.options.enableCircularCheck || !this.isCircular(subValue, level)) {
+                if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
                     let transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
                     let finalValue;
 
@@ -202,6 +202,11 @@ export class TransformOperationExecutor {
                 }
 
             }
+
+            if (this.options.enableCircularCheck) {
+                this.recursionStack.delete(value);
+            }
+
             return newValue;
 
         } else {
@@ -244,9 +249,8 @@ export class TransformOperationExecutor {
     }
 
     // preventing circular references
-    private isCircular(object: Object, level: number) {
-        const transformed = this.transformedTypesMap.get(object);
-        return transformed !== undefined && transformed.level < level;
+    private isCircular(object: Object) {
+        return this.recursionStack.has(object);
     }
 
     private getReflectedType(target: Function, propertyName: string) {
