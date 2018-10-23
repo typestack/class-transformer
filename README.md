@@ -186,7 +186,7 @@ import {plainToClass} from "class-transformer";
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
-#### plainToClassFromExisting
+#### plainToClassFromExist
 
 This method transforms a plain object into a instance using a already filled Object which is a instance from the target class.
 
