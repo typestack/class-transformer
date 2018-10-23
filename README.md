@@ -11,15 +11,15 @@ Class-transformer allows you to transform plain object to some instance of class
 Also it allows to serialize / deserialize object based on criteria.
 This tool is super useful on both frontend and backend.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
+Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is available [here](https://github.com/pleerock/class-transformer-demo).
 
 ## What is class-transformer
 
 In JavaScript there are two types of objects:
 
-* plain (literal) objects
-* class (constructor) objects
+-   plain (literal) objects
+-   class (constructor) objects
 
 Plain objects are objects that are instances of `Object` class.
 Sometimes they are called **literal** objects, when created via `{}` notation.
@@ -35,25 +35,28 @@ and after you `JSON.parse` it you have a plain javascript object, not instance o
 For example you have a list of users in your `users.json` that you are loading:
 
 ```json
-[{
-  "id": 1,
-  "firstName": "Johny",
-  "lastName": "Cage",
-  "age": 27
-},
-{
-  "id": 2,
-  "firstName": "Ismoil",
-  "lastName": "Somoni",
-  "age": 50
-},
-{
-  "id": 3,
-  "firstName": "Luke",
-  "lastName": "Dacascos",
-  "age": 12
-}]
+[
+    {
+        "id": 1,
+        "firstName": "Johny",
+        "lastName": "Cage",
+        "age": 27
+    },
+    {
+        "id": 2,
+        "firstName": "Ismoil",
+        "lastName": "Somoni",
+        "age": 50
+    },
+    {
+        "id": 3,
+        "firstName": "Luke",
+        "lastName": "Dacascos",
+        "age": 12
+    }
+]
 ```
+
 And you have a `User` class:
 
 ```typescript
@@ -64,7 +67,7 @@ export class User {
     age: number;
 
     getName() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName + ' ' + this.lastName;
     }
 
     isAdult() {
@@ -77,7 +80,7 @@ You are assuming that you are downloading users of type `User` from `users.json`
 following code:
 
 ```typescript
-fetch("users.json").then((users: User[]) => {
+fetch('users.json').then((users: User[]) => {
     // you can use users here, and type hinting also will be available to you,
     //  but users are not actually instances of User class
     // this means that you can't use methods of User class
@@ -101,9 +104,9 @@ because it provides a great tooling to control what your models are exposing in 
 Here is example how it will look like:
 
 ```typescript
-fetch("users.json").then((users: Object[]) => {
+fetch('users.json').then((users: Object[]) => {
     const realUsers = plainToClass(User, users);
-    // now each user in realUsers is instance of User class 
+    // now each user in realUsers is instance of User class
 });
 ```
 
@@ -124,17 +127,17 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
     and make sure to import it in a global place, like app.ts:
 
     ```typescript
-    import "reflect-metadata";
+    import 'reflect-metadata';
     ```
 
 3. ES6 features are used, if you are using old version of node.js you may need to install es6-shim:
 
-   `npm install es6-shim --save`
+    `npm install es6-shim --save`
 
-   and import it in a global place like app.ts:
+    and import it in a global place like app.ts:
 
     ```typescript
-    import "es6-shim";
+    import 'es6-shim';
     ```
 
 ### Browser
@@ -169,7 +172,10 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
             "class-transformer": "node_modules/class-transformer"
         },
         "packages": {
-            "class-transformer": { "main": "index.js", "defaultExtension": "js" }
+            "class-transformer": {
+                "main": "index.js",
+                "defaultExtension": "js"
+            }
         }
     }
     ```
@@ -181,9 +187,20 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 This method transforms a plain javascript object to instance of specific class.
 
 ```typescript
-import {plainToClass} from "class-transformer";
+import { plainToClass } from 'class-transformer';
 
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
+```
+
+#### plainToClassFromExisting
+
+This method transforms a plain object into a instance using a already filled Object which is a instance from the target class.
+
+```typescript
+const defaultUser = new User();
+defaultUser.role = 'user';
+
+let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
 ```
 
 #### classToPlain
@@ -191,7 +208,7 @@ let users = plainToClass(User, userJson); // to convert user plain object a sing
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
 
 ```typescript
-import {classToPlain} from "class-transformer";
+import { classToPlain } from 'class-transformer';
 let photo = classToPlain(photo);
 ```
 
@@ -201,7 +218,7 @@ This method transforms your class object into new instance of the class object.
 This maybe treated as deep clone of your objects.
 
 ```typescript
-import {classToClass} from "class-transformer";
+import { classToClass } from 'class-transformer';
 let photo = classToClass(photo);
 ```
 
@@ -212,7 +229,7 @@ You can also use a `ignoreDecorators` option in transformation options to ignore
 You can serialize your model right to the json using `serialize` method:
 
 ```typescript
-import {serialize} from "class-transformer";
+import { serialize } from 'class-transformer';
 let photo = serialize(photo);
 ```
 
@@ -223,14 +240,14 @@ let photo = serialize(photo);
 You can deserialize your model to from a json using `deserialize` method:
 
 ```typescript
-import {deserialize} from "class-transformer";
+import { deserialize } from 'class-transformer';
 let photo = deserialize(Photo, photo);
 ```
 
 To make deserialization to work with arrays use `deserializeArray` method:
 
 ```typescript
-import {deserializeArray} from "class-transformer";
+import { deserializeArray } from 'class-transformer';
 let photos = deserializeArray(Photo, photos);
 ```
 
@@ -242,14 +259,13 @@ Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
 This is done using `@Type` decorator.
 
-Lets say we have an album with photos. 
+Lets say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
-import {Type, plainToClass} from "class-transformer";
+import { Type, plainToClass } from 'class-transformer';
 
 export class Album {
-
     id: number;
 
     name: string;
@@ -272,10 +288,9 @@ let album = plainToClass(Album, albumJson);
 You can expose what your getter or method return by setting a `@Expose()` decorator to those getters or methods:
 
 ```typescript
-import {Expose} from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class User {
-
     id: number;
     firstName: string;
     lastName: string;
@@ -283,12 +298,12 @@ export class User {
 
     @Expose()
     get name() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName + ' ' + this.lastName;
     }
 
     @Expose()
     getFullName() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName + ' ' + this.lastName;
     }
 }
 ```
@@ -299,23 +314,22 @@ If you want to expose some of properties with a different name,
 you can do it by specifying a `name` option to `@Expose` decorator:
 
 ```typescript
-import {Expose} from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class User {
-
-    @Expose({ name: "uid" })
+    @Expose({ name: 'uid' })
     id: number;
 
     firstName: string;
 
     lastName: string;
 
-    @Expose({ name: "secretKey" })
+    @Expose({ name: 'secretKey' })
     password: string;
 
-    @Expose({ name: "fullName" })
+    @Expose({ name: 'fullName' })
     getFullName() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName + ' ' + this.lastName;
     }
 }
 ```
@@ -326,10 +340,9 @@ Sometimes you want to skip some properties during transformation.
 This can be done using `@Exclude` decorator:
 
 ```typescript
-import {Exclude} from "class-transformer";
+import { Exclude } from 'class-transformer';
 
 export class User {
-
     id: number;
 
     email: string;
@@ -346,10 +359,9 @@ Now when you transform a User, `password` property will be skipped and not be in
 You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
 
 ```typescript
-import {Exclude} from "class-transformer";
+import { Exclude } from 'class-transformer';
 
 export class User {
-
     id: number;
 
     email: string;
@@ -366,11 +378,10 @@ Now `password` property will be excluded only during `classToPlain` operation. O
 You can skip all properties of the class, and expose only those are needed explicitly:
 
 ```typescript
-import {Exclude, Expose} from "class-transformer";
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class User {
-
     @Expose()
     id: number;
 
@@ -385,20 +396,20 @@ Now `id` and `email` will be exposed, and password will be excluded during trans
 Alternatively, you can set exclusion strategy during transformation:
 
 ```typescript
-import {classToPlain} from "class-transformer";
-let photo = classToPlain(photo, { strategy: "excludeAll" });
+import { classToPlain } from 'class-transformer';
+let photo = classToPlain(photo, { strategy: 'excludeAll' });
 ```
 
 In this case you don't need to `@Exclude()` a whole class.
 
 ## Skipping private properties, or some prefixed properties
 
-If you name your private properties with a prefix, lets say with `_`, 
+If you name your private properties with a prefix, lets say with `_`,
 then you can exclude such properties from transformation too:
 
 ```typescript
-import {classToPlain} from "class-transformer";
-let photo = classToPlain(photo, { excludePrefixes: ["_"] });
+import { classToPlain } from 'class-transformer';
+let photo = classToPlain(photo, { excludePrefixes: ['_'] });
 ```
 
 This will skip all properties that start with `_` prefix.
@@ -406,10 +417,9 @@ You can pass any number of prefixes and all properties that begin with these pre
 For example:
 
 ```typescript
-import {Expose} from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class User {
-
     id: number;
     private _firstName: string;
     private _lastName: string;
@@ -422,17 +432,16 @@ export class User {
 
     @Expose()
     get name() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName + ' ' + this.lastName;
     }
-    
 }
 
 const user = new User();
 user.id = 1;
-user.setName("Johny", "Cage");
+user.setName('Johny', 'Cage');
 user._password = 123;
 
-const plainUser = classToPlain(user, { excludePrefixes: ["_"] });
+const plainUser = classToPlain(user, { excludePrefixes: ['_'] });
 // here plainUser will be equal to
 // { id: 1, name: "Johny Cage" }
 ```
@@ -442,27 +451,26 @@ const plainUser = classToPlain(user, { excludePrefixes: ["_"] });
 You can use groups to control what data will be exposed and what will not be:
 
 ```typescript
-import {Exclude, Expose} from "class-transformer";
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class User {
-
     id: number;
 
     name: string;
 
-    @Expose({ groups: ["user", "admin"] }) // this means that this data will be exposed only to users and admins
+    @Expose({ groups: ['user', 'admin'] }) // this means that this data will be exposed only to users and admins
     email: string;
 
-    @Expose({ groups: ["user"] }) // this means that this data will be exposed only to users
+    @Expose({ groups: ['user'] }) // this means that this data will be exposed only to users
     password: string;
 }
 ```
 
 ```typescript
-import {classToPlain} from "class-transformer";
-let user1 = classToPlain(user, { groups: ["user"] }); // will contain id, name, email and password
-let user2 = classToPlain(user, { groups: ["admin"] }); // will contain id, name and email
+import { classToPlain } from 'class-transformer';
+let user1 = classToPlain(user, { groups: ['user'] }); // will contain id, name, email and password
+let user2 = classToPlain(user, { groups: ['admin'] }); // will contain id, name and email
 ```
 
 ## Using versioning to control exposed and excluded properties
@@ -471,11 +479,10 @@ If you are building an API that has different versions, class-transformer has ex
 You can control which properties of your model should be exposed or excluded in what version. Example:
 
 ```typescript
-import {Exclude, Expose} from "class-transformer";
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class User {
-
     id: number;
 
     name: string;
@@ -489,7 +496,7 @@ export class User {
 ```
 
 ```typescript
-import {classToPlain} from "class-transformer";
+import { classToPlain } from 'class-transformer';
 let user1 = classToPlain(user, { version: 0.5 }); // will contain id and name
 let user2 = classToPlain(user, { version: 0.7 }); // will contain id, name and email
 let user3 = classToPlain(user, { version: 1 }); // will contain id and name
@@ -504,10 +511,9 @@ And you want to create a real javascript Date object from it.
 You can do it simply by passing a Date object to the `@Type` decorator:
 
 ```typescript
-import {Type} from "class-transformer";
+import { Type } from 'class-transformer';
 
 export class User {
-
     id: number;
 
     email: string;
@@ -530,10 +536,9 @@ When you are using arrays you must provide a type of the object that array conta
 This type, you specify in a `@Type()` decorator:
 
 ```typescript
-import {Type} from "class-transformer";
+import { Type } from 'class-transformer';
 
 export class Photo {
-
     id: number;
 
     name: string;
@@ -546,14 +551,13 @@ export class Photo {
 You can also use custom array types:
 
 ```typescript
-import {Type} from "class-transformer";
+import { Type } from 'class-transformer';
 
 export class AlbumCollection extends Array<Album> {
     // custom array functions ...
 }
 
 export class Photo {
-
     id: number;
 
     name: string;
@@ -574,12 +578,11 @@ For example, you want to make your `Date` object to be a `moment` object when yo
 transforming object from plain to class:
 
 ```typescript
-import {Transform} from "class-transformer";
-import * as moment from "moment";
-import {Moment} from "moment";
+import { Transform } from 'class-transformer';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
 export class Photo {
-
     id: number;
 
     @Type(() => Date)
@@ -588,8 +591,8 @@ export class Photo {
 }
 ```
 
-Now when you call `plainToClass` and send a plain representation of the Photo object, 
-it will convert a date value in your photo object to moment date. 
+Now when you call `plainToClass` and send a plain representation of the Photo object,
+it will convert a date value in your photo object to moment date.
 `@Transform` decorator also supports groups and versioning.
 
 ### Advanced usage
@@ -600,17 +603,18 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 @Transform((value, obj, type) => value)
 ```
 
-| Argument          | Description
-|--------------------|---------------------------------------------------------------------------------|
-| `value` | The property value before the transformation.
-| `obj` | The transformation source object. 
-| `type` | The transformation type.
+| Argument | Description                                   |
+| -------- | --------------------------------------------- |
+| `value`  | The property value before the transformation. |
+| `obj`    | The transformation source object.             |
+| `type`   | The transformation type.                      |
 
 ## Other decorators
-| Signature          | Example                                  | Description
-|--------------------|------------------------------------------|---------------------------------------------|
-| `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
-| `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class.
+
+| Signature                | Example                                        | Description                                                                           |
+| ------------------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class. |
+| `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class. |
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
@@ -620,7 +624,6 @@ An example:
 ```typescript
 @Exclude()
 class User {
-
     id: number;
 
     @Expose()
@@ -636,13 +639,12 @@ class User {
 }
 
 class UserController {
-    
     @TransformClassToPlain({ groups: ['user.email'] })
     getUser() {
         const user = new User();
-        user.firstName = "Snir";
-        user.lastName = "Segal";
-        user.password = "imnosuperman";
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
 
         return user;
     }
@@ -666,7 +668,7 @@ There are some tweaks however you can use, that maybe can solve your problem.
 
 Circular references are ignored.
 For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
- and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
+and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
 Circular references are not ignored only during `classToClass` operation.
 
 ## Example with Angular2
@@ -674,10 +676,10 @@ Circular references are not ignored only during `classToClass` operation.
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
 
 ```typescript
-import {plainToClass} from "class-transformer";
+import { plainToClass } from 'class-transformer';
 
 this.http
-    .get("users.json")
+    .get('users.json')
     .map(res => res.json())
     .map(res => plainToClass(User, res as Object[]))
     .subscribe(users => {
@@ -688,7 +690,7 @@ this.http
 
 You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
+Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is [here](https://github.com/pleerock/class-transformer-demo).
 
 ## Samples
