@@ -137,13 +137,16 @@ export class TransformOperationExecutor {
                         const options: TypeOptions = {newObject: newValue, object: value, property: propertyName};
                         type = metadata.typeFunction(options);
                         isSubValueMap = isSubValueMap || metadata.reflectedType === Map;
+
+                    } else if(type = (Reflect as any).getMetadata("design:type", targetType.prototype, propertyName)){
+                        isSubValueMap = isSubValueMap || type === Map;
+
                     } else if (this.options.targetMaps) { // try to find a type in target maps
                         this.options.targetMaps
                             .filter(map => map.target === targetType && !!map.properties[propertyName])
                             .forEach(map => type = map.properties[propertyName]);
                     }
                 }
-
                 // if value is an array try to get its custom array type
                 const arrayType = value[valueKey] instanceof Array ? this.getReflectedType(targetType, propertyName) : undefined;
                 // const subValueKey = TransformationType === TransformationType.PLAIN_TO_CLASS && newKeyName ? newKeyName : key;
