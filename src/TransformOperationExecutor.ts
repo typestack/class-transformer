@@ -3,6 +3,8 @@ import { defaultMetadataStorage } from "./storage";
 import { TypeHelpOptions, Discriminator, TypeOptions } from "./metadata/ExposeExcludeOptions";
 import { TypeMetadata } from "./metadata/TypeMetadata";
 
+export const TRANSFORMATION_ERROR_PREFIX: string = "[class-transformer]";
+
 export enum TransformationType {
     PLAIN_TO_CLASS,
     CLASS_TO_PLAIN,
@@ -116,7 +118,7 @@ export class TransformOperationExecutor {
                 if (isMap) {
                     newValue = new Map();
                 } else if (targetType) {
-                    newValue = new (targetType as any)();
+                    newValue = this.attemptToUseTargetTypeConstructor(targetType);
                 } else {
                     newValue = {};
                 }
@@ -147,7 +149,7 @@ export class TransformOperationExecutor {
                 if (value instanceof Map) {
                     subValue = value.get(valueKey);
                 } else if (value[valueKey] instanceof Function) {
-                    subValue = value[valueKey]();
+                    subValue = this.attemptToCallUnknownFunctionOnSourceValue(value, valueKey);
                 } else {
                     subValue = value[valueKey];
                 }
@@ -252,6 +254,26 @@ export class TransformOperationExecutor {
 
         } else {
             return value;
+        }
+    }
+
+    private attemptToUseTargetTypeConstructor(targetType: any) {
+        try {
+            return new targetType();
+        } catch (e) {
+            console.error(`${TRANSFORMATION_ERROR_PREFIX} - TransformOperationExecutor encountered error while attempting to call target type constructor with no parameters. The constructor of ${(targetType).name} may not be compatible with class-transformer by default, consider using a custom transformation function. Target constructor function was: `, targetType);
+            console.error(`Original error: `, e);
+            throw new Error(`${TRANSFORMATION_ERROR_PREFIX} - Cannot construct targetType for ${(targetType).name}`);
+        }
+    }
+
+    private attemptToCallUnknownFunctionOnSourceValue(value: any, valueKey: string) {
+        try {
+            return value[valueKey]();
+        } catch (e) {
+            console.error(`${TRANSFORMATION_ERROR_PREFIX} - TransformOperationExecutor encountered error while attempting to call function on source object with no parameters. Target function was: `, value[valueKey]);
+            console.error(`Original error: `, e);
+            throw new Error(`${TRANSFORMATION_ERROR_PREFIX} - Cannot extract data from source for key ${valueKey}`);
         }
     }
 
