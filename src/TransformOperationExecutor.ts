@@ -162,7 +162,7 @@ export class TransformOperationExecutor {
                     const metadata = defaultMetadataStorage.findTypeMetadata((targetType as Function), propertyName);
                     if (metadata) {
                         const options: TypeHelpOptions = { newObject: newValue, object: value, property: propertyName };
-                        const newType = metadata.typeFunction(options);
+                        const newType = metadata.typeFunction ? metadata.typeFunction(options) : metadata.reflectedType;
                         if (metadata.options && metadata.options.discriminator && metadata.options.discriminator.property && metadata.options.discriminator.subTypes) {
                             if (!(value[valueKey] instanceof Array)) {
                                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
