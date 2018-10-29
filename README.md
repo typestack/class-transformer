@@ -102,7 +102,7 @@ Here is example how it will look like:
 
 ```typescript
 fetch("users.json").then((users: Object[]) => {
-    const realUsers = plainToClass(users);
+    const realUsers = plainToClass(User, users);
     // now each user in realUsers is instance of User class 
 });
 ```
