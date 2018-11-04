@@ -267,6 +267,78 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
+### Providing more than one type option
+
+In case the nested object can be of different types, you can provide an additional options object,
+that specifies a discriminator. The discriminator option must define a `property` that holds the sub
+type name for the object and the possible `subTypes`, the nested object can converted to. A sub type
+has a `value`, that holds the constructor of the Type and the `name`, that can match with the `property`
+of the discriminator.
+
+Lets say we have an album that has a top photo. But this photo can be of certain different types.
+And we are trying to convert album plain object to class object. The plain object input has to define
+the additional property `__type`. This property is removed during transformation by default:
+
+**JSON input**:
+```json
+{
+    "id": 1,
+    "name": "foo",
+    "topPhoto": {
+        "id": 9,
+        "filename": "cool_wale.jpg",
+        "depth": 1245,
+        "__type": "underwater"
+    }
+}
+```
+
+```typescript
+import {Type, plainToClass} from "class-transformer";
+
+export abstract class Photo {
+    id: number;
+    filename: string;
+}
+
+export class Landscape extends Photo {
+    panorama: boolean;
+}
+
+export class Portrait extends Photo {
+    person: Person;
+}
+
+export class UnderWater extends Photo {
+    depth: number;
+}
+
+export class Album {
+
+    id: number;
+    name: string;
+
+    @Type(() => Photo, {
+        discriminator: {
+            property: "__type",
+            subTypes: [
+                { value: Landscape, name: "landscape" },
+                { value: Portrait, name: "portrait" },
+                { value: UnderWater, name: "underwater" }
+            ]
+        }
+    })
+    topPhoto: Landscape | Portrait | UnderWater;
+
+}
+
+let album = plainToClass(Album, albumJson);
+// now album is Album object with a UnderWater object without `__type` property.
+```
+
+Hint: The same applies for arrays with different sub types. Moreover you can specify `keepDiscriminatorProperty: true`
+in the options to keep the discriminator property also inside your resulting class.
+
 ## Exposing getters and method return values
 
 You can expose what your getter or method return by setting a `@Expose()` decorator to those getters or methods:
@@ -565,6 +637,29 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
+ES6 collections `Set` and `Map` also require the `@Type` decorator:
+
+```typescript
+export class Skill {
+    name: string;
+}
+
+export class Weapon {
+    name: string;
+    range: number;
+}
+
+export class Player {
+    name: string;
+
+    @Type(() => Skill)
+    skills: Set<Skill>;
+
+    @Type(() => Weapon)
+    weapons: Map<string, Weapon>;
+}
+```
+
 ## Additional data transformation
 
 ### Basic usage
@@ -611,6 +706,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 |--------------------|------------------------------------------|---------------------------------------------|
 | `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })` | Transform the method return with classToPlain and expose the properties on the class.
 | `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })` | Transform the method return with classToClass and expose the properties on the class.
+| `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class.
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
