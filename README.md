@@ -186,6 +186,17 @@ import {plainToClass} from "class-transformer";
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
+#### plainToClassFromExist
+
+This method transforms a plain object into a instance using a already filled Object which is a instance from the target class.
+
+```typescript
+const defaultUser = new User();
+defaultUser.role = 'user';
+
+let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
+```
+
 #### classToPlain
 
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
