@@ -7,19 +7,26 @@ import * as sinon from "sinon";
 
 describe("circular reference problem", () => {
 
-    it("should skip circular reference objects", () => {
+    it("should skip circular reference objects in classToPlain operation", () => {
         defaultMetadataStorage.clear();
+
+        class Caption {
+            text: string;
+        }
 
         class Photo {
             id: number;
             filename: string;
             user: User;
             users: User[];
+
+            caption: Caption;
         }
 
         class User {
             id: number;
             firstName: string;
+            caption: Caption;
             photos: Photo[];
         }
 
@@ -31,7 +38,11 @@ describe("circular reference problem", () => {
         photo2.id = 2;
         photo2.filename = "she.jpg";
 
+        const caption = new Caption();
+        caption.text = "cool photo";
+
         const user = new User();
+        user.caption = caption;
         user.firstName = "Umed Khudoiberdiev";
         user.photos = [photo1, photo2];
 
@@ -40,17 +51,23 @@ describe("circular reference problem", () => {
         photo1.users = [user];
         photo2.users = [user];
 
+        photo1.caption = caption;
+        photo2.caption = caption;
+
         const plainUser = classToPlain(user, { enableCircularCheck: true });
         plainUser.should.be.eql({
             firstName: "Umed Khudoiberdiev",
+            caption: { text: "cool photo" },
             photos: [{
                 id: 1,
                 filename: "me.jpg",
-                users: []
+                users: [],
+                caption: { text: "cool photo" }
             }, {
                 id: 2,
                 filename: "she.jpg",
-                users: []
+                users: [],
+                caption: { text: "cool photo" }
             }]
         });
 
