@@ -1,5 +1,17 @@
 # Changelog and release notes
 
+### 0.2.0 [BREAKING CHANGE]
+
+#### Added
+
+- add documentation for using `Set`s and `Map`s
+- add opotion to pass a discriminator function to convert values into different types based on custom conditions
+- added support for polymorphism based on a named type property
+
+#### Fixed
+
+- fix bug when transforming `null` values as primitives
+
 ### 0.1.10
 
 #### Fixed
