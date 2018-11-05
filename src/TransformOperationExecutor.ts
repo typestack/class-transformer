@@ -261,7 +261,8 @@ export class TransformOperationExecutor {
         try {
             return new targetType();
         } catch (e) {
-            console.error(`${TRANSFORMATION_ERROR_PREFIX} - TransformOperationExecutor encountered error while attempting to call target type constructor with no parameters. The constructor of ${(targetType).name} may not be compatible with class-transformer by default, consider using a custom transformation function. Target constructor function was: `, targetType);
+            const normalizedName = targetType && targetType.name ? targetType.name : targetType + "";
+            console.error(`${TRANSFORMATION_ERROR_PREFIX} - TransformOperationExecutor encountered error while attempting to call target type constructor with no parameters. The constructor of ${normalizedName} may not be compatible with class-transformer by default, consider using a custom transformation function. Target constructor function was: `, targetType);
             console.error(`Original error: `, e);
             throw new Error(`${TRANSFORMATION_ERROR_PREFIX} - Cannot construct targetType for ${(targetType).name}`);
         }
