@@ -606,6 +606,171 @@ describe("specifying target maps", () => {
         });
     });
 
+    it("should convert type to specific types via target class @Type decorator", () => {
+        defaultMetadataStorage.clear();
+
+        @Type(type => {
+            const isEmployee = type.object && (type.object as Person).discriminator === "employee";
+            const targetType = isEmployee ? Employee : Person;
+            return isEmployee ? Employee : Person;
+        })
+        class Person {
+
+            id: number;
+
+            discriminator: "person" | "employee";
+
+            age: number;
+
+            firstName: string;
+
+            lastName: string;
+        }
+
+        class Employee extends Person {
+            employeeNo: string;
+        }
+
+        const person = new Person();
+        person.discriminator = "person";
+        person.firstName = "Joe";
+        person.lastName = "Bloggs";
+
+
+        const employee = new Employee();
+        employee.discriminator = "employee";
+        employee.firstName = "Fred";
+        employee.lastName = "Nerk";
+        employee.employeeNo = "456";
+
+        const fromPlainPerson = {
+            discriminator: "person",
+            firstName: "Joe",
+            lastName: "Bloggs",
+        };
+
+        const fromPlainEmployee = {
+            discriminator: "employee",
+            firstName: "Fred",
+            lastName: "Nerk",
+            employeeNo: "456",
+        };
+
+        const createFromExistPerson = (extraData = {}) => {
+            const fromExistPerson = new Person();
+            fromExistPerson.id = 1;
+            return Object.assign(fromExistPerson, extraData);
+        };
+
+        const plainPerson: any = classToPlain(person, { strategy: "exposeAll" });
+        plainPerson.should.not.be.instanceOf(Person);
+        plainPerson.should.be.eql({
+            discriminator: "person",
+            firstName: "Joe",
+            lastName: "Bloggs",
+        });
+
+        const plainEmployee: any = classToPlain(employee, { strategy: "exposeAll" });
+        plainEmployee.should.not.be.instanceOf(Employee);
+        plainEmployee.should.be.eql({
+            discriminator: "employee",
+            firstName: "Fred",
+            lastName: "Nerk",
+            employeeNo: "456",
+        });
+
+        const existEmployee = { id: 1, age: 27 };
+        const plainEmployee2 = classToPlainFromExist(employee, existEmployee, { strategy: "exposeAll" });
+        plainEmployee2.should.not.be.instanceOf(Employee);
+        plainEmployee2.should.be.eql({
+            discriminator: "employee",
+            id: 1,
+            age: 27,
+            firstName: "Fred",
+            lastName: "Nerk",
+            employeeNo: "456",
+        });
+        plainEmployee2.should.be.equal(existEmployee);
+
+        const transformedPerson = plainToClass(Person, fromPlainEmployee, { strategy: "exposeAll" });
+        transformedPerson.should.be.instanceOf(Employee);
+
+        let fromExistPerson = createFromExistPerson();
+
+        const fromExistTransformedPerson = plainToClassFromExist(fromExistPerson, fromPlainPerson, { strategy: "exposeAll" });
+        fromExistTransformedPerson.should.be.instanceOf(Person);
+        fromExistTransformedPerson.should.be.eql({
+            discriminator: "person",
+            id: 1,
+            firstName: "Joe",
+            lastName: "Bloggs",
+        });
+
+        // plainToClassFromExist with employee
+        const fromExistTransformedEmployee = plainToClassFromExist(fromExistPerson, fromPlainEmployee, { strategy: "exposeAll" });
+        fromExistTransformedEmployee.should.be.instanceOf(Employee);
+        fromExistTransformedEmployee.should.be.eql({
+            constructor: Employee,
+            discriminator: "employee",
+            id: 1,
+            firstName: "Fred",
+            lastName: "Nerk",
+            employeeNo: "456"
+        });
+
+        const classToClassPerson = classToClass(person, { strategy: "exposeAll" });
+        classToClassPerson.should.be.instanceOf(Person);
+        classToClassPerson.should.not.be.equal(person);
+        classToClassPerson.should.be.eql({
+            discriminator: "person",
+            firstName: "Joe",
+            lastName: "Bloggs",
+        });
+
+        // Should allow @Type to override the target type when performing CLASS_TO_CLASS
+        const employeePerson = Object.assign(new Person(), person, { discriminator: "employee" });
+
+        const classToClassEmployeePerson = classToClass(employeePerson, { strategy: "exposeAll" });
+        classToClassEmployeePerson.should.be.instanceOf(Employee);
+        classToClassEmployeePerson.should.not.be.equal(employeePerson);
+        classToClassEmployeePerson.should.be.eql({
+            constructor: Employee,
+            discriminator: "employee",
+            firstName: "Joe",
+            lastName: "Bloggs",
+        });
+
+
+        const classToClassEmployee = classToClass(employee, { strategy: "exposeAll" });
+        classToClassEmployee.should.be.instanceOf(Employee);
+        classToClassEmployee.should.not.be.equal(employee);
+        classToClassEmployee.should.be.eql({
+            constructor: Employee,
+            discriminator: "employee",
+            firstName: "Fred",
+            lastName: "Nerk",
+            employeeNo: "456",
+        });
+
+        // Ensure classToClassFromExist converts type
+        const fromExistEmployeePerson = new Person();
+        fromExistEmployeePerson.id = 1,
+        fromExistEmployeePerson.discriminator = "employee";
+
+        const classToClassFromExistEmployee = classToClassFromExist(employee, fromExistEmployeePerson, { strategy: "exposeAll" });
+        classToClassFromExistEmployee.should.be.instanceOf(Employee);
+        classToClassFromExistEmployee.should.not.be.equal(employee);
+        classToClassFromExistEmployee.should.be.equal(fromExistEmployeePerson);
+        classToClassFromExistEmployee.should.be.eql({
+            constructor: Employee,
+            discriminator: "employee",
+            id: 1,
+            firstName: "Fred",
+            lastName: "Nerk",
+            employeeNo: "456",
+        });
+    });
+
     it("should transform nested objects too and make sure their decorators are used too", () => {
         defaultMetadataStorage.clear();
 
@@ -747,6 +912,83 @@ describe("specifying target maps", () => {
         });
         expect(plainUser.password).to.be.undefined;
         expect(plainUser.photo.name).to.be.undefined;
+    });
+
+    it("should transform array items to correct polymorphic type for classes with class-level @Type decorator", () => {
+        defaultMetadataStorage.clear();
+
+        const getPhotoType = (value: any) => {
+            const discriminator = value.discriminator;
+            let resolvedType =
+                  discriminator === "landscape" ? LandscapePhoto
+                : discriminator === "portrait" ? PortraitPhoto
+                : undefined;
+            if (resolvedType === undefined) {
+                throw new Error(`Unknown photo discriminator value ${discriminator}`);
+            }
+            return resolvedType;
+        };
+
+        @Type(opts => getPhotoType(opts.object))
+        class Photo {
+            discriminator: "landscape" | "portrait";
+
+            id: number;
+
+            name: string;
+
+            @Exclude()
+            filename: string;
+        }
+
+        class LandscapePhoto extends Photo {
+            location: string;
+
+        }
+
+        class Person {
+            id: string;
+            name: string;
+        }
+        class PortraitPhoto extends Photo {
+            @Type(() => Person)
+            person: Person;
+        }
+
+        class Album {
+
+            id: number;
+
+            name: string;
+
+            @Type(() => Photo)
+            photos: Photo[];
+        }
+
+        const plainAlbum = {
+            id: 1,
+            name: "Album",
+            photos: [
+                { discriminator: "landscape", id: 1, name: "Landscape 1", filename: "landscape1.jpg", location: "Somewhere" },
+                { discriminator: "portrait", id: 2, name: "Portrait 1", filename: "portrait1.jpg", person: { id: 1, name: "Someone" } },
+            ]
+        };
+
+        const album = plainToClass(Album, plainAlbum);
+        album.should.be.instanceOf(Album);
+        album.should.not.equal(plainAlbum);
+        album.should.be.eql({
+            id: 1,
+            name: "Album",
+            photos: [
+                { constructor: LandscapePhoto, discriminator: "landscape", id: 1, name: "Landscape 1", location: "Somewhere" },
+                { constructor: PortraitPhoto, discriminator: "portrait", id: 2, name: "Portrait 1", person: { id: 1, name: "Someone" } },
+            ]
+        });
+        album.photos[0].should.be.instanceOf(LandscapePhoto);
+        album.photos[1].should.be.instanceOf(PortraitPhoto);
+        const portrait = album.photos[1] as PortraitPhoto;
+        portrait.person.should.be.instanceOf(Person);
     });
 
     it("should convert given plain object to class instance object", () => {
