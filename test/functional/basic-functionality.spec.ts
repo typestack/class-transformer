@@ -1850,4 +1850,34 @@ describe("basic functionality", () => {
         }
 
     });
+
+    it("should default union types where the plain type is an array to an array result", () => {
+        class User {
+            name: string;
+        }
+
+        class TestClass {
+            @Type(() => User)
+            usersDefined: User[] | undefined;
+
+            @Type(() => User)
+            usersUndefined: User[] | undefined;
+        }
+
+        const obj = Object.create(null);
+        obj.usersDefined = [{ name: "a-name" }];
+        obj.usersUndefined = undefined;
+
+        const transformedClass = plainToClass(TestClass, obj as Object);
+
+        transformedClass.should.be.instanceOf(TestClass);
+
+        transformedClass.usersDefined.should.be.instanceOf(Array);
+        transformedClass.usersDefined.length.should.equal(1);
+        transformedClass.usersDefined[0].should.be.instanceOf(User);
+        transformedClass.usersDefined[0].name.should.equal("a-name");
+
+        expect(transformedClass.usersUndefined).to.equal(undefined);
+    });
+
 });
