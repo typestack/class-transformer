@@ -25,7 +25,7 @@ export interface ExposeOptions {
     name?: string;
     since?: number;
     until?: number;
-    groups?: string[];
+    groups?: string[] | ((groups: string[]) => boolean);
     toClassOnly?: boolean;
     toPlainOnly?: boolean;
 }
