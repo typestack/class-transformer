@@ -147,7 +147,7 @@ export class TransformOperationExecutor {
                 if (value instanceof Map) {
                     subValue = value.get(valueKey);
                 } else if (value[valueKey] instanceof Function) {
-                    subValue = value[valueKey]();
+                    subValue = value[valueKey](this.options);
                 } else {
                     subValue = value[valueKey];
                 }

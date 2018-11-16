@@ -4,7 +4,9 @@ import {
     classToPlainFromExist,
     plainToClass,
     plainToClassFromExist,
-    classToClass, classToClassFromExist
+    classToClass,
+    classToClassFromExist,
+    ClassTransformOptions,
 } from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Type} from "../../src/decorators";
@@ -1181,6 +1183,46 @@ describe("basic functionality", () => {
                 filename: "myphoto.jpg",
                 status: 1
             }]
+        });
+    });
+
+    it("should pass in options to methods", () => {
+        defaultMetadataStorage.clear();
+
+        class Photo {
+
+            filename: string;
+
+            @Expose()
+            fullPath({ groups }: ClassTransformOptions) {
+                if (groups.some(g => g === "admin")) {
+                    return `/home/admin/dir/${this.filename}`;
+                } else {
+                    return `/home/user/dir/${this.filename}`;
+                }
+            }
+
+        }
+
+        const photo = new Photo();
+        photo.filename = "file.jpg";
+
+        const plainUserPhoto = classToPlain(photo, {
+            groups: ["user"],
+        });
+
+        plainUserPhoto.should.be.eql({
+            filename: `file.jpg`,
+            fullPath: `/home/user/dir/file.jpg`,
+        });
+
+        const plainAdminPhoto = classToPlain(photo, {
+            groups: ["admin"],
+        });
+
+        plainAdminPhoto.should.be.eql({
+          filename: `file.jpg`,
+          fullPath: `/home/admin/dir/file.jpg`,
         });
     });
 
