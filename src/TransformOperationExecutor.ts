@@ -97,8 +97,8 @@ export class TransformOperationExecutor {
             if (value === null || value === undefined)
                 return value;
             return new Date(value);
-        
-        } else if ((targetType === Buffer || value instanceof Buffer) && !isMap) {
+
+        } else if (testForBuffer() && (targetType === Buffer || value instanceof Buffer) && !isMap) {
             if (value === null || value === undefined)
                 return value;
             return Buffer.from(value);
@@ -411,10 +411,19 @@ export class TransformOperationExecutor {
 
 }
 
-function instantiateArrayType (arrayType: Function): Array<any> | Set<any> {
+function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
     const array = new (arrayType as any)();
     if (!(array instanceof Set) && !("push" in array)) {
         return [];
     }
     return array;
+}
+
+
+function testForBuffer(): boolean {
+    try {
+        Buffer
+        return true;
+    } catch {}
+    return false;    
 }
