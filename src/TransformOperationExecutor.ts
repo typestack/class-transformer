@@ -96,8 +96,12 @@ export class TransformOperationExecutor {
             }
             if (value === null || value === undefined)
                 return value;
-
             return new Date(value);
+        
+        } else if ((targetType === Buffer || value instanceof Buffer) && !isMap) {
+            if (value === null || value === undefined)
+                return value;
+            return Buffer.from(value);
 
         } else if (typeof value === "object" && value !== null) {
 

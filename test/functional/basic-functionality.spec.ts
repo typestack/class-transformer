@@ -533,6 +533,9 @@ describe("basic functionality", () => {
             @Type(type => String)
             lastVisitDate: string;
 
+            @Type(type => Buffer)
+            uuidBuffer: Buffer;
+
             @Type(type => String)
             nullableString?: null | string;
 
@@ -544,20 +547,26 @@ describe("basic functionality", () => {
 
             @Type(type => Date)
             nullableDate?: null | Date;
+
+            @Type(type => Buffer)
+            nullableBuffer?: null | Buffer;
         }
 
         const date = new Date();
         const user = new User();
+        const uuid = Buffer.from('1234');
         user.firstName = 321 as any;
         user.lastName = 123 as any;
         user.password = "123" as any;
         user.isActive = "1" as any;
         user.registrationDate = date.toString() as any;
         user.lastVisitDate = date as any;
+        user.uuidBuffer = uuid as any;
         user.nullableString = null as any;
         user.nullableNumber = null as any;
         user.nullableBoolean = null as any;
         user.nullableDate = null as any;
+        user.nullableBuffer = null as any;
 
         const fromPlainUser = {
             firstName: 321,
@@ -566,10 +575,12 @@ describe("basic functionality", () => {
             isActive: "1",
             registrationDate: date.toString(),
             lastVisitDate: date,
+            uuidBuffer: uuid,
             nullableString: null as null | string,
             nullableNumber: null as null | string,
             nullableBoolean: null as null | string,
             nullableDate: null as null | string,
+            nullableBuffer: null as null | string,
         };
 
         const fromExistUser = new User();
@@ -577,23 +588,25 @@ describe("basic functionality", () => {
 
         const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
         plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        plainUser.should.deep.eql({
             firstName: "321",
             lastName: "123",
             password: 123,
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
         plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        plainUser2.should.deep.eq({
             id: 1,
             age: 27,
             firstName: "321",
@@ -602,31 +615,35 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
         plainUser2.should.be.equal(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
         transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        transformedUser.should.deep.eq({
             firstName: "321",
             lastName: "123",
             password: 123,
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
         fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        fromExistTransformedUser.should.deep.eq({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -634,33 +651,37 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const classToClassUser = classToClass(user, { strategy: "exposeAll" });
         classToClassUser.should.be.instanceOf(User);
         classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        classToClassUser.should.deep.eq({
             firstName: "321",
             lastName: "123",
             password: 123,
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
         classToClassFromExistUser.should.be.instanceOf(User);
         classToClassFromExistUser.should.not.be.equal(user);
         classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        classToClassFromExistUser.should.deep.eq({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -668,10 +689,12 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
     });
 
