@@ -419,7 +419,6 @@ function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
     return array;
 }
 
-
 function testForBuffer(): boolean {
     try {
         Buffer
