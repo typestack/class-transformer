@@ -331,7 +331,11 @@ export class TransformOperationExecutor {
                     return key;
                 });
             }
-            keys = keys.concat(exposedProperties);
+            if (this.options.excludeExtraneousValues) {
+                keys = exposedProperties;
+            } else {
+                keys = keys.concat(exposedProperties);
+            }
 
             // exclude excluded properties
             const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);

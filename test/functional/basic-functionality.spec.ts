@@ -94,6 +94,31 @@ describe("basic functionality", () => {
         });
     });
 
+    it("should exclude extraneous values if the excludeExtraneousValues option is set to true", () => {
+        defaultMetadataStorage.clear();
+
+        class User {
+            @Expose() id: number;
+            @Expose() firstName: string;
+            @Expose() lastName: string;
+        }
+
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            age: 12
+        };
+
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.have.property("age");
+        transformedUser.should.have.property("id").that.is.undefined;
+
+        const transformedUserWithoutExtra = plainToClass(User, fromPlainUser, { excludeExtraneousValues: true });
+        transformedUserWithoutExtra.should.be.instanceOf(User);
+        transformedUserWithoutExtra.should.not.have.property("age");
+    });
+
     it("should exclude all objects marked with @Exclude() decorator", () => {
         defaultMetadataStorage.clear();
 
