@@ -9,6 +9,7 @@ import {
 import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
+import { TRANSFORMATION_ERROR_PREFIX } from "../../src/TransformOperationExecutor";
 
 describe("basic functionality", () => {
 
@@ -1761,6 +1762,118 @@ describe("basic functionality", () => {
         const transformedClass = plainToClass(TestClass, obj);
 
         transformedClass.should.be.instanceOf(TestClass);
+    });
+
+    it("should catch errors thrown by target class constructors and source object functions, and throw a formatted error to aid troubleshooting", () => {
+        defaultMetadataStorage.clear();
+
+        class Photo {
+
+            id: number;
+
+            name: string;
+
+            @Exclude()
+            filename: string;
+
+            metadata: string;
+
+            uploadDate: Date;
+
+            constructor(id: number) {
+                if (typeof id !== "number") {
+                    throw new Error("Photo#constructor - requires a numeric ID in constructor.");
+                }
+            }
+        }
+
+        class User {
+
+            id: number;
+
+            firstName: string;
+
+            lastName: string;
+
+            @Exclude()
+            password: string;
+
+            @Type(type => Photo)
+            photo: Photo;
+
+            // contrived example of a class with a problematic function exposed.
+            @Expose()
+            getName(separator: string): string {
+                if (undefined === separator) {
+                    throw new Error("User#getName - missing required parameter");
+                }
+                return this.firstName + `${separator}` + this.lastName;
+            }
+        }
+
+        const user = new User();
+        user.firstName = "Umed";
+        user.lastName = "Khudoiberdiev";
+        user.password = "imnosuperman";
+        user.photo = new Photo(1);
+        user.photo.name = "Me";
+        user.photo.filename = "iam.jpg";
+        user.photo.uploadDate = new Date();
+
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                name: "Me",
+                filename: "iam.jpg",
+                uploadDate: new Date(),
+            }
+        };
+
+        const fromExistUser = new User();
+        fromExistUser.id = 1;
+        const fromExistPhoto = new Photo(1);
+        fromExistPhoto.metadata = "taken by Camera";
+        fromExistUser.photo = fromExistPhoto;
+
+        try {
+            plainToClass(User, fromPlainUser);
+        } catch (e) {
+            e.should.be.instanceOf(Error);
+            (e as Error).message.indexOf(TRANSFORMATION_ERROR_PREFIX).should.not.be.eql(-1);
+            // Not sure this is the best way to do these tests, open to suggestions.
+        }
+
+        try {
+            plainToClassFromExist(fromExistUser, fromPlainUser);
+        } catch (e) {
+            e.should.be.instanceOf(Error);
+            (e as Error).message.indexOf(TRANSFORMATION_ERROR_PREFIX).should.not.be.eql(-1);
+        }
+
+        try {
+            classToClass(user);
+        } catch (e) {
+            e.should.be.instanceOf(Error);
+            (e as Error).message.indexOf(TRANSFORMATION_ERROR_PREFIX).should.not.be.eql(-1);
+        }
+
+        try {
+            classToClassFromExist(user, fromExistUser);
+        } catch (e) {
+            e.should.be.instanceOf(Error);
+            (e as Error).message.indexOf(TRANSFORMATION_ERROR_PREFIX).should.not.be.eql(-1);
+        }
+
+        try {
+            classToPlain(user);
+        } catch (e) {
+            e.should.be.instanceOf(Error);
+            (e as Error).message.indexOf(TRANSFORMATION_ERROR_PREFIX).should.not.be.eql(-1);
+        }
+
     });
 
     it("should default union types where the plain type is an array to an array result", () => {
