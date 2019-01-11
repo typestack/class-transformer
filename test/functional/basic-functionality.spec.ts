@@ -6,11 +6,20 @@ import {
     plainToClassFromExist,
     classToClass, classToClassFromExist
 } from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, Type} from "../../src/decorators";
-import {expect} from "chai";
+import { defaultMetadataStorage } from "../../src/storage";
+import { Exclude, Expose, Type } from "../../src/decorators";
+import { expect } from "chai";
+import { testForBuffer } from "../../src/TransformOperationExecutor";
 
 describe("basic functionality", () => {
+
+    it("should return true if Buffer is present in environment, else false", () => {
+        expect(testForBuffer()).to.be.true;
+        const bufferImp = global.Buffer;
+        delete global.Buffer;
+        expect(testForBuffer()).to.be.false;
+        global.Buffer = bufferImp;
+    });
 
     it("should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour", () => {
         defaultMetadataStorage.clear();
