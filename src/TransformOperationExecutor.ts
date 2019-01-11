@@ -419,10 +419,10 @@ function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
     return array;
 }
 
-function testForBuffer(): boolean {
+export function testForBuffer(): boolean {
     try {
         Buffer
         return true;
-    } catch {}
-    return false;    
+    } catch { }
+    return false;
 }
