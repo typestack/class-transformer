@@ -27,6 +27,11 @@ export interface ClassTransformOptions {
     strategy?: "excludeAll"|"exposeAll";
 
     /**
+     * Indicates if extraneous properties should be excluded from the value when converting a plain value to a class.
+     */
+    excludeExtraneousValues?: boolean;
+
+    /**
      * Only properties with given groups gonna be transformed.
      */
     groups?: string[];
