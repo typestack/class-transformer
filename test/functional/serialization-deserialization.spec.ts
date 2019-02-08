@@ -107,4 +107,46 @@ describe("serialization and deserialization objects", () => {
         // (<any>result).extra.should.be.undefined;
     });
 
+
+    it("should not overwrite non writable properties on deserialize", () => {
+        class TestObject {
+            get getterOnlyProp(): string {
+                return "I cannot write!";
+            }
+
+            normalProp: string = "Hello!";
+        }
+
+        const payload = {
+            getterOnlyProp: "I CAN write!",
+            normalProp: "Goodbye!"
+        };
+
+        const result = deserialize(TestObject, JSON.stringify(payload));
+
+        result.getterOnlyProp.should.be.eql("I cannot write!");
+        result.normalProp.should.be.eql("Goodbye!");
+
+    });
+
+    it("should overwrite default properties defined in prototype", () => {
+        class TestObject {
+            normalProp: string = "Hello!";
+            prototypedProp: string;
+        }
+
+        TestObject.prototype.prototypedProp = "I'm a BUG!";
+
+
+        const payload = {
+            normalProp: "Goodbye!",
+            prototypedProp: "Goodbye!"
+        };
+
+        const result = deserialize(TestObject, JSON.stringify(payload));
+
+        result.normalProp.should.be.eql("Goodbye!");
+        result.prototypedProp.should.be.eql("Goodbye!");
+    });
+
 });
