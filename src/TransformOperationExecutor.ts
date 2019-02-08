@@ -205,7 +205,7 @@ export class TransformOperationExecutor {
                 if (newValue.constructor.prototype) {
                     const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
                     if ((this.transformationType === TransformationType.PLAIN_TO_CLASS || this.transformationType === TransformationType.CLASS_TO_CLASS)
-                        && (newValue[newValueKey] instanceof Function || (descriptor && !descriptor.set))) //  || TransformationType === TransformationType.CLASS_TO_CLASS
+                        && (newValue[newValueKey] instanceof Function || (descriptor && !descriptor.writable))) //  || TransformationType === TransformationType.CLASS_TO_CLASS
                         continue;
                 }
 
