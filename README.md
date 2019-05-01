@@ -274,7 +274,7 @@ console.log(plainToClass(User, fromPlainUser))
 // }
 ```
 
-If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option 
+If this behaviour does not suit your needs, you can use the `strategy: 'excludeAll'` option 
 in the `plainToClass` method while *exposing all your class properties* as a requirement.
 
 ```typescript
@@ -292,7 +292,7 @@ const fromPlainUser = {
   lastName: 'Khudoiberdiev',
 }
 
-console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true }))
+console.log(plainToClass(User, fromPlainUser, { strategy: 'excludeAll' }))
 
 // User {
 //   id: undefined,
