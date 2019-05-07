@@ -102,7 +102,7 @@ Here is example how it will look like:
 
 ```typescript
 fetch("users.json").then((users: Object[]) => {
-    const realUsers = plainToClass(users);
+    const realUsers = plainToClass(User, users);
     // now each user in realUsers is instance of User class 
 });
 ```
@@ -186,6 +186,17 @@ import {plainToClass} from "class-transformer";
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
+#### plainToClassFromExist
+
+This method transforms a plain object into a instance using a already filled Object which is a instance from the target class.
+
+```typescript
+const defaultUser = new User();
+defaultUser.role = 'user';
+
+let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
+```
+
 #### classToPlain
 
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
@@ -232,6 +243,62 @@ To make deserialization to work with arrays use `deserializeArray` method:
 ```typescript
 import {deserializeArray} from "class-transformer";
 let photos = deserializeArray(Photo, photos);
+```
+
+## Enforcing type-safe instance
+
+The default behaviour of the `plainToClass` method is to set *all* properties from the plain object, 
+even those which are not specified in the class.
+
+```typescript
+import {plainToClass} from "class-transformer";
+
+class User {
+  id: number
+  firstName: string
+  lastName: string
+}
+
+const fromPlainUser = {
+  unkownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+}
+
+console.log(plainToClass(User, fromPlainUser))
+
+// User {
+//   unkownProp: 'hello there',
+//   firstName: 'Umed',
+//   lastName: 'Khudoiberdiev',
+// }
+```
+
+If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option 
+in the `plainToClass` method while *exposing all your class properties* as a requirement.
+
+```typescript
+import {Expose, plainToClass} from "class-transformer";
+
+class User {
+    @Expose() id: number;
+    @Expose() firstName: string;
+    @Expose() lastName: string;
+}
+
+const fromPlainUser = {
+  unkownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+}
+
+console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true }))
+
+// User {
+//   id: undefined,
+//   firstName: 'Umed',
+//   lastName: 'Khudoiberdiev' 
+// }
 ```
 
 ## Working with nested objects
@@ -602,7 +669,7 @@ When you are using arrays you must provide a type of the object that array conta
 This type, you specify in a `@Type()` decorator:
 
 ```typescript
-import {ArrayType} from "class-transformer";
+import {Type} from "class-transformer";
 
 export class Photo {
 
@@ -618,7 +685,7 @@ export class Photo {
 You can also use custom array types:
 
 ```typescript
-import {ArrayType} from "class-transformer";
+import {Type} from "class-transformer";
 
 export class AlbumCollection extends Array<Album> {
     // custom array functions ...

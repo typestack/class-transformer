@@ -6,11 +6,20 @@ import {
     plainToClassFromExist,
     classToClass, classToClassFromExist
 } from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, Type} from "../../src/decorators";
-import {expect} from "chai";
+import { defaultMetadataStorage } from "../../src/storage";
+import { Exclude, Expose, Type } from "../../src/decorators";
+import { expect } from "chai";
+import { testForBuffer } from "../../src/TransformOperationExecutor";
 
 describe("basic functionality", () => {
+
+    it("should return true if Buffer is present in environment, else false", () => {
+        expect(testForBuffer()).to.be.true;
+        const bufferImp = global.Buffer;
+        delete global.Buffer;
+        expect(testForBuffer()).to.be.false;
+        global.Buffer = bufferImp;
+    });
 
     it("should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour", () => {
         defaultMetadataStorage.clear();
@@ -92,6 +101,31 @@ describe("basic functionality", () => {
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
+    });
+
+    it("should exclude extraneous values if the excludeExtraneousValues option is set to true", () => {
+        defaultMetadataStorage.clear();
+
+        class User {
+            @Expose() id: number;
+            @Expose() firstName: string;
+            @Expose() lastName: string;
+        }
+
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            age: 12
+        };
+
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+        transformedUser.should.have.property("age");
+        transformedUser.should.have.property("id").that.is.undefined;
+
+        const transformedUserWithoutExtra = plainToClass(User, fromPlainUser, { excludeExtraneousValues: true });
+        transformedUserWithoutExtra.should.be.instanceOf(User);
+        transformedUserWithoutExtra.should.not.have.property("age");
     });
 
     it("should exclude all objects marked with @Exclude() decorator", () => {
@@ -508,6 +542,9 @@ describe("basic functionality", () => {
             @Type(type => String)
             lastVisitDate: string;
 
+            @Type(type => Buffer)
+            uuidBuffer: Buffer;
+
             @Type(type => String)
             nullableString?: null | string;
 
@@ -519,20 +556,26 @@ describe("basic functionality", () => {
 
             @Type(type => Date)
             nullableDate?: null | Date;
+
+            @Type(type => Buffer)
+            nullableBuffer?: null | Buffer;
         }
 
         const date = new Date();
         const user = new User();
+        const uuid = Buffer.from('1234');
         user.firstName = 321 as any;
         user.lastName = 123 as any;
         user.password = "123" as any;
         user.isActive = "1" as any;
         user.registrationDate = date.toString() as any;
         user.lastVisitDate = date as any;
+        user.uuidBuffer = uuid as any;
         user.nullableString = null as any;
         user.nullableNumber = null as any;
         user.nullableBoolean = null as any;
         user.nullableDate = null as any;
+        user.nullableBuffer = null as any;
 
         const fromPlainUser = {
             firstName: 321,
@@ -541,10 +584,12 @@ describe("basic functionality", () => {
             isActive: "1",
             registrationDate: date.toString(),
             lastVisitDate: date,
+            uuidBuffer: uuid,
             nullableString: null as null | string,
             nullableNumber: null as null | string,
             nullableBoolean: null as null | string,
             nullableDate: null as null | string,
+            nullableBuffer: null as null | string,
         };
 
         const fromExistUser = new User();
@@ -552,23 +597,25 @@ describe("basic functionality", () => {
 
         const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
         plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        plainUser.should.deep.eql({
             firstName: "321",
             lastName: "123",
             password: 123,
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
         plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        plainUser2.should.deep.eq({
             id: 1,
             age: 27,
             firstName: "321",
@@ -577,31 +624,35 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
         plainUser2.should.be.equal(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
         transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        transformedUser.should.deep.eq({
             firstName: "321",
             lastName: "123",
             password: 123,
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
         fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        fromExistTransformedUser.should.deep.eq({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -609,33 +660,37 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const classToClassUser = classToClass(user, { strategy: "exposeAll" });
         classToClassUser.should.be.instanceOf(User);
         classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        classToClassUser.should.deep.eq({
             firstName: "321",
             lastName: "123",
             password: 123,
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
         classToClassFromExistUser.should.be.instanceOf(User);
         classToClassFromExistUser.should.not.be.equal(user);
         classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        classToClassFromExistUser.should.deep.eq({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -643,10 +698,12 @@ describe("basic functionality", () => {
             isActive: true,
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
+            uuidBuffer: uuid,
             nullableString: null,
             nullableNumber: null,
             nullableBoolean: null,
             nullableDate: null,
+            nullableBuffer: null
         });
     });
 
@@ -1736,6 +1793,35 @@ describe("basic functionality", () => {
         const transformedClass = plainToClass(TestClass, obj);
 
         transformedClass.should.be.instanceOf(TestClass);
+    });
+
+    it("should default union types where the plain type is an array to an array result", () => {
+        class User {
+            name: string;
+        }
+
+        class TestClass {
+            @Type(() => User)
+            usersDefined: User[] | undefined;
+
+            @Type(() => User)
+            usersUndefined: User[] | undefined;
+        }
+
+        const obj = Object.create(null);
+        obj.usersDefined = [{ name: "a-name" }];
+        obj.usersUndefined = undefined;
+
+        const transformedClass = plainToClass(TestClass, obj as Object);
+
+        transformedClass.should.be.instanceOf(TestClass);
+
+        transformedClass.usersDefined.should.be.instanceOf(Array);
+        transformedClass.usersDefined.length.should.equal(1);
+        transformedClass.usersDefined[0].should.be.instanceOf(User);
+        transformedClass.usersDefined[0].name.should.equal("a-name");
+
+        expect(transformedClass.usersUndefined).to.equal(undefined);
     });
 
 });
