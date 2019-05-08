@@ -22,7 +22,7 @@ export function Transform(transformFn: (value: any, obj: any, transformationType
  * Specifies a type of the property.
  * The given TypeFunction can return a constructor. A discriminator can be given in the options.
  */
-export function Type(typeFunction: (type?: TypeHelpOptions) => Function, options?: TypeOptions) {
+export function Type(typeFunction?: (type?: TypeHelpOptions) => Function, options?: TypeOptions) {
     return function(target: any, key: string) {
         const type = (Reflect as any).getMetadata("design:type", target, key);
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, options);
