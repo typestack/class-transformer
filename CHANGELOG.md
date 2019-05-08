@@ -1,5 +1,16 @@
 # Changelog and release notes
 
+### 0.2.2
+
+#### Added
+
+-   now plain to class transformations will respect the defined primitive types for properties with at leaset one decorator (#191)
+
+#### Fixed
+
+-   prevent throwing error when a property value is `undefined` and a `discriminator` is defined in the `@Type` decorator (#245)
+-   transformations will set writable properties when a default valis is defined on the prototype (#234)
+
 ### 0.2.1
 
 #### Added
