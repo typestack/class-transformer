@@ -170,9 +170,17 @@ export class TransformOperationExecutor {
                         if (metadata.options && metadata.options.discriminator && metadata.options.discriminator.property && metadata.options.discriminator.subTypes) {
                             if (!(value[valueKey] instanceof Array)) {
                                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
-                                    type = metadata.options.discriminator.subTypes.find((subType) => subType.name === subValue[metadata.options.discriminator.property]);
+                                    type = metadata.options.discriminator.subTypes.find((subType) => {
+                                        if (subValue && metadata.options.discriminator.property in subValue) {
+                                            return subType.name === subValue[metadata.options.discriminator.property]
+                                        }
+                                    });
                                     type === undefined ? type = newType : type = type.value;
-                                    if (!metadata.options.keepDiscriminatorProperty) delete subValue[metadata.options.discriminator.property];
+                                    if (!metadata.options.keepDiscriminatorProperty) {
+                                        if (subValue && metadata.options.discriminator.property in subValue) {
+                                            delete subValue[metadata.options.discriminator.property];
+                                        }
+                                    }
                                 }
                                 if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
                                     type = subValue.constructor;
@@ -217,7 +225,7 @@ export class TransformOperationExecutor {
                 if (newValue.constructor.prototype) {
                     const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
                     if ((this.transformationType === TransformationType.PLAIN_TO_CLASS || this.transformationType === TransformationType.CLASS_TO_CLASS)
-                        && ((descriptor && !descriptor.set) || newValue[newValueKey] instanceof Function)) //  || TransformationType === TransformationType.CLASS_TO_CLASS
+                        && ((descriptor && !descriptor.writable) || newValue[newValueKey] instanceof Function)) //  || TransformationType === TransformationType.CLASS_TO_CLASS
                         continue;
                 }
 
