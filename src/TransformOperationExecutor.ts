@@ -166,7 +166,7 @@ export class TransformOperationExecutor {
                     const metadata = defaultMetadataStorage.findTypeMetadata((targetType as Function), propertyName);
                     if (metadata) {
                         const options: TypeHelpOptions = { newObject: newValue, object: value, property: propertyName };
-                        const newType = metadata.typeFunction(options);
+                        const newType = metadata.typeFunction ? metadata.typeFunction(options) : metadata.reflectedType;
                         if (metadata.options && metadata.options.discriminator && metadata.options.discriminator.property && metadata.options.discriminator.subTypes) {
                             if (!(value[valueKey] instanceof Array)) {
                                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
@@ -199,6 +199,14 @@ export class TransformOperationExecutor {
                         this.options.targetMaps
                             .filter(map => map.target === targetType && !!map.properties[propertyName])
                             .forEach(map => type = map.properties[propertyName]);
+                    } else if(this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+                        // if we have no registererd type via the @Type() decorator then we check if we have any
+                        // type declarations in reflect-metadata (type declaration is emited only if some decorator is added to the property.)
+                        const reflectedType = Reflect.getMetadata("design:type", (targetType as Function).prototype, propertyName);
+                        
+                        if (reflectedType) {
+                            type = reflectedType;
+                        }
                     }
                 }
 
