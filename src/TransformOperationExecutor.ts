@@ -1,6 +1,6 @@
 import { ClassTransformOptions } from "./ClassTransformOptions";
 import { defaultMetadataStorage } from "./storage";
-import { TypeHelpOptions, Discriminator, TypeOptions } from "./metadata/ExposeExcludeOptions";
+import { TypeHelpOptions, TypeOptions } from "./metadata/ExposeExcludeOptions";
 import { TypeMetadata } from "./metadata/TypeMetadata";
 
 export enum TransformationType {
@@ -37,7 +37,7 @@ export class TransformOperationExecutor {
         level: number = 0) {
 
         if (Array.isArray(value) || value instanceof Set) {
-            const newValue = arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS ? new (arrayType as any)() : [];
+            const newValue = arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS ? instantiateArrayType(arrayType) : [];
             (value as any[]).forEach((subValue, index) => {
                 const subSource = source ? source[index] : undefined;
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
@@ -96,8 +96,12 @@ export class TransformOperationExecutor {
             }
             if (value === null || value === undefined)
                 return value;
-
             return new Date(value);
+
+        } else if (testForBuffer() && (targetType === Buffer || value instanceof Buffer) && !isMap) {
+            if (value === null || value === undefined)
+                return value;
+            return Buffer.from(value);
 
         } else if (typeof value === "object" && value !== null) {
 
@@ -166,9 +170,17 @@ export class TransformOperationExecutor {
                         if (metadata.options && metadata.options.discriminator && metadata.options.discriminator.property && metadata.options.discriminator.subTypes) {
                             if (!(value[valueKey] instanceof Array)) {
                                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
-                                    type = metadata.options.discriminator.subTypes.find((subType) => subType.name === subValue[metadata.options.discriminator.property]);
+                                    type = metadata.options.discriminator.subTypes.find((subType) => {
+                                        if (subValue && metadata.options.discriminator.property in subValue) {
+                                            return subType.name === subValue[metadata.options.discriminator.property]
+                                        }
+                                    });
                                     type === undefined ? type = newType : type = type.value;
-                                    if (!metadata.options.keepDiscriminatorProperty) delete subValue[metadata.options.discriminator.property];
+                                    if (!metadata.options.keepDiscriminatorProperty) {
+                                        if (subValue && metadata.options.discriminator.property in subValue) {
+                                            delete subValue[metadata.options.discriminator.property];
+                                        }
+                                    }
                                 }
                                 if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
                                     type = subValue.constructor;
@@ -205,7 +217,7 @@ export class TransformOperationExecutor {
                 if (newValue.constructor.prototype) {
                     const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
                     if ((this.transformationType === TransformationType.PLAIN_TO_CLASS || this.transformationType === TransformationType.CLASS_TO_CLASS)
-                        && (newValue[newValueKey] instanceof Function || (descriptor && !descriptor.writable))) //  || TransformationType === TransformationType.CLASS_TO_CLASS
+                        && ((descriptor && !descriptor.writable) || newValue[newValueKey] instanceof Function)) //  || TransformationType === TransformationType.CLASS_TO_CLASS
                         continue;
                 }
 
@@ -331,7 +343,11 @@ export class TransformOperationExecutor {
                     return key;
                 });
             }
-            keys = keys.concat(exposedProperties);
+            if (this.options.excludeExtraneousValues) {
+                keys = exposedProperties;
+            } else {
+                keys = keys.concat(exposedProperties);
+            }
 
             // exclude excluded properties
             const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);
@@ -401,4 +417,20 @@ export class TransformOperationExecutor {
         return this.options.groups.some(optionGroup => groups.indexOf(optionGroup) !== -1);
     }
 
+}
+
+function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
+    const array = new (arrayType as any)();
+    if (!(array instanceof Set) && !("push" in array)) {
+        return [];
+    }
+    return array;
+}
+
+export function testForBuffer(): boolean {
+    try {
+        Buffer
+        return true;
+    } catch { }
+    return false;
 }

@@ -245,6 +245,62 @@ import {deserializeArray} from "class-transformer";
 let photos = deserializeArray(Photo, photos);
 ```
 
+## Enforcing type-safe instance
+
+The default behaviour of the `plainToClass` method is to set *all* properties from the plain object, 
+even those which are not specified in the class.
+
+```typescript
+import {plainToClass} from "class-transformer";
+
+class User {
+  id: number
+  firstName: string
+  lastName: string
+}
+
+const fromPlainUser = {
+  unkownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+}
+
+console.log(plainToClass(User, fromPlainUser))
+
+// User {
+//   unkownProp: 'hello there',
+//   firstName: 'Umed',
+//   lastName: 'Khudoiberdiev',
+// }
+```
+
+If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option 
+in the `plainToClass` method while *exposing all your class properties* as a requirement.
+
+```typescript
+import {Expose, plainToClass} from "class-transformer";
+
+class User {
+    @Expose() id: number;
+    @Expose() firstName: string;
+    @Expose() lastName: string;
+}
+
+const fromPlainUser = {
+  unkownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+}
+
+console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true }))
+
+// User {
+//   id: undefined,
+//   firstName: 'Umed',
+//   lastName: 'Khudoiberdiev' 
+// }
+```
+
 ## Working with nested objects
 
 When you are trying to transform objects that have nested objects,
