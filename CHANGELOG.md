@@ -1,6 +1,26 @@
 # Changelog and release notes
 
+
+### 0.2.3 [BREAKING CHANGE]
+
+#### Changed
+
+- `enableImplicitConversion` has been added and imlplicit value conversion is disabled by default.
+- reverted #234 - fix: write properties with defined default values on prototype which broke the `@Exclude` decorator.
+
+### 0.2.2 [BREAKING CHANGE]
+
+> **NOTE:** This version is deprecated.
+
+This version has introduced a breaking-change when this library is used with class-validator. See #257 for details.
+
+#### Added
+
+- implicity type conversion between values.
+
 ### 0.2.1
+
+> **NOTE:** This version is deprecated.
 
 #### Added
 
