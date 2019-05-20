@@ -6,27 +6,55 @@ import {defaultMetadataStorage} from "../../src/storage";
 import {Expose, Type} from "../../src/decorators";
 import {expect} from "chai";
 
+describe("implicit type conversion", () => {
+    it("should run only when enabled", () => {
+        defaultMetadataStorage.clear();
+
+        class SimpleExample {
+
+        @Expose()
+        readonly implicitTypeNumber: number;
+
+        @Expose()
+        readonly implicitTypeString: string;
+        }
+
+        const result1: SimpleExample = plainToClass(SimpleExample, {
+            implicitTypeNumber: "100",
+            implicitTypeString: 133123,
+        }, { enableImplicitConversion: true });
+
+        const result2: SimpleExample = plainToClass(SimpleExample, {
+            implicitTypeNumber: "100",
+            implicitTypeString: 133123,
+        }, { enableImplicitConversion: false });
+
+        expect(result1).to.deep.equal({ implicitTypeNumber: 100, implicitTypeString: "133123" });
+        expect(result2).to.deep.equal({ implicitTypeNumber: "100", implicitTypeString: 133123 });
+    });
+});
+
 describe("implicit and explicity type declarations", () => {
 
     defaultMetadataStorage.clear();
 
     class Example {
-        
+
         @Expose()
         readonly implicitTypeViaOtherDecorator: Date;
 
         @Type()
         readonly implicitTypeViaEmptyTypeDecorator: number;
-        
-        @Type(() => String) 
+
+        @Type(() => String)
         readonly explicitType: string;
     }
-    
-    const result: Example = plainToClass(Example, { 
-        implicitTypeViaOtherDecorator: "2018-12-24T12:00:00Z", 
-        implicitTypeViaEmptyTypeDecorator: "100", 
-        explicitType: 100,  
-    });
+
+    const result: Example = plainToClass(Example, {
+        implicitTypeViaOtherDecorator: "2018-12-24T12:00:00Z",
+        implicitTypeViaEmptyTypeDecorator: "100",
+        explicitType: 100,
+    }, { enableImplicitConversion: true });
 
     it("should use implicitly defined design:type to convert value when no @Type decorator is used", () => {
         expect(result.implicitTypeViaOtherDecorator).to.be.instanceOf(Date);
@@ -45,14 +73,14 @@ describe("implicit and explicity type declarations", () => {
 
 });
 
-describe("plainToClass transforms builtin primitive types properly", () => {
+describe("plainToClass transforms built-in primitive types properly", () => {
 
     defaultMetadataStorage.clear();
 
     class Example {
 
         @Type()
-        date: Date; 
+        date: Date;
 
         @Type()
         string: string;
@@ -61,27 +89,27 @@ describe("plainToClass transforms builtin primitive types properly", () => {
         string2: string;
 
         @Type()
-        number: number;  
+        number: number;
 
         @Type()
         number2: number;
-        
+
         @Type()
         boolean: boolean;
-    
+
         @Type()
         boolean2: boolean;
     }
-    
-    const result: Example = plainToClass(Example, { 
-        date: "2018-12-24T12:00:00Z", 
-        string: "100", 
-        string2: 100, 
+
+    const result: Example = plainToClass(Example, {
+        date: "2018-12-24T12:00:00Z",
+        string: "100",
+        string2: 100,
         number: "100",
         number2: 100,
         boolean: 1,
         boolean2: 0,
-    });
+    }, { enableImplicitConversion: true });
 
     it("should recognize and convert to Date", () => {
         expect(result.date).to.be.instanceOf(Date);
