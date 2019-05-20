@@ -11,7 +11,7 @@ Class-transformer allows you to transform plain object to some instance of class
 Also it allows to serialize / deserialize object based on criteria.
 This tool is super useful on both frontend and backend.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
+Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is available [here](https://github.com/pleerock/class-transformer-demo).
 
 ## What is class-transformer
@@ -103,7 +103,7 @@ Here is example how it will look like:
 ```typescript
 fetch("users.json").then((users: Object[]) => {
     const realUsers = plainToClass(User, users);
-    // now each user in realUsers is instance of User class 
+    // now each user in realUsers is instance of User class
 });
 ```
 
@@ -247,7 +247,7 @@ let photos = deserializeArray(Photo, photos);
 
 ## Enforcing type-safe instance
 
-The default behaviour of the `plainToClass` method is to set *all* properties from the plain object, 
+The default behaviour of the `plainToClass` method is to set *all* properties from the plain object,
 even those which are not specified in the class.
 
 ```typescript
@@ -274,7 +274,7 @@ console.log(plainToClass(User, fromPlainUser))
 // }
 ```
 
-If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option 
+If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option
 in the `plainToClass` method while *exposing all your class properties* as a requirement.
 
 ```typescript
@@ -297,7 +297,7 @@ console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true })
 // User {
 //   id: undefined,
 //   firstName: 'Umed',
-//   lastName: 'Khudoiberdiev' 
+//   lastName: 'Khudoiberdiev'
 // }
 ```
 
@@ -309,7 +309,7 @@ Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
 This is done using `@Type` decorator.
 
-Lets say we have an album with photos. 
+Lets say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
@@ -532,7 +532,7 @@ In this case you don't need to `@Exclude()` a whole class.
 
 ## Skipping private properties, or some prefixed properties
 
-If you name your private properties with a prefix, lets say with `_`, 
+If you name your private properties with a prefix, lets say with `_`,
 then you can exclude such properties from transformation too:
 
 ```typescript
@@ -563,7 +563,7 @@ export class User {
     get name() {
         return this.firstName + " " + this.lastName;
     }
-    
+
 }
 
 const user = new User();
@@ -750,8 +750,8 @@ export class Photo {
 }
 ```
 
-Now when you call `plainToClass` and send a plain representation of the Photo object, 
-it will convert a date value in your photo object to moment date. 
+Now when you call `plainToClass` and send a plain representation of the Photo object,
+it will convert a date value in your photo object to moment date.
 `@Transform` decorator also supports groups and versioning.
 
 ### Advanced usage
@@ -765,7 +765,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 | Argument          | Description
 |--------------------|---------------------------------------------------------------------------------|
 | `value` | The property value before the transformation.
-| `obj` | The transformation source object. 
+| `obj` | The transformation source object.
 | `type` | The transformation type.
 
 ## Other decorators
@@ -799,7 +799,7 @@ class User {
 }
 
 class UserController {
-    
+
     @TransformClassToPlain({ groups: ['user.email'] })
     getUser() {
         const user = new User();
@@ -824,6 +824,31 @@ Generics are not supported because TypeScript does not have good reflection abil
 Once TypeScript team provide us better runtime type reflection tools, generics will be implemented.
 There are some tweaks however you can use, that maybe can solve your problem.
 [Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
+
+## Implicit type conversion
+
+> **NOTE** If you use class-validator together with class-transformer you propably DON'T want to enable this function.
+
+Enables automatic conversion between built-in types based on type information provided by Typescript. Disabled by default.
+
+```ts
+import { IsString } from 'class-validator'
+
+class MyPayload {
+
+  @IsString()
+  prop: string
+}
+
+
+const result1 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversion: true });
+const result2 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversion: false });
+
+/**
+ *  result1 will be `{ prop: "1234" }` - notice how the prop value has been converted to string.
+ *  result2 will be `{ prop: 1234 }` - default behaviour
+ */
+```
 
 ## How does it handle circular references?
 
@@ -851,7 +876,7 @@ this.http
 
 You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R). 
+Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is [here](https://github.com/pleerock/class-transformer-demo).
 
 ## Samples
