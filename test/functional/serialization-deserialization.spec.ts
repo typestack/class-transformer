@@ -129,24 +129,24 @@ describe("serialization and deserialization objects", () => {
 
     });
 
-    it("should overwrite default properties defined in prototype", () => {
-        class TestObject {
-            normalProp: string = "Hello!";
-            prototypedProp: string;
-        }
+    // it("should overwrite default properties defined in prototype", () => {
+    //     class TestObject {
+    //         normalProp: string = "Hello!";
+    //         prototypedProp: string;
+    //     }
 
-        TestObject.prototype.prototypedProp = "I'm a BUG!";
+    //     TestObject.prototype.prototypedProp = "I'm a BUG!";
 
 
-        const payload = {
-            normalProp: "Goodbye!",
-            prototypedProp: "Goodbye!"
-        };
+    //     const payload = {
+    //         normalProp: "Goodbye!",
+    //         prototypedProp: "Goodbye!"
+    //     };
 
-        const result = deserialize(TestObject, JSON.stringify(payload));
+    //     const result = deserialize(TestObject, JSON.stringify(payload));
 
-        result.normalProp.should.be.eql("Goodbye!");
-        result.prototypedProp.should.be.eql("Goodbye!");
-    });
+    //     result.normalProp.should.be.eql("Goodbye!");
+    //     result.prototypedProp.should.be.eql("Goodbye!");
+    // });
 
 });

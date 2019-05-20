@@ -67,4 +67,11 @@ export interface ClassTransformOptions {
      * This option is useful when you know for sure that your types might have a circular dependency.
      */
     enableCircularCheck?: boolean;
+
+    /**
+     * If set to true then class transformer will try to convert properties implicitly to their target type based on their typing information.
+     *
+     * DEFAULT: `false`
+     */
+    enableImplicitConversion?: boolean;
 }
