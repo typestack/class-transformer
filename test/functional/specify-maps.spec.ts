@@ -1140,6 +1140,274 @@ describe("specifying target maps", () => {
         });
     });
 
+    it("should expose only properties that match given group when group is a function", () => {
+        defaultMetadataStorage.clear();
+
+        class Photo {
+            id: number;
+
+            @Expose({
+                groups: groups => groups.some(g => g === "user") || groups.some(g => g === "guest")
+            })
+            filename: string;
+
+            @Expose({
+                groups: groups => groups.some(g => g === "admin")
+            })
+            status: number;
+
+            metadata: string;
+        }
+
+        class User {
+
+            id: number;
+
+            firstName: string;
+
+            @Expose({
+                groups: groups => groups.some(g => g === "user") || groups.some(g => g === "guest")
+            })
+            lastName: string;
+
+            @Expose({
+                groups: groups => groups.some(g => g === "user")
+            })
+            password: string;
+
+            @Expose({
+                groups: groups => groups.some(g => g === "admin")
+            })
+            isActive: boolean;
+
+            @Type(type => Photo)
+            photo: Photo;
+
+            @Expose({
+                groups: groups => groups.some(g => g === "admin")
+            })
+            @Type(type => Photo)
+            photos: Photo[];
+
+        }
+
+        const user = new User();
+        user.firstName = "Umed";
+        user.lastName = "Khudoiberdiev";
+        user.password = "imnosuperman";
+        user.isActive = false;
+        user.photo = new Photo();
+        user.photo.id = 1;
+        user.photo.filename = "myphoto.jpg";
+        user.photo.status = 1;
+        user.photos = [user.photo];
+
+        const fromPlainUser = {
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            isActive: false,
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1,
+            }]
+        };
+
+        const fromExistUser = new User();
+        fromExistUser.id = 1;
+        fromExistUser.photo = new Photo();
+        fromExistUser.photo.metadata = "taken by Camera";
+
+        const plainUser1: any = classToPlain(user);
+        plainUser1.should.not.be.instanceOf(User);
+        plainUser1.should.be.eql({
+            firstName: "Umed",
+            photo: {
+                id: 1
+            }
+        });
+        expect(plainUser1.lastName).to.be.undefined;
+        expect(plainUser1.password).to.be.undefined;
+        expect(plainUser1.isActive).to.be.undefined;
+
+        const plainUser2: any = classToPlain(user, { groups: ["user"] });
+        plainUser2.should.not.be.instanceOf(User);
+        plainUser2.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+        expect(plainUser2.isActive).to.be.undefined;
+
+        const transformedUser2 = plainToClass(User, fromPlainUser, { groups: ["user"] });
+        transformedUser2.should.be.instanceOf(User);
+        transformedUser2.photo.should.be.instanceOf(Photo);
+        transformedUser2.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { groups: ["user"] });
+        fromExistTransformedUser.should.be.equal(fromExistUser);
+        fromExistTransformedUser.photo.should.be.equal(fromExistUser.photo);
+        fromExistTransformedUser.should.be.eql({
+            id: 1,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                metadata: "taken by Camera",
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const classToClassUser = classToClass(user, { groups: ["user"] });
+        classToClassUser.should.be.instanceOf(User);
+        classToClassUser.photo.should.be.instanceOf(Photo);
+        classToClassUser.should.not.be.equal(user);
+        classToClassUser.should.not.be.equal(user.photo);
+        classToClassUser.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { groups: ["user"] });
+        classToClassFromExistUser.should.be.instanceOf(User);
+        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
+        classToClassFromExistUser.should.not.be.equal(user);
+        classToClassFromExistUser.should.not.be.equal(user.photo);
+        classToClassFromExistUser.should.be.equal(fromExistUser);
+        classToClassFromExistUser.should.be.eql({
+            id: 1,
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            photo: {
+                id: 1,
+                metadata: "taken by Camera",
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const plainUser3: any = classToPlain(user, { groups: ["guest"] });
+        plainUser3.should.not.be.instanceOf(User);
+        plainUser3.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+        expect(plainUser3.password).to.be.undefined;
+        expect(plainUser3.isActive).to.be.undefined;
+
+        const transformedUser3 = plainToClass(User, fromPlainUser, { groups: ["guest"] });
+        transformedUser3.should.be.instanceOf(User);
+        transformedUser3.photo.should.be.instanceOf(Photo);
+        transformedUser3.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const plainUser4: any = classToPlain(user, { groups: ["admin"] });
+        plainUser4.should.not.be.instanceOf(User);
+        plainUser4.should.be.eql({
+            firstName: "Umed",
+            isActive: false,
+            photo: {
+                id: 1,
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                status: 1
+            }]
+        });
+        expect(plainUser4.lastName).to.be.undefined;
+        expect(plainUser4.password).to.be.undefined;
+
+        const transformedUser4 = plainToClass(User, fromPlainUser, { groups: ["admin"] });
+        transformedUser4.should.be.instanceOf(User);
+        transformedUser4.photo.should.be.instanceOf(Photo);
+        transformedUser4.photos[0].should.be.instanceOf(Photo);
+        transformedUser4.should.be.eql({
+            firstName: "Umed",
+            isActive: false,
+            photo: {
+                id: 1,
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                status: 1
+            }]
+        });
+
+        const plainUser5: any = classToPlain(user, { groups: ["admin", "user"] });
+        plainUser5.should.not.be.instanceOf(User);
+        plainUser5.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            isActive: false,
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            }]
+        });
+
+        const transformedUser5 = plainToClass(User, fromPlainUser, { groups: ["admin", "user"] });
+        transformedUser5.should.be.instanceOf(User);
+        transformedUser5.should.be.eql({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            password: "imnosuperman",
+            isActive: false,
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            },
+            photos: [{
+                id: 1,
+                filename: "myphoto.jpg",
+                status: 1
+            }]
+        });
+    });
+
     it("should expose only properties that match given version", () => {
         defaultMetadataStorage.clear();
 

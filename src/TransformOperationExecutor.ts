@@ -418,11 +418,15 @@ export class TransformOperationExecutor {
         return decision;
     }
 
-    private checkGroups(groups: string[]) {
+    private checkGroups(groups: string[] | ((givenGroups: string[]) => boolean)) {
         if (!groups)
             return true;
 
-        return this.options.groups.some(optionGroup => groups.indexOf(optionGroup) !== -1);
+        if (typeof groups === "function") {
+            return groups(this.options.groups);
+        } else {
+            return this.options.groups.some(optionGroup => groups.indexOf(optionGroup) !== -1);
+        }
     }
 
 }
