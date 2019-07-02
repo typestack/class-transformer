@@ -169,12 +169,16 @@ export class TransformOperationExecutor {
 
                 // get a subvalue
                 let subValue: any = undefined;
-                if (value instanceof Map) {
-                    subValue = value.get(valueKey);
-                } else if (value[valueKey] instanceof Function) {
-                    subValue = value[valueKey]();
-                } else {
+                if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                     subValue = value[valueKey];
+                } else {
+                    if (value instanceof Map) {
+                        subValue = value.get(valueKey);
+                    } else if (value[valueKey] instanceof Function) {
+                        subValue = value[valueKey]();
+                    } else {
+                        subValue = value[valueKey];
+                    }
                 }
 
                 // determine a type

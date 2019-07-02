@@ -1445,6 +1445,35 @@ describe("basic functionality", () => {
 
     });
 
+    it("should set class as value in plainToClass", () => {
+        defaultMetadataStorage.clear();
+        class ClassValue {}
+
+        class User {
+          classValue: any;
+        }
+
+        const data = plainToClass(User, { classValue: ClassValue });
+        data.should.be.instanceOf(User);
+        data.classValue.should.be.eq(ClassValue);
+        const instance = new data.classValue();
+        instance.should.be.instanceOf(ClassValue);
+    });
+
+    it("should set function as value in plainToClass", () => {
+        defaultMetadataStorage.clear();
+        const testFunction = () => 10;
+
+        class User {
+            testFunction: Function;
+        }
+
+        const data = plainToClass(User, { testFunction });
+        data.should.be.instanceOf(User);
+        data.testFunction.should.be.eq(testFunction);
+        data.testFunction().should.be.eq(10);
+    });
+
     it("should expose method and accessors that have @Expose()", () => {
         defaultMetadataStorage.clear();
 
