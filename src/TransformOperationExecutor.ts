@@ -1,7 +1,8 @@
-import { ClassTransformOptions } from "./ClassTransformOptions";
-import { defaultMetadataStorage } from "./storage";
-import { TypeHelpOptions, TypeOptions } from "./metadata/ExposeExcludeOptions";
-import { TypeMetadata } from "./metadata/TypeMetadata";
+import {ClassTransformOptions} from "./ClassTransformOptions";
+import {defaultMetadataStorage} from "./storage";
+import {TypeHelpOptions, TypeOptions} from "./metadata/ExposeExcludeOptions";
+import {TypeMetadata} from "./metadata/TypeMetadata";
+import {Include} from "./Include";
 
 export enum TransformationType {
     PLAIN_TO_CLASS,
@@ -405,6 +406,9 @@ export class TransformOperationExecutor {
             return self.indexOf(key) === index;
         });
 
+        // apply include policy
+        keys = this.applyIncludePolicy(keys, object, this.options.includePolicy || Include.DEFAULT);
+
         return keys;
     }
 
@@ -425,6 +429,15 @@ export class TransformOperationExecutor {
         return this.options.groups.some(optionGroup => groups.indexOf(optionGroup) !== -1);
     }
 
+    private applyIncludePolicy(keys: string[], object: any, include: Include): string[] {
+        if (include === Include.DEFAULT) {
+            return keys;
+        } else if (include === Include.NON_NULL) {
+            return keys.filter((it: string) => object[it] !== null);
+        } else {
+            throw new Error(`Unsupported Include policy ${include}`);
+        }
+    }
 }
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {

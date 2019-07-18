@@ -10,6 +10,7 @@ import { defaultMetadataStorage } from "../../src/storage";
 import { Exclude, Expose, Type } from "../../src/decorators";
 import { expect } from "chai";
 import { testForBuffer } from "../../src/TransformOperationExecutor";
+import {Include} from "../../src/Include";
 
 describe("basic functionality", () => {
 
@@ -1529,6 +1530,47 @@ describe("basic functionality", () => {
         likeUser.firstName = "Umed";
         likeUser.lastName = "Khudoiberdiev";
         transformedUser.should.be.eql(likeUser);
+
+    });
+
+    it("should not expose null if include policy is NON_NULL", () => {
+        defaultMetadataStorage.clear();
+
+        class Photo {
+            id: number;
+            filename: string;
+            status: number;
+        }
+
+        class User {
+
+
+            firstName: string;
+            lastName: string;
+            password: string;
+
+            @Type(type => Photo)
+            photos: Photo[];
+
+        }
+
+        const user = new User();
+        user.firstName = "Umed";
+        user.lastName = "Khudoiberdiev";
+        user.password = null;
+        const photo = new Photo();
+        photo.id = 1;
+        photo.filename = "myphoto.jpg";
+        photo.status = 1;
+        user.photos = [photo];
+
+        const plainUser1: any = classToPlain(user, {
+            includePolicy: Include.NON_NULL
+        });
+        plainUser1.should.not.be.instanceOf(User);
+        expect(plainUser1.firstName).to.eql("Umed");
+        expect(plainUser1.lastName).to.eql("Khudoiberdiev");
+        expect(plainUser1.password).to.be.undefined;
 
     });
 

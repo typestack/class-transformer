@@ -2,6 +2,8 @@
  * Allows to specify a map of Types in the object without using @Type decorator.
  * This is useful when you have external classes.
  */
+import {Include} from "./Include";
+
 export interface TargetMap {
 
     /**
@@ -74,4 +76,12 @@ export interface ClassTransformOptions {
      * DEFAULT: `false`
      */
     enableImplicitConversion?: boolean;
+
+
+    /**
+     * Sets the global policy for which fields will be included. The default is any defined field.
+     */
+    includePolicy?: Include;
+
+
 }
