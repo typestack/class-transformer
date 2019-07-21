@@ -600,8 +600,8 @@ export class User {
 
 ```typescript
 import {classToPlain} from "class-transformer";
-let user1 = classToPlain(user, { groups: ["user"] }); // will contain id, name, email and password
-let user2 = classToPlain(user, { groups: ["admin"] }); // will contain id, name and email
+let user1 = classToPlain(user, { groups: ["user"] }); // will contain id, name and email
+let user2 = classToPlain(user, { groups: ["admin"] }); // will contain id, name, email and password
 ```
 
 ## Using versioning to control exposed and excluded properties
