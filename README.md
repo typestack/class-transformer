@@ -1,10 +1,10 @@
-# class-transformer
+# @yoolabs/class-transformer 
 
-[![Build Status](https://travis-ci.org/typestack/class-transformer.svg?branch=master)](https://travis-ci.org/typestack/class-transformer)
-[![codecov](https://codecov.io/gh/typestack/class-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
-[![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
-[![Dependency Status](https://david-dm.org/typestack/class-transformer.svg)](https://david-dm.org/typestack/class-transformer)
-[![Join the chat at https://gitter.im/typestack/class-transformer](https://badges.gitter.im/typestack/class-transformer.svg)](https://gitter.im/typestack/class-transformer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+This adds some custom functionality to class transformer.
+
+* [Exposing/Excluding properties of subobjects](#exposingexcluding-properties-of-subobjects)
+
+
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
