@@ -329,7 +329,7 @@ export class TransformOperationExecutor {
 
         // get all keys that need to expose
         let keys: any[] = [];
-        if (strategy === "exposeAll") {
+        if (strategy === "exposeAll" || this.options.ignoreDecorators) {
             if (object instanceof Map) {
                 keys = Array.from(object.keys());
             } else {
