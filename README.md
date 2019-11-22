@@ -633,7 +633,7 @@ let user1 = classToPlain(user, { version: 0.5 }); // will contain id and name
 let user2 = classToPlain(user, { version: 0.7 }); // will contain id, name and email
 let user3 = classToPlain(user, { version: 1 }); // will contain id and name
 let user4 = classToPlain(user, { version: 2 }); // will contain id and name
-let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name nad password
+let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and password
 ```
 
 ## Сonverting date strings into Date objects
