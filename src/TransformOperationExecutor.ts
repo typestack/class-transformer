@@ -182,10 +182,10 @@ export class TransformOperationExecutor {
                                         }
                                     }
                                 }
-                                if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
+                                if (subValue && this.transformationType === TransformationType.CLASS_TO_CLASS) {
                                     type = subValue.constructor;
                                 }
-                                if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
+                                if (subValue && this.transformationType === TransformationType.CLASS_TO_PLAIN) {
                                     subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find((subType) => subType.value === subValue.constructor).name;
                                 }
                             } else {
