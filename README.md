@@ -759,12 +759,13 @@ it will convert a date value in your photo object to moment date.
 The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
 
 ```
-@Transform((value, obj, type) => value)
+@Transform((value, key, obj, type) => value)
 ```
 
 | Argument          | Description
 |--------------------|---------------------------------------------------------------------------------|
 | `value` | The property value before the transformation.
+| `key` | The property name.
 | `obj` | The transformation source object.
 | `type` | The transformation type.
 
