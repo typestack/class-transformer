@@ -172,7 +172,7 @@ export class TransformOperationExecutor {
                                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                                     type = metadata.options.discriminator.subTypes.find((subType) => {
                                         if (subValue && metadata.options.discriminator.property in subValue) {
-                                            return subType.name === subValue[metadata.options.discriminator.property]
+                                            return subType.name === subValue[metadata.options.discriminator.property];
                                         }
                                     });
                                     type === undefined ? type = newType : type = type.value;
@@ -199,7 +199,7 @@ export class TransformOperationExecutor {
                         this.options.targetMaps
                             .filter(map => map.target === targetType && !!map.properties[propertyName])
                             .forEach(map => type = map.properties[propertyName]);
-                    } else if(this.options.enableImplicitConversion && this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+                    } else if (this.options.enableImplicitConversion && this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                         // if we have no registererd type via the @Type() decorator then we check if we have any
                         // type declarations in reflect-metadata (type declaration is emited only if some decorator is added to the property.)
                         const reflectedType = Reflect.getMetadata("design:type", (targetType as Function).prototype, propertyName);
@@ -303,7 +303,7 @@ export class TransformOperationExecutor {
         }
 
         metadatas.forEach(metadata => {
-            value = metadata.transformFn(value, obj, transformationType);
+            value = metadata.transformFn(value, key, obj, transformationType);
         });
 
         return value;
@@ -437,7 +437,7 @@ function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
 
 export function testForBuffer(): boolean {
     try {
-        Buffer
+        Buffer;
         return true;
     } catch { }
     return false;

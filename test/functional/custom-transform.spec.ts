@@ -128,10 +128,12 @@ describe("custom transformation decorator", () => {
     it("@Transform decorator callback should be given correct arguments", () => {
         defaultMetadataStorage.clear();
 
+        let keyArg: string;
         let objArg: any;
         let typeArg: TransformationType;
 
-        function transformCallback(value: any, obj: any, type: TransformationType) {
+        function transformCallback(value: any, key: string, obj: any, type: TransformationType) {
+            keyArg = key;
             objArg = obj;
             typeArg = type;
             return value;
@@ -148,6 +150,7 @@ describe("custom transformation decorator", () => {
         };
 
         plainToClass(User, plainUser);
+        keyArg.should.be.equal("name");
         objArg.should.be.equal(plainUser);
         typeArg.should.be.equal(TransformationType.PLAIN_TO_CLASS);
 
@@ -155,6 +158,7 @@ describe("custom transformation decorator", () => {
         user.name = "Johny Cage";
 
         classToPlain(user);
+        keyArg.should.be.equal("name");
         objArg.should.be.equal(user);
         typeArg.should.be.equal(TransformationType.CLASS_TO_PLAIN);
     });
