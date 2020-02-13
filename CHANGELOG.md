@@ -1,6 +1,12 @@
 # Changelog and release notes
 
 
+### 0.3.0 [BREAKING CHANGE]
+
+#### Changed
+
+- Add the second argument `key` of transformFn function
+
 ### 0.2.3 [BREAKING CHANGE]
 
 #### Changed
