@@ -88,6 +88,12 @@ export class TransformOperationExecutor {
         } else if (targetType === Boolean && !isMap) {
             if (value === null || value === undefined)
                 return value;
+            if (value === 'true' || value === '1' || value === 'yes') {
+                return true;
+            }
+            if (value === 'false' || value === '0' || value ==='no') {
+                return false;
+            }
             return Boolean(value);
 
         } else if ((targetType === Date || value instanceof Date) && !isMap) {
