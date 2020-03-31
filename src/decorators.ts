@@ -11,7 +11,7 @@ import {TransformationType} from "./TransformOperationExecutor";
 /**
  * Defines a custom logic for value transformation.
  */
-export function Transform(transformFn: (value: any, obj: any, transformationType: TransformationType) => any, options?: TransformOptions) {
+export function Transform(transformFn: (value: any, obj: any, transformationType: TransformationType) => any, options?: TransformOptions): PropertyDecorator {
     return function(target: any, key: string) {
         const metadata = new TransformMetadata(target.constructor, key, transformFn, options);
         defaultMetadataStorage.addTransformMetadata(metadata);
@@ -22,7 +22,7 @@ export function Transform(transformFn: (value: any, obj: any, transformationType
  * Specifies a type of the property.
  * The given TypeFunction can return a constructor. A discriminator can be given in the options.
  */
-export function Type(typeFunction?: (type?: TypeHelpOptions) => Function, options?: TypeOptions) {
+export function Type(typeFunction?: (type?: TypeHelpOptions) => Function, options?: TypeOptions): PropertyDecorator {
     return function(target: any, key: string) {
         const type = (Reflect as any).getMetadata("design:type", target, key);
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, options);
@@ -35,7 +35,7 @@ export function Type(typeFunction?: (type?: TypeHelpOptions) => Function, option
  * constructorToPlain and plainToConstructor transformations, however you can specify on which of transformation types
  * you want to skip this property.
  */
-export function Expose(options?: ExposeOptions) {
+export function Expose(options?: ExposeOptions): PropertyDecorator {
     return function(object: Object|Function, propertyName?: string) {
         const metadata = new ExposeMetadata(object instanceof Function ? object : object.constructor, propertyName, options || {});
         defaultMetadataStorage.addExposeMetadata(metadata);
@@ -47,7 +47,7 @@ export function Expose(options?: ExposeOptions) {
  * constructorToPlain and plainToConstructor transformations, however you can specify on which of transformation types
  * you want to skip this property.
  */
-export function Exclude(options?: ExcludeOptions) {
+export function Exclude(options?: ExcludeOptions): PropertyDecorator {
     return function(object: Object|Function, propertyName?: string) {
         const metadata = new ExcludeMetadata(object instanceof Function ? object : object.constructor, propertyName, options || {});
         defaultMetadataStorage.addExcludeMetadata(metadata);
@@ -57,7 +57,7 @@ export function Exclude(options?: ExcludeOptions) {
 /**
  * Transform the object from class to plain object and return only with the exposed properties.
  */
-export function TransformClassToPlain(params?: ClassTransformOptions): Function {
+export function TransformClassToPlain(params?: ClassTransformOptions): MethodDecorator {
 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: ClassTransformer = new ClassTransformer();
@@ -75,7 +75,7 @@ export function TransformClassToPlain(params?: ClassTransformOptions): Function 
 /**
  * Return the class instance only with the exposed properties.
  */
-export function TransformClassToClass(params?: ClassTransformOptions): Function {
+export function TransformClassToClass(params?: ClassTransformOptions): MethodDecorator {
 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: ClassTransformer = new ClassTransformer();
@@ -93,7 +93,7 @@ export function TransformClassToClass(params?: ClassTransformOptions): Function 
 /**
  * Return the class instance only with the exposed properties.
  */
-export function TransformPlainToClass(classType: any, params?: ClassTransformOptions): Function {
+export function TransformPlainToClass(classType: any, params?: ClassTransformOptions): MethodDecorator {
 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         const classTransformer: ClassTransformer = new ClassTransformer();
