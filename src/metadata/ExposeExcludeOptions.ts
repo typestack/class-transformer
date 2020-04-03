@@ -17,7 +17,7 @@ export interface TypeOptions {
 
 export interface TypeHelpOptions {
     newObject: any;
-    object: Object;
+    object: Record<string, any>;
     property: string;
 }
 

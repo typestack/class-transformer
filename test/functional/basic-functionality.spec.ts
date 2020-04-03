@@ -1766,7 +1766,7 @@ describe("basic functionality", () => {
         obj.usersDefined = [{name: "a-name"}];
         obj.usersUndefined = undefined;
 
-        const transformedClass = plainToClass(TestClass, obj as Object);
+        const transformedClass = plainToClass(TestClass, obj as Record<string, any>);
 
         expect(transformedClass).toBeInstanceOf(TestClass);
 

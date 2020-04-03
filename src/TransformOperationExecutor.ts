@@ -9,13 +9,30 @@ export enum TransformationType {
     CLASS_TO_CLASS
 }
 
+export function testForBuffer(): boolean {
+    try {
+        Buffer.isBuffer({/* empty object */});
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
+    const array = new (arrayType as any)();
+    if (!(array instanceof Set) && !("push" in array)) {
+        return [];
+    }
+    return array;
+}
+
 export class TransformOperationExecutor {
 
     // -------------------------------------------------------------------------
     // Private Properties
     // -------------------------------------------------------------------------
 
-    private recursionStack = new Set<Object>();
+    private recursionStack = new Set<Record<string, any>>();
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -29,12 +46,12 @@ export class TransformOperationExecutor {
     // Public Methods
     // -------------------------------------------------------------------------
 
-    transform(source: Object | Object[] | any,
-        value: Object | Object[] | any,
+    transform(source: Record<string, any> | Record<string, any>[] | any,
+        value: Record<string, any> | Record<string, any>[] | any,
         targetType: Function | TypeMetadata,
         arrayType: Function,
         isMap: boolean,
-        level: number = 0) {
+        level: number = 0): any {
 
         if (Array.isArray(value) || value instanceof Set) {
             const newValue = arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS ? instantiateArrayType(arrayType) : [];
@@ -127,9 +144,9 @@ export class TransformOperationExecutor {
             }
 
             // traverse over keys
-            for (let key of keys) {
-
-                let valueKey = key, newValueKey = key, propertyName = key;
+            for (const key of keys) {
+                const valueKey = key;
+                let newValueKey = key, propertyName = key;
                 if (!this.options.ignoreDecorators && targetType) {
                     if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                         const exposeMetadata = defaultMetadataStorage.findExposeMetadataByCustomName((targetType as Function), key);
@@ -225,12 +242,13 @@ export class TransformOperationExecutor {
                 if (newValue.constructor.prototype) {
                     const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
                     if ((this.transformationType === TransformationType.PLAIN_TO_CLASS || this.transformationType === TransformationType.CLASS_TO_CLASS)
+                        // eslint-disable-next-line @typescript-eslint/unbound-method
                         && ((descriptor && !descriptor.set) || newValue[newValueKey] instanceof Function)) //  || TransformationType === TransformationType.CLASS_TO_CLASS
                         continue;
                 }
 
                 if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
-                    let transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
+                    const transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
                     let finalValue;
 
                     if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
@@ -275,7 +293,7 @@ export class TransformOperationExecutor {
         }
     }
 
-    private applyCustomTransformations(value: any, target: Function, key: string, obj: any, transformationType: TransformationType) {
+    private applyCustomTransformations(value: any, target: Function, key: string, obj: any, transformationType: TransformationType): boolean {
         let metadatas = defaultMetadataStorage.findTransformMetadatas(target, key, this.transformationType);
 
         // apply versioning options
@@ -310,18 +328,17 @@ export class TransformOperationExecutor {
     }
 
     // preventing circular references
-    private isCircular(object: Object) {
+    private isCircular(object: Record<string, any>): boolean {
         return this.recursionStack.has(object);
     }
 
-    private getReflectedType(target: Function, propertyName: string) {
+    private getReflectedType(target: Function, propertyName: string): Function | undefined {
         if (!target) return undefined;
         const meta = defaultMetadataStorage.findTypeMetadata(target, propertyName);
         return meta ? meta.reflectedType : undefined;
     }
 
-    private getKeys(target: Function, object: Object): string[] {
-
+    private getKeys(target: Function, object: Record<string, any>): string[] {
         // determine exclusion strategy
         let strategy = defaultMetadataStorage.getStrategy(target);
         if (strategy === "none")
@@ -361,7 +378,7 @@ export class TransformOperationExecutor {
             const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);
             if (excludedProperties.length > 0) {
                 keys = keys.filter(key => {
-                    return excludedProperties.indexOf(key) === -1;
+                    return !excludedProperties.includes(key);
                 });
             }
 
@@ -408,7 +425,7 @@ export class TransformOperationExecutor {
         return keys;
     }
 
-    private checkVersion(since: number, until: number) {
+    private checkVersion(since: number, until: number): boolean {
         let decision = true;
         if (decision && since)
             decision = this.options.version >= since;
@@ -418,27 +435,11 @@ export class TransformOperationExecutor {
         return decision;
     }
 
-    private checkGroups(groups: string[]) {
+    private checkGroups(groups: string[]): boolean {
         if (!groups)
             return true;
 
-        return this.options.groups.some(optionGroup => groups.indexOf(optionGroup) !== -1);
+        return this.options.groups.some(optionGroup => groups.includes(optionGroup));
     }
-
 }
 
-function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
-    const array = new (arrayType as any)();
-    if (!(array instanceof Set) && !("push" in array)) {
-        return [];
-    }
-    return array;
-}
-
-export function testForBuffer(): boolean {
-    try {
-        Buffer
-        return true;
-    } catch { }
-    return false;
-}

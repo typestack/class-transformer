@@ -2,7 +2,7 @@ import {ClassTransformer} from "./ClassTransformer";
 import {defaultMetadataStorage} from "./storage";
 import {TypeMetadata} from "./metadata/TypeMetadata";
 import {ExposeMetadata} from "./metadata/ExposeMetadata";
-import {ExposeOptions, ExcludeOptions, TypeHelpOptions, TransformOptions, Discriminator, TypeOptions} from "./metadata/ExposeExcludeOptions";
+import {ExposeOptions, ExcludeOptions, TypeHelpOptions, TransformOptions, TypeOptions} from "./metadata/ExposeExcludeOptions";
 import {ExcludeMetadata} from "./metadata/ExcludeMetadata";
 import {TransformMetadata} from "./metadata/TransformMetadata";
 import {ClassTransformOptions} from "./ClassTransformOptions";
@@ -12,7 +12,7 @@ import {TransformationType} from "./TransformOperationExecutor";
  * Defines a custom logic for value transformation.
  */
 export function Transform(transformFn: (value: any, obj: any, transformationType: TransformationType) => any, options?: TransformOptions) {
-    return function(target: any, key: string) {
+    return function(target: any, key: string): void {
         const metadata = new TransformMetadata(target.constructor, key, transformFn, options);
         defaultMetadataStorage.addTransformMetadata(metadata);
     };
@@ -23,7 +23,7 @@ export function Transform(transformFn: (value: any, obj: any, transformationType
  * The given TypeFunction can return a constructor. A discriminator can be given in the options.
  */
 export function Type(typeFunction?: (type?: TypeHelpOptions) => Function, options?: TypeOptions) {
-    return function(target: any, key: string) {
+    return function(target: any, key: string): void {
         const type = (Reflect as any).getMetadata("design:type", target, key);
         const metadata = new TypeMetadata(target.constructor, key, type, typeFunction, options);
         defaultMetadataStorage.addTypeMetadata(metadata);
@@ -36,7 +36,7 @@ export function Type(typeFunction?: (type?: TypeHelpOptions) => Function, option
  * you want to skip this property.
  */
 export function Expose(options?: ExposeOptions) {
-    return function(object: Object|Function, propertyName?: string) {
+    return function(object: Record<string, any>|Function, propertyName?: string): void {
         const metadata = new ExposeMetadata(object instanceof Function ? object : object.constructor, propertyName, options || {});
         defaultMetadataStorage.addExposeMetadata(metadata);
     };
@@ -48,7 +48,7 @@ export function Expose(options?: ExposeOptions) {
  * you want to skip this property.
  */
 export function Exclude(options?: ExcludeOptions) {
-    return function(object: Object|Function, propertyName?: string) {
+    return function(object: Record<string, any>|Function, propertyName?: string): void {
         const metadata = new ExcludeMetadata(object instanceof Function ? object : object.constructor, propertyName, options || {});
         defaultMetadataStorage.addExcludeMetadata(metadata);
     };
@@ -59,14 +59,13 @@ export function Exclude(options?: ExcludeOptions) {
  */
 export function TransformClassToPlain(params?: ClassTransformOptions): Function {
 
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor): void {
         const classTransformer: ClassTransformer = new ClassTransformer();
         const originalMethod = descriptor.value;
 
-        descriptor.value = function(...args: any[]) {
+        descriptor.value = function(...args: any[]): Record<string, any> {
             const result: any = originalMethod.apply(this, args);
             const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
-
             return isPromise ? result.then((data: any) => classTransformer.classToPlain(data, params)) : classTransformer.classToPlain(result, params);
         };
     };
@@ -77,14 +76,13 @@ export function TransformClassToPlain(params?: ClassTransformOptions): Function 
  */
 export function TransformClassToClass(params?: ClassTransformOptions): Function {
 
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor): void {
         const classTransformer: ClassTransformer = new ClassTransformer();
         const originalMethod = descriptor.value;
 
-        descriptor.value = function(...args: any[]) {
+        descriptor.value = function(...args: any[]): Record<string, any> {
             const result: any = originalMethod.apply(this, args);
             const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
-
             return isPromise ? result.then((data: any) => classTransformer.classToClass(data, params)) : classTransformer.classToClass(result, params);
         };
     };
@@ -95,14 +93,13 @@ export function TransformClassToClass(params?: ClassTransformOptions): Function 
  */
 export function TransformPlainToClass(classType: any, params?: ClassTransformOptions): Function {
 
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor): void {
         const classTransformer: ClassTransformer = new ClassTransformer();
         const originalMethod = descriptor.value;
 
-        descriptor.value = function(...args: any[]) {
+        descriptor.value = function(...args: any[]): Record<string, any> {
             const result: any = originalMethod.apply(this, args);
             const isPromise = !!result && (typeof result === "object" || typeof result === "function") && typeof result.then === "function";
-
             return isPromise ? result.then((data: any) => classTransformer.plainToClass(classType, data, params)) : classTransformer.plainToClass(classType, result, params);
         };
     };

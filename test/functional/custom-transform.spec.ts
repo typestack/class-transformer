@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import "reflect-metadata";
 import {classToClass, classToPlain, plainToClass} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
@@ -15,7 +16,7 @@ describe("custom transformation decorator", () => {
             name: string;
         }
 
-        let plainUser = {
+        const plainUser = {
             user_name: "Johny Cage"
         };
 
@@ -35,7 +36,7 @@ describe("custom transformation decorator", () => {
             date: Date;
         }
 
-        let plainUser = {
+        const plainUser = {
             id: 1,
             name: "Johny Cage",
             date: new Date().valueOf()
@@ -77,7 +78,7 @@ describe("custom transformation decorator", () => {
             lastVisitDate: Date;
         }
 
-        let plainUser = {
+        const plainUser = {
             id: 1,
             name: "Johny Cage",
             date: new Date().valueOf(),
@@ -121,7 +122,7 @@ describe("custom transformation decorator", () => {
         let objArg: any;
         let typeArg: TransformationType;
 
-        function transformCallback(value: any, obj: any, type: TransformationType) {
+        function transformCallback(value: any, obj: any, type: TransformationType): any {
             objArg = obj;
             typeArg = type;
             return value;
@@ -133,7 +134,7 @@ describe("custom transformation decorator", () => {
             name: string;
         }
 
-        let plainUser = {
+        const plainUser = {
             name: "Johny Cage",
         };
 

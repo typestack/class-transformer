@@ -24,7 +24,7 @@ describe("inheritence", () => {
             university: string;
         }
 
-        let plainStudent = {
+        const plainStudent = {
             name: "Johny Cage",
             university: "mit",
             birthDate: new Date(1967, 2, 1).toDateString(),

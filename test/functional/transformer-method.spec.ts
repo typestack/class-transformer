@@ -21,7 +21,7 @@ describe("transformer methods decorator", () => {
 
         class UserController {
             @TransformClassToClass()
-            getUser() {
+            getUser(): User {
                 const user = new User();
                 user.firstName = "Snir";
                 user.lastName = "Segal";
@@ -66,7 +66,7 @@ describe("transformer methods decorator", () => {
         class UserController {
 
             @TransformPlainToClass(User)
-            getUser() {
+            getUser(): User {
                 const user: any = {};
                 user.firstName = "Snir";
                 user.lastName = "Segal";
@@ -109,7 +109,7 @@ describe("transformer methods decorator", () => {
         class UserController {
 
             @TransformClassToPlain()
-            getUser() {
+            getUser(): User {
                 const user = new User();
                 user.firstName = "Snir";
                 user.lastName = "Segal";
@@ -155,7 +155,7 @@ describe("transformer methods decorator", () => {
         class UserController {
 
             @TransformClassToPlain({ groups: ["user.permissions"] })
-            getUserWithRoles() {
+            getUserWithRoles(): User {
                 const user = new User();
                 user.firstName = "Snir";
                 user.lastName = "Segal";
@@ -207,7 +207,7 @@ describe("transformer methods decorator", () => {
         class UserController {
 
             @TransformClassToPlain({ version: 1 })
-            getUserVersion1() {
+            getUserVersion1(): User {
                 const user = new User();
                 user.firstName = "Snir";
                 user.lastName = "Segal";
@@ -219,7 +219,7 @@ describe("transformer methods decorator", () => {
             }
 
             @TransformClassToPlain({ version: 2 })
-            getUserVersion2() {
+            getUserVersion2(): User {
                 const user = new User();
                 user.firstName = "Snir";
                 user.lastName = "Segal";

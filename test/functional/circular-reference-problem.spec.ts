@@ -136,12 +136,12 @@ describe("circular reference problem", () => {
         });
 
         it("enableCircularCheck option is undefined (default)", () => {
-            plainToClass<User, Object>(User, user);
+            plainToClass<User, Record<string, any>>(User, user);
             expect(isCircularSpy).not.toHaveBeenCalled();
         });
 
         it("enableCircularCheck option is true", () => {
-            plainToClass<User, Object>(User, user, { enableCircularCheck: true });
+            plainToClass<User, Record<string, any>>(User, user, { enableCircularCheck: true });
             expect(isCircularSpy).toHaveBeenCalled();
         });
     });

@@ -14,7 +14,7 @@ describe("es6 data types", () => {
             weapons: Map<string, string>;
         }
 
-        let plainUser = {
+        const plainUser = {
             id: 1,
             name: "Max Pain",
             weapons: {
@@ -68,7 +68,7 @@ describe("es6 data types", () => {
             weapons: Set<string>;
         }
 
-        let plainUser = {
+        const plainUser = {
             id: 1,
             name: "Max Pain",
             weapons: [
@@ -128,7 +128,7 @@ describe("es6 data types", () => {
             weapons: Map<string, Weapon>;
         }
 
-        let plainUser = {
+        const plainUser = {
             id: 1,
             name: "Max Pain",
             weapons: {
@@ -218,7 +218,7 @@ describe("es6 data types", () => {
             weapons: Set<Weapon>;
         }
 
-        let plainUser = {
+        const plainUser = {
             id: 1,
             name: "Max Pain",
             weapons: [
