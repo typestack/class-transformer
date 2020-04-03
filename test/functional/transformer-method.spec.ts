@@ -1,16 +1,13 @@
 import "reflect-metadata";
 import {defaultMetadataStorage} from "../../src/storage";
-import { Exclude, Expose, TransformClassToPlain, TransformClassToClass, TransformPlainToClass } from "../../src/decorators";
-import {expect} from "chai";
+import {Exclude, Expose, TransformClassToClass, TransformClassToPlain, TransformPlainToClass} from "../../src/decorators";
 
 describe("transformer methods decorator", () => {
-
     it("should expose non configuration properties and return User instance class", () => {
         defaultMetadataStorage.clear();
 
         @Exclude()
         class User {
-
             id: number;
 
             @Expose()
@@ -23,7 +20,6 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
             @TransformClassToClass()
             getUser() {
                 const user = new User();
@@ -38,7 +34,7 @@ describe("transformer methods decorator", () => {
         const controller = new UserController();
 
         const result = controller.getUser();
-        expect(result.password).to.be.undefined;
+        expect(result.password).toBeUndefined();
 
         const plainUser = {
             firstName: "Snir",
@@ -46,8 +42,8 @@ describe("transformer methods decorator", () => {
         };
 
 
-        expect(result).to.be.eql(plainUser);
-        expect(result).to.be.instanceof(User);
+        expect(result).toEqual(plainUser);
+        expect(result).toBeInstanceOf(User);
     });
 
     it("should expose non configuration properties and return User instance class instead of plain object", () => {
@@ -83,14 +79,14 @@ describe("transformer methods decorator", () => {
         const controller = new UserController();
 
         const result = controller.getUser();
-        expect(result.password).to.be.undefined;
+        expect(result.password).toBeUndefined();
 
         const user = new User();
         user.firstName = "Snir";
         user.lastName = "Segal";
 
-        expect(result).to.be.eql(user);
-        expect(result).to.be.instanceof(User);
+        expect(result).toEqual(user);
+        expect(result).toBeInstanceOf(User);
     });
 
     it("should expose non configuration properties", () => {
@@ -111,7 +107,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToPlain()
             getUser() {
                 const user = new User();
@@ -126,14 +122,14 @@ describe("transformer methods decorator", () => {
         const controller = new UserController();
 
         const result = controller.getUser();
-            expect(result.password).to.be.undefined;
+            expect(result.password).toBeUndefined();
 
         const plainUser = {
             firstName: "Snir",
             lastName: "Segal"
         };
 
-        expect(result).to.be.eql(plainUser);
+        expect(result).toEqual(plainUser);
     });
 
     it("should expose non configuration properties and properties with specific groups", () => {
@@ -157,7 +153,7 @@ describe("transformer methods decorator", () => {
         }
 
         class UserController {
-            
+
             @TransformClassToPlain({ groups: ["user.permissions"] })
             getUserWithRoles() {
                 const user = new User();
@@ -174,7 +170,7 @@ describe("transformer methods decorator", () => {
         const controller = new UserController();
 
         const result = controller.getUserWithRoles();
-        expect(result.password).to.be.undefined;
+        expect(result.password).toBeUndefined();
 
         const plainUser = {
             firstName: "Snir",
@@ -182,7 +178,7 @@ describe("transformer methods decorator", () => {
             roles: ["USER", "MANAGER"]
         };
 
-        expect(result).to.be.eql(plainUser);
+        expect(result).toEqual(plainUser);
     });
 
     it("should expose non configuration properties with specific version", () => {
@@ -221,7 +217,7 @@ describe("transformer methods decorator", () => {
 
                 return user;
             }
-                    
+
             @TransformClassToPlain({ version: 2 })
             getUserVersion2() {
                 const user = new User();
@@ -239,8 +235,8 @@ describe("transformer methods decorator", () => {
         const controller = new UserController();
 
         const resultV2 = controller.getUserVersion2();
-        expect(resultV2.password).to.be.undefined;
-        expect(resultV2.roles).to.be.undefined;
+        expect(resultV2.password).toBeUndefined();
+        expect(resultV2.roles).toBeUndefined();
 
         const plainUserV2 = {
             firstName: "Snir",
@@ -248,19 +244,19 @@ describe("transformer methods decorator", () => {
             websiteUrl: "http://www.github.com"
         };
 
-        expect(resultV2).to.be.eql(plainUserV2);
+        expect(resultV2).toEqual(plainUserV2);
 
         const resultV1 = controller.getUserVersion1();
-        expect(resultV1.password).to.be.undefined;
-        expect(resultV1.roles).to.be.undefined;
-        expect(resultV1.websiteUrl).to.be.undefined;
+        expect(resultV1.password).toBeUndefined();
+        expect(resultV1.roles).toBeUndefined();
+        expect(resultV1.websiteUrl).toBeUndefined();
 
         const plainUserV1 = {
             firstName: "Snir",
             lastName: "Segal"
         };
 
-        expect(resultV1).to.be.eql(plainUserV1);
+        expect(resultV1).toEqual(plainUserV1);
     });
 
 });

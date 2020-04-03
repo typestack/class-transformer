@@ -1,10 +1,8 @@
 import "reflect-metadata";
-import {Transform, Type, plainToClass} from "../../src/index";
+import {plainToClass, Transform, Type} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose} from "../../src/decorators";
 
 describe("inheritence", () => {
-
     it("decorators should work inside a base class", () => {
         defaultMetadataStorage.clear();
 
@@ -20,7 +18,7 @@ describe("inheritence", () => {
             id: number;
             email: string;
         }
-        
+
         class Student extends User {
             @Transform(value => value.toUpperCase())
             university: string;
@@ -35,10 +33,10 @@ describe("inheritence", () => {
         };
 
         const classedStudent = plainToClass(Student, plainStudent);
-        classedStudent.name.should.be.equal("JOHNY CAGE");
-        classedStudent.university.should.be.equal("MIT");
-        classedStudent.birthDate.getTime().should.be.equal(new Date(1967, 2, 1).getTime());
-        classedStudent.id.should.be.equal(plainStudent.id);
-        classedStudent.email.should.be.equal(plainStudent.email);
+        expect(classedStudent.name).toEqual("JOHNY CAGE");
+        expect(classedStudent.university).toEqual("MIT");
+        expect(classedStudent.birthDate.getTime()).toEqual(new Date(1967, 2, 1).getTime());
+        expect(classedStudent.id).toEqual(plainStudent.id);
+        expect(classedStudent.email).toEqual(plainStudent.email);
     });
 });

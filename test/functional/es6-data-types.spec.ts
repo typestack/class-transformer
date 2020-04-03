@@ -4,7 +4,6 @@ import {defaultMetadataStorage} from "../../src/storage";
 import {Type} from "../../src/decorators";
 
 describe("es6 data types", () => {
-
     it("using Map", () => {
         defaultMetadataStorage.clear();
 
@@ -36,18 +35,18 @@ describe("es6 data types", () => {
         user.weapons = weapons;
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.id.should.be.equal(1);
-        classedUser.name.should.be.equal("Max Pain");
-        classedUser.weapons.should.be.instanceOf(Map);
-        classedUser.weapons.size.should.be.equal(3);
-        classedUser.weapons.get("firstWeapon").should.be.equal("knife");
-        classedUser.weapons.get("secondWeapon").should.be.equal("eagle");
-        classedUser.weapons.get("thirdWeapon").should.be.equal("ak-47");
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser.id).toEqual(1);
+        expect(classedUser.name).toEqual("Max Pain");
+        expect(classedUser.weapons).toBeInstanceOf(Map);
+        expect(classedUser.weapons.size).toEqual(3);
+        expect(classedUser.weapons.get("firstWeapon")).toEqual("knife");
+        expect(classedUser.weapons.get("secondWeapon")).toEqual("eagle");
+        expect(classedUser.weapons.get("thirdWeapon")).toEqual("ak-47");
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.not.be.instanceOf(User);
-        plainedUser.should.be.eql({
+        expect(plainedUser).not.toBeInstanceOf(User);
+        expect(plainedUser).toEqual({
             id: 1,
             name: "Max Pain",
             weapons: {
@@ -90,18 +89,18 @@ describe("es6 data types", () => {
         user.weapons = weapons;
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.id.should.be.equal(1);
-        classedUser.name.should.be.equal("Max Pain");
-        classedUser.weapons.should.be.instanceOf(Set);
-        classedUser.weapons.size.should.be.equal(3);
-        classedUser.weapons.has("knife").should.be.true;
-        classedUser.weapons.has("eagle").should.be.true;
-        classedUser.weapons.has("ak-47").should.be.true;
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser.id).toEqual(1);
+        expect(classedUser.name).toEqual("Max Pain");
+        expect(classedUser.weapons).toBeInstanceOf(Set);
+        expect(classedUser.weapons.size).toEqual(3);
+        expect(classedUser.weapons.has("knife")).toBeTruthy();
+        expect(classedUser.weapons.has("eagle")).toBeTruthy();
+        expect(classedUser.weapons.has("ak-47")).toBeTruthy();
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.not.be.instanceOf(User);
-        plainedUser.should.be.eql({
+        expect(plainedUser).not.toBeInstanceOf(User);
+        expect(plainedUser).toEqual({
             id: 1,
             name: "Max Pain",
             weapons: [
@@ -159,30 +158,30 @@ describe("es6 data types", () => {
         user.weapons = weapons;
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.id.should.be.equal(1);
-        classedUser.name.should.be.equal("Max Pain");
-        classedUser.weapons.should.be.instanceOf(Map);
-        classedUser.weapons.size.should.be.equal(3);
-        classedUser.weapons.get("firstWeapon").should.be.instanceof(Weapon);
-        classedUser.weapons.get("firstWeapon").should.be.eql({
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser.id).toEqual(1);
+        expect(classedUser.name).toEqual("Max Pain");
+        expect(classedUser.weapons).toBeInstanceOf(Map);
+        expect(classedUser.weapons.size).toEqual(3);
+        expect(classedUser.weapons.get("firstWeapon")).toBeInstanceOf(Weapon);
+        expect(classedUser.weapons.get("firstWeapon")).toEqual({
             model: "knife",
             range: 1
         });
-        classedUser.weapons.get("secondWeapon").should.be.instanceof(Weapon);
-        classedUser.weapons.get("secondWeapon").should.be.eql({
+        expect(classedUser.weapons.get("secondWeapon")).toBeInstanceOf(Weapon);
+        expect(classedUser.weapons.get("secondWeapon")).toEqual({
             model: "eagle",
             range: 200
         });
-        classedUser.weapons.get("thirdWeapon").should.be.instanceof(Weapon);
-        classedUser.weapons.get("thirdWeapon").should.be.eql({
+        expect(classedUser.weapons.get("thirdWeapon")).toBeInstanceOf(Weapon);
+        expect(classedUser.weapons.get("thirdWeapon")).toEqual({
             model: "ak-47",
             range: 800
         });
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.not.be.instanceOf(User);
-        plainedUser.should.be.eql({
+        expect(plainedUser).not.toBeInstanceOf(User);
+        expect(plainedUser).toEqual({
             id: 1,
             name: "Max Pain",
             weapons: {
@@ -240,25 +239,25 @@ describe("es6 data types", () => {
         user.weapons = weapons;
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.id.should.be.equal(1);
-        classedUser.name.should.be.equal("Max Pain");
-        classedUser.weapons.should.be.instanceOf(Set);
-        classedUser.weapons.size.should.be.equal(3);
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser.id).toEqual(1);
+        expect(classedUser.name).toEqual("Max Pain");
+        expect(classedUser.weapons).toBeInstanceOf(Set);
+        expect(classedUser.weapons.size).toEqual(3);
         const it = classedUser.weapons.values();
         const first = it.next().value;
         const second = it.next().value;
         const third = it.next().value;
-        first.should.be.instanceof(Weapon);
-        first.should.be.eql({ model: "knife", range: 1 });
-        second.should.be.instanceof(Weapon);
-        second.should.be.eql({ model: "eagle", range: 200 });
-        third.should.be.instanceof(Weapon);
-        third.should.be.eql({ model: "ak-47", range: 800 });
+        expect(first).toBeInstanceOf(Weapon);
+        expect(first).toEqual({ model: "knife", range: 1 });
+        expect(second).toBeInstanceOf(Weapon);
+        expect(second).toEqual({ model: "eagle", range: 200 });
+        expect(third).toBeInstanceOf(Weapon);
+        expect(third).toEqual({ model: "ak-47", range: 800 });
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.not.be.instanceOf(User);
-        plainedUser.should.be.eql({
+        expect(plainedUser).not.toBeInstanceOf(User);
+        expect(plainedUser).toEqual({
             id: 1,
             name: "Max Pain",
             weapons: [
@@ -267,8 +266,5 @@ describe("es6 data types", () => {
                 { model: "ak-47", range: 800 },
             ]
         });
-
     });
-
-
 });

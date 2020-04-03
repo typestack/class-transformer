@@ -1,12 +1,9 @@
 import "reflect-metadata";
-import {classToPlain, classToClass, plainToClass} from "../../src/index";
+import {classToClass, classToPlain, plainToClass} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
 import {TransformOperationExecutor} from "../../src/TransformOperationExecutor";
-import {assert} from "chai";
-import * as sinon from "sinon";
 
 describe("circular reference problem", () => {
-
     it("should skip circular reference objects in classToPlain operation", () => {
         defaultMetadataStorage.clear();
 
@@ -19,7 +16,6 @@ describe("circular reference problem", () => {
             filename: string;
             user: User;
             users: User[];
-
             caption: Caption;
         }
 
@@ -55,7 +51,7 @@ describe("circular reference problem", () => {
         photo2.caption = caption;
 
         const plainUser = classToPlain(user, { enableCircularCheck: true });
-        plainUser.should.be.eql({
+        expect(plainUser).toEqual({
             firstName: "Umed Khudoiberdiev",
             caption: { text: "cool photo" },
             photos: [{
@@ -70,7 +66,6 @@ describe("circular reference problem", () => {
                 caption: { text: "cool photo" }
             }]
         });
-
     });
 
     it("should not skip circular reference objects, but handle it correctly in classToClass operation", () => {
@@ -107,10 +102,9 @@ describe("circular reference problem", () => {
         photo2.users = [user];
 
         const classUser = classToClass(user, { enableCircularCheck: true });
-        classUser.should.not.be.equal(user);
-        classUser.should.be.instanceOf(User);
-        classUser.should.be.eql(user);
-
+        expect(classUser).not.toBe(user);
+        expect(classUser).toBeInstanceOf(User);
+        expect(classUser).toEqual(user);
     });
 
     describe("enableCircularCheck option", () => {
@@ -124,7 +118,7 @@ describe("circular reference problem", () => {
             firstName: string;
             photos: Photo[];
         }
-        let isCircularSpy: sinon.SinonSpy;
+        let isCircularSpy: jest.SpyInstance;
         const photo1 = new Photo();
         photo1.id = 1;
         photo1.filename = "me.jpg";
@@ -134,21 +128,21 @@ describe("circular reference problem", () => {
         user.photos = [photo1];
 
         beforeEach(() => {
-            isCircularSpy = sinon.spy(TransformOperationExecutor.prototype, "isCircular" as any);
+            isCircularSpy = jest.spyOn(TransformOperationExecutor.prototype, "isCircular" as any);
         });
 
         afterEach(() => {
-            isCircularSpy.restore();
+            isCircularSpy.mockRestore();
         });
 
         it("enableCircularCheck option is undefined (default)", () => {
-            const result = plainToClass<User, Object>(User, user);
-            sinon.assert.notCalled(isCircularSpy);
+            plainToClass<User, Object>(User, user);
+            expect(isCircularSpy).not.toHaveBeenCalled();
         });
 
         it("enableCircularCheck option is true", () => {
-            const result = plainToClass<User, Object>(User, user, { enableCircularCheck: true });
-            sinon.assert.called(isCircularSpy);
+            plainToClass<User, Object>(User, user, { enableCircularCheck: true });
+            expect(isCircularSpy).toHaveBeenCalled();
         });
     });
 });
