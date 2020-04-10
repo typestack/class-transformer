@@ -105,6 +105,9 @@ export class TransformOperationExecutor {
 
         } else if (typeof value === "object" && value !== null) {
 
+            // freezing the prototype to prevent prototype pollution
+            value.freeze(Object.prototype);
+
             // try to guess the type
             if (!targetType && value.constructor !== Object/* && TransformationType === TransformationType.CLASS_TO_PLAIN*/) targetType = value.constructor;
             if (!targetType && source) targetType = source.constructor;
