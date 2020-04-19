@@ -128,6 +128,9 @@ export class TransformOperationExecutor {
 
             // traverse over keys
             for (let key of keys) {
+                if (key === '__proto__' || key === 'constructor') {
+                    continue;
+                }
 
                 let valueKey = key, newValueKey = key, propertyName = key;
                 if (!this.options.ignoreDecorators && targetType) {
