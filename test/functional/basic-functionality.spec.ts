@@ -1824,4 +1824,21 @@ describe("basic functionality", () => {
         expect(transformedClass.usersUndefined).to.equal(undefined);
     });
 
+    it("should set default value if nothing provided", () => {
+        defaultMetadataStorage.clear();
+
+        class User {
+            @Expose({ name: "myName" })
+            firstName: string = 'default firstName';
+
+            lastName: string = 'default lastName';
+        }
+
+        const fromPlainUser = {};
+        const transformedUser = plainToClass(User, fromPlainUser);
+        transformedUser.should.be.instanceOf(User);
+
+        const likeUser = new User();
+        transformedUser.should.be.eql(likeUser);
+    });
 });

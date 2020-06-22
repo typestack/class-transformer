@@ -245,6 +245,7 @@ export class TransformOperationExecutor {
                     } else {
                         finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
                         finalValue = this.applyCustomTransformations(finalValue, (targetType as Function), transformKey, value, this.transformationType);
+                        finalValue = finalValue === undefined ? newValue[newValueKey] : finalValue;
                     }
 
                     if (newValue instanceof Map) {
