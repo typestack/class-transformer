@@ -18,6 +18,24 @@ export function Transform(transformFn: (value: any, obj: any, transformationType
     };
 }
 
+
+/**
+ * Cast value to boolean type
+ */
+export function ToBoolean() {
+    return Transform((value) => {
+        if (value === "true") {
+            return true;
+        }
+
+        if (value === "false") {
+            return false;
+        }
+
+        return value;
+    });
+}
+
 /**
  * Specifies a type of the property.
  * The given TypeFunction can return a constructor. A discriminator can be given in the options.
