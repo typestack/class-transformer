@@ -247,7 +247,8 @@ let photos = deserializeArray(Photo, photos);
 
 ## Type casting
 
-By default typescript emits types metadata and we can infer how to cast them. But `Boolead` works not as expected 
+By default typescript emits types metadata and we can infer how to cast them. But `Boolean` works not as expected 
+
 
 ```typescript
 Boolean('false') === true
