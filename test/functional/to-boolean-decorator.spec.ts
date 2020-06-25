@@ -30,16 +30,29 @@ describe("Cast to boolean", () => {
         expect(result.hasFlag).to.not.be.equals(false);
     });
 
-    it("Should not cast 0 as bool", () => {
+    it("Should cast 0 as false", () => {
         const result = plainToClass(Dto, { hasFlag: 0 });
-        expect(result.hasFlag).to.not.be.equals(false);
-        expect(result.hasFlag).to.not.be.equals(true);
+        expect(result.hasFlag).to.be.equals(false);
     });
 
-    it("Should not cast 1 as true", () => {
+    it("Should cast 1 as true", () => {
         const result = plainToClass(Dto, { hasFlag: 1 });
-        expect(result.hasFlag).to.not.be.equals(false);
-        expect(result.hasFlag).to.not.be.equals(true);
+        expect(result.hasFlag).to.be.equals(true);
+    });
+
+    it("Should cast '0' as false", () => {
+        const result = plainToClass(Dto, { hasFlag: "0" });
+        expect(result.hasFlag).to.be.equals(false);
+    });
+
+    it("Should not cast '1' as true", () => {
+        const result = plainToClass(Dto, { hasFlag: "1" });
+        expect(result.hasFlag).to.be.equals(true);
+    });
+
+    it("Should remain real bool", () => {
+        const result = plainToClass(Dto, { hasFlag: true });
+        expect(result.hasFlag).to.be.equals(true);
     });
 
 });
