@@ -263,6 +263,10 @@ class Dto {
 
 plainToClass(Dto, {hasFlag: 'false'})
 // { hasFlag: false }
+plainToClass(Dto, {hasFlag: 0})
+// { hasFlag: false }
+plainToClass(Dto, {hasFlag: 1})
+// { hasFlag: true }
 ```
 
 
