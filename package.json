@@ -1,6 +1,6 @@
 {
   "name": "class-transformer",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "license": "MIT",
   "readmeFilename": "README.md",
@@ -9,12 +9,18 @@
     "name": "Umed Khudoiberdiev",
     "email": "pleerock.me@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "jotamorais",
+      "url": "https://github.com/jotamorais"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pleerock/class-transformer.git"
+    "url": "https://github.com/typestack/class-transformer.git"
   },
   "bugs": {
-    "url": "https://github.com/pleerock/class-transformer/issues"
+    "url": "https://github.com/typestack/class-transformer/issues"
   },
   "tags": [
     "serialization",
@@ -26,35 +32,35 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@types/chai": "^3.4.34",
     "@types/es6-shim": "^0.31.32",
     "@types/mocha": "^2.2.33",
+    "@types/moment": "^2.13.0",
     "@types/node": "0.0.2",
     "@types/sinon": "^2.2.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "del": "^2.2.1",
     "es6-shim": "^0.35.1",
-    "gulp": "^3.9.1",
-    "gulp-file": "^0.3.0",
+    "gulp": "^4.0.2",
+    "gulp-file": "^0.4.0",
     "gulp-istanbul": "^1.0.0",
-    "gulp-mocha": "^3.0.1",
+    "gulp-mocha": "^7.0.2",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
-    "gulp-shell": "^0.5.1",
+    "gulp-shell": "^0.8.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tslint": "^8.1.3",
-    "gulp-typescript": "^3.1.3",
+    "gulp-typescript": "^5.0.1",
     "gulp-uglify": "^2.0.0",
-    "gulpclass": "^0.1.1",
-    "mocha": "^3.2.0",
-    "moment": "2.14.1",
+    "gulpclass": "^0.2.0",
+    "mocha": "^8.0.1",
+    "moment": "^2.27.0",
     "reflect-metadata": "^0.1.3",
-    "remap-istanbul": "^0.7.0",
+    "remap-istanbul": "^0.13.0",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
-    "tslint": "^4.0.2",
+    "tslint": "^5.20.1",
     "tslint-stylish": "^2.1.0-beta",
     "typescript": "^2.0.10"
   },
