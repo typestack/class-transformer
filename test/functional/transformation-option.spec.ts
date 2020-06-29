@@ -1,26 +1,15 @@
 import "reflect-metadata";
-import {
-    classToPlain,
-    classToPlainFromExist,
-    plainToClass,
-    plainToClassFromExist,
-    classToClass, classToClassFromExist
-} from "../../src/index";
+import {classToPlain, plainToClass} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, Type} from "../../src/decorators";
-import {expect} from "chai";
+import {Exclude, Expose} from "../../src/decorators";
 
 describe("filtering by transformation option", () => {
-
     it("@Exclude with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
-
             firstName: string;
-
             lastName: string;
 
             @Exclude({ toPlainOnly: true })
@@ -39,14 +28,14 @@ describe("filtering by transformation option", () => {
         };
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.be.eql({
+        expect(plainedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.should.be.eql({
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
@@ -57,11 +46,8 @@ describe("filtering by transformation option", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
-
             firstName: string;
-
             lastName: string;
 
             @Exclude({ toClassOnly: true })
@@ -80,14 +66,14 @@ describe("filtering by transformation option", () => {
         };
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.should.be.eql({
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.be.eql({
+        expect(plainedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
@@ -99,7 +85,6 @@ describe("filtering by transformation option", () => {
 
         @Exclude()
         class User {
-
             @Expose()
             firstName: string;
 
@@ -122,14 +107,14 @@ describe("filtering by transformation option", () => {
         };
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.be.eql({
+        expect(plainedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.should.be.eql({
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
@@ -141,7 +126,6 @@ describe("filtering by transformation option", () => {
 
         @Exclude()
         class User {
-
             @Expose()
             firstName: string;
 
@@ -164,18 +148,17 @@ describe("filtering by transformation option", () => {
         };
 
         const plainedUser = classToPlain(user);
-        plainedUser.should.be.eql({
+        expect(plainedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
 
         const classedUser = plainToClass(User, plainUser);
-        classedUser.should.be.instanceOf(User);
-        classedUser.should.be.eql({
+        expect(classedUser).toBeInstanceOf(User);
+        expect(classedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
     });
-
 });
