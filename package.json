@@ -11,8 +11,12 @@
   },
   "contributors": [
     {
-      "name": "jotamorais",
+      "name": "Jonathas Morais",
       "url": "https://github.com/jotamorais"
+    },
+    {
+      "name": "Rob Muchal",
+      "url": "https://github.com/rmuchall"
     }
   ],
   "repository": {
@@ -30,7 +34,6 @@
     "object-to-class",
     "typescript-serializer"
   ],
-  "dependencies": {},
   "devDependencies": {
     "@types/jest": "25.1.5",
     "@types/node": "13.11.0",
