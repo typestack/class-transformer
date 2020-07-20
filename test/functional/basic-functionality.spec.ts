@@ -1749,6 +1749,20 @@ describe("basic functionality", () => {
         expect(transformedClass).toBeInstanceOf(TestClass);
     });
 
+    it('should not pollute the prototype with a `__proto__` property',() => {
+        const object = JSON.parse('{"__proto__": { "admin": true }}');
+        const plainObject = {};
+        classToPlainFromExist(object, plainObject);
+        expect((plainObject as any).admin).toEqual(undefined);
+    });
+
+    it('should not pollute the prototype with a `constructor.prototype` property',  () => {
+        const object = JSON.parse('{"constructor": { "prototype": { "admin": true }}}');
+        const plainObject = {};
+        classToPlainFromExist(object, plainObject);
+        expect((plainObject as any).admin).toEqual(undefined);
+    });
+
     it("should default union types where the plain type is an array to an array result", () => {
         class User {
             name: string;
