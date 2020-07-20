@@ -23,14 +23,14 @@ export class MetadataStorage {
     // Adder Methods
     // -------------------------------------------------------------------------
 
-    addTypeMetadata(metadata: TypeMetadata) {
+    addTypeMetadata(metadata: TypeMetadata): void {
         if (!this._typeMetadatas.has(metadata.target)) {
             this._typeMetadatas.set(metadata.target, new Map<string, TypeMetadata>());
     }
         this._typeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
     }
 
-    addTransformMetadata(metadata: TransformMetadata) {
+    addTransformMetadata(metadata: TransformMetadata): void {
         if (!this._transformMetadatas.has(metadata.target)) {
             this._transformMetadatas.set(metadata.target, new Map<string, TransformMetadata[]>());
     }
@@ -40,14 +40,14 @@ export class MetadataStorage {
         this._transformMetadatas.get(metadata.target).get(metadata.propertyName).push(metadata);
     }
 
-    addExposeMetadata(metadata: ExposeMetadata) {
+    addExposeMetadata(metadata: ExposeMetadata): void {
         if (!this._exposeMetadatas.has(metadata.target)) {
             this._exposeMetadatas.set(metadata.target, new Map<string, ExposeMetadata>());
     }
         this._exposeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
     }
 
-    addExcludeMetadata(metadata: ExcludeMetadata) {
+    addExcludeMetadata(metadata: ExcludeMetadata): void {
         if (!this._excludeMetadatas.has(metadata.target)) {
             this._excludeMetadatas.set(metadata.target, new Map<string, ExcludeMetadata>());
     }
@@ -91,7 +91,7 @@ export class MetadataStorage {
         });
     }
 
-    findTypeMetadata(target: Function, propertyName: string) {
+    findTypeMetadata(target: Function, propertyName: string): TypeMetadata {
         return this.findMetadata(this._typeMetadatas, target, propertyName);
     }
 
@@ -152,7 +152,7 @@ export class MetadataStorage {
             .map(metadata => metadata.propertyName);
     }
 
-    clear() {
+    clear(): void {
         this._typeMetadatas.clear();
         this._exposeMetadatas.clear();
         this._excludeMetadatas.clear();
@@ -163,27 +163,27 @@ export class MetadataStorage {
     // Private Methods
     // -------------------------------------------------------------------------
 
-    private getMetadata<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<String, T>>, target: Function): T[] {
+    private getMetadata<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T>>, target: Function): T[] {
         const metadataFromTargetMap = metadatas.get(target);
         let metadataFromTarget: T[];
         if (metadataFromTargetMap) {
             metadataFromTarget = Array.from(metadataFromTargetMap.values()).filter(meta => meta.propertyName !== undefined);
         }
-        let metadataFromAncestors: T[] = [];
+        const metadataFromAncestors: T[] = [];
         for (const ancestor of this.getAncestors(target)) {
             const ancestorMetadataMap = metadatas.get(ancestor);
             if (ancestorMetadataMap) {
                 const metadataFromAncestor = Array.from(ancestorMetadataMap.values()).filter(meta => meta.propertyName !== undefined);
                 metadataFromAncestors.push(...metadataFromAncestor);
             }
-        }        
+        }
         return metadataFromAncestors.concat(metadataFromTarget || []);
     }
 
     private findMetadata<T extends { target: Function, propertyName: string }>(metadatas: Map<Function, Map<string, T>>, target: Function, propertyName: string): T {
         const metadataFromTargetMap = metadatas.get(target);
         if (metadataFromTargetMap) {
-            const metadataFromTarget = metadataFromTargetMap.get(propertyName);  
+            const metadataFromTarget = metadataFromTargetMap.get(propertyName);
             if (metadataFromTarget) {
                 return metadataFromTarget;
             }
@@ -204,9 +204,9 @@ export class MetadataStorage {
         const metadataFromTargetMap = metadatas.get(target);
         let metadataFromTarget: T[];
         if (metadataFromTargetMap) {
-            metadataFromTarget = metadataFromTargetMap.get(propertyName);    
+            metadataFromTarget = metadataFromTargetMap.get(propertyName);
         }
-        let metadataFromAncestorsTarget: T[] = [];
+        const metadataFromAncestorsTarget: T[] = [];
         for (const ancestor of this.getAncestors(target)) {
             const ancestorMetadataMap = metadatas.get(ancestor);
             if (ancestorMetadataMap) {
@@ -221,7 +221,7 @@ export class MetadataStorage {
     private getAncestors(target: Function): Function[] {
         if (!target) return [];
         if (!this._ancestorsMap.has(target)) {
-            let ancestors: Function[] = [];
+            const ancestors: Function[] = [];
             for (let baseClass = Object.getPrototypeOf(target.prototype.constructor);
                  typeof baseClass.prototype !== "undefined";
                  baseClass = Object.getPrototypeOf(baseClass.prototype.constructor)) {

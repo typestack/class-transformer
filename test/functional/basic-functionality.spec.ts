@@ -1,23 +1,15 @@
 import "reflect-metadata";
-import {
-    classToPlain,
-    classToPlainFromExist,
-    plainToClass,
-    plainToClassFromExist,
-    classToClass, classToClassFromExist
-} from "../../src/index";
-import { defaultMetadataStorage } from "../../src/storage";
-import { Exclude, Expose, Type } from "../../src/decorators";
-import { expect } from "chai";
-import { testForBuffer } from "../../src/TransformOperationExecutor";
+import {classToClass, classToClassFromExist, classToPlain, classToPlainFromExist, plainToClass, plainToClassFromExist} from "../../src/index";
+import {defaultMetadataStorage} from "../../src/storage";
+import {Exclude, Expose, Type} from "../../src/decorators";
+import {testForBuffer} from "../../src/TransformOperationExecutor";
 
 describe("basic functionality", () => {
-
     it("should return true if Buffer is present in environment, else false", () => {
-        expect(testForBuffer()).to.be.true;
+        expect(testForBuffer()).toBeTruthy();
         const bufferImp = global.Buffer;
         delete global.Buffer;
-        expect(testForBuffer()).to.be.false;
+        expect(testForBuffer()).toBeFalsy();
         global.Buffer = bufferImp;
     });
 
@@ -46,36 +38,36 @@ describe("basic functionality", () => {
         fromExistUser.id = 1;
 
         const plainUser = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
 
-        const existUser = { id: 1, age: 27 };
+        const existUser = {id: 1, age: 27};
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -83,19 +75,19 @@ describe("basic functionality", () => {
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -119,13 +111,13 @@ describe("basic functionality", () => {
         };
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.have.property("age");
-        transformedUser.should.have.property("id").that.is.undefined;
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toHaveProperty("age");
+        expect(transformedUser.id).toBeUndefined();
 
-        const transformedUserWithoutExtra = plainToClass(User, fromPlainUser, { excludeExtraneousValues: true });
-        transformedUserWithoutExtra.should.be.instanceOf(User);
-        transformedUserWithoutExtra.should.not.have.property("age");
+        const transformedUserWithoutExtra = plainToClass(User, fromPlainUser, {excludeExtraneousValues: true});
+        expect(transformedUserWithoutExtra).toBeInstanceOf(User);
+        expect(transformedUserWithoutExtra).not.toHaveProperty("age");
     });
 
     it("should exclude all objects marked with @Exclude() decorator", () => {
@@ -154,53 +146,53 @@ describe("basic functionality", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
 
-        const existUser = { id: 1, age: 27, password: "yayayaya" };
+        const existUser = {id: 1, age: 27, password: "yayayaya"};
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "yayayaya"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
@@ -233,41 +225,41 @@ describe("basic functionality", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({});
-        expect(plainUser.firstName).to.be.undefined;
-        expect(plainUser.lastName).to.be.undefined;
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({});
+        expect(plainUser.firstName).toBeUndefined();
+        expect(plainUser.lastName).toBeUndefined();
+        expect(plainUser.password).toBeUndefined();
 
-        const existUser = { id: 1, age: 27 };
+        const existUser = {id: 1, age: 27};
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({});
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({});
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({});
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({});
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1
         });
     });
@@ -277,7 +269,6 @@ describe("basic functionality", () => {
 
         @Exclude()
         class User {
-
             id: number;
 
             @Expose()
@@ -304,52 +295,52 @@ describe("basic functionality", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
 
-        const existUser = { id: 1, age: 27 };
+        const existUser = {id: 1, age: 27};
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
@@ -360,7 +351,6 @@ describe("basic functionality", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
 
             @Expose()
@@ -386,53 +376,53 @@ describe("basic functionality", () => {
         const fromExistUser = new User();
         fromExistUser.id = 1;
 
-        const plainUser: any = classToPlain(user, { strategy: "excludeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        const plainUser: any = classToPlain(user, {strategy: "excludeAll"});
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
 
-        const existUser = { id: 1, age: 27 };
-        const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "excludeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        const existUser = {id: 1, age: 27};
+        const plainUser2 = classToPlainFromExist(user, existUser, {strategy: "excludeAll"});
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
-        const transformedUser = plainToClass(User, fromPlainUser, { strategy: "excludeAll" });
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        const transformedUser = plainToClass(User, fromPlainUser, {strategy: "excludeAll"});
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
-        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "excludeAll" });
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, {strategy: "excludeAll"});
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
-        const classToClassUser = classToClass(user, { strategy: "excludeAll" });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        const classToClassUser = classToClass(user, {strategy: "excludeAll"});
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
-        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "excludeAll" });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, {strategy: "excludeAll"});
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
@@ -443,9 +433,7 @@ describe("basic functionality", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
-
             firstName: string;
 
             @Exclude()
@@ -469,49 +457,49 @@ describe("basic functionality", () => {
         const fromExistUser = new User();
         fromExistUser.id = 1;
 
-        const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        const plainUser: any = classToPlain(user, {strategy: "exposeAll"});
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed"
         });
-        expect(plainUser.lastName).to.be.undefined;
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.lastName).toBeUndefined();
+        expect(plainUser.password).toBeUndefined();
 
-        const existUser = { id: 1, age: 27 };
-        const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        const existUser = {id: 1, age: 27};
+        const plainUser2 = classToPlainFromExist(user, existUser, {strategy: "exposeAll"});
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
-        const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        const transformedUser = plainToClass(User, fromPlainUser, {strategy: "exposeAll"});
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed"
         });
 
-        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, {strategy: "exposeAll"});
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed"
         });
 
-        const classToClassUser = classToClass(user, { strategy: "exposeAll" });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        const classToClassUser = classToClass(user, {strategy: "exposeAll"});
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed"
         });
 
-        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, {strategy: "exposeAll"});
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed"
         });
@@ -521,7 +509,6 @@ describe("basic functionality", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
 
             @Type(type => String)
@@ -595,9 +582,9 @@ describe("basic functionality", () => {
         const fromExistUser = new User();
         fromExistUser.id = 1;
 
-        const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.deep.eql({
+        const plainUser: any = classToPlain(user, {strategy: "exposeAll"});
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "321",
             lastName: "123",
             password: 123,
@@ -612,10 +599,10 @@ describe("basic functionality", () => {
             nullableBuffer: null
         });
 
-        const existUser = { id: 1, age: 27 };
-        const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.deep.eq({
+        const existUser = {id: 1, age: 27};
+        const plainUser2 = classToPlainFromExist(user, existUser, {strategy: "exposeAll"});
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "321",
@@ -631,11 +618,11 @@ describe("basic functionality", () => {
             nullableDate: null,
             nullableBuffer: null
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
-        const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.deep.eq({
+        const transformedUser = plainToClass(User, fromPlainUser, {strategy: "exposeAll"});
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "321",
             lastName: "123",
             password: 123,
@@ -650,9 +637,9 @@ describe("basic functionality", () => {
             nullableBuffer: null
         });
 
-        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.deep.eq({
+        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, {strategy: "exposeAll"});
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -668,10 +655,10 @@ describe("basic functionality", () => {
             nullableBuffer: null
         });
 
-        const classToClassUser = classToClass(user, { strategy: "exposeAll" });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.deep.eq({
+        const classToClassUser = classToClass(user, {strategy: "exposeAll"});
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "321",
             lastName: "123",
             password: 123,
@@ -686,11 +673,11 @@ describe("basic functionality", () => {
             nullableBuffer: null
         });
 
-        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.deep.eq({
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, {strategy: "exposeAll"});
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -711,22 +698,17 @@ describe("basic functionality", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
-
             id: number;
-
             name: string;
 
             @Exclude()
             filename: string;
 
             uploadDate: Date;
-
         }
 
         class User {
-
             firstName: string;
-
             lastName: string;
 
             @Exclude()
@@ -747,10 +729,10 @@ describe("basic functionality", () => {
         user.password = "imnosuperman";
         user.photo = photo;
 
-        const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.photo.should.not.be.instanceOf(Photo);
-        plainUser.should.be.eql({
+        const plainUser: any = classToPlain(user, {strategy: "exposeAll"});
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser.photo).not.toBeInstanceOf(Photo);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -759,16 +741,16 @@ describe("basic functionality", () => {
                 uploadDate: photo.uploadDate
             }
         });
-        expect(plainUser.password).to.be.undefined;
-        expect(plainUser.photo.filename).to.be.undefined;
-        expect(plainUser.photo.uploadDate).to.be.eql(photo.uploadDate);
-        expect(plainUser.photo.uploadDate).not.to.be.equal(photo.uploadDate);
+        expect(plainUser.password).toBeUndefined();
+        expect(plainUser.photo.filename).toBeUndefined();
+        expect(plainUser.photo.uploadDate).toEqual(photo.uploadDate);
+        expect(plainUser.photo.uploadDate).not.toBe(photo.uploadDate);
 
-        const existUser = { id: 1, age: 27, photo: { id: 2, description: "photo" } };
-        const plainUser2: any = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.photo.should.not.be.instanceOf(Photo);
-        plainUser2.should.be.eql({
+        const existUser = {id: 1, age: 27, photo: {id: 2, description: "photo"}};
+        const plainUser2: any = classToPlainFromExist(user, existUser, {strategy: "exposeAll"});
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2.photo).not.toBeInstanceOf(Photo);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
@@ -780,25 +762,22 @@ describe("basic functionality", () => {
                 description: "photo"
             }
         });
-        plainUser2.should.be.equal(existUser);
-        expect(plainUser2.password).to.be.undefined;
-        expect(plainUser2.photo.filename).to.be.undefined;
-        expect(plainUser2.photo.uploadDate).to.be.eql(photo.uploadDate);
-        expect(plainUser2.photo.uploadDate).not.to.be.equal(photo.uploadDate);
+        expect(plainUser2).toEqual(existUser);
+        expect(plainUser2.password).toBeUndefined();
+        expect(plainUser2.photo.filename).toBeUndefined();
+        expect(plainUser2.photo.uploadDate).toEqual(photo.uploadDate);
+        expect(plainUser2.photo.uploadDate).not.toBe(photo.uploadDate);
     });
 
     it("should transform nested objects too and make sure given type is used instead of automatically guessed one", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
-
             id: number;
-
             name: string;
 
             @Exclude()
             filename: string;
-
         }
 
         class ExtendedPhoto implements Photo {
@@ -811,11 +790,8 @@ describe("basic functionality", () => {
         }
 
         class User {
-
             id: number;
-
             firstName: string;
-
             lastName: string;
 
             @Exclude()
@@ -837,8 +813,8 @@ describe("basic functionality", () => {
         user.photo = photo;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -846,34 +822,27 @@ describe("basic functionality", () => {
                 filename: "iam.jpg"
             }
         });
-        expect(plainUser.password).to.be.undefined;
-        expect(plainUser.photo.name).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
+        expect(plainUser.photo.name).toBeUndefined();
     });
 
     it("should convert given plain object to class instance object", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
-
             id: number;
-
             name: string;
 
             @Exclude()
             filename: string;
 
             metadata: string;
-
             uploadDate: Date;
-
         }
 
         class User {
-
             id: number;
-
             firstName: string;
-
             lastName: string;
 
             @Exclude()
@@ -912,9 +881,9 @@ describe("basic functionality", () => {
         fromExistUser.photo = fromExistPhoto;
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.photo.should.be.instanceOf(Photo);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser.photo).toBeInstanceOf(Photo);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -925,9 +894,9 @@ describe("basic functionality", () => {
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.equal(fromExistUser);
-        fromExistTransformedUser.photo.should.be.equal(fromExistPhoto);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toEqual(fromExistUser);
+        expect(fromExistTransformedUser.photo).toEqual(fromExistPhoto);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -940,11 +909,11 @@ describe("basic functionality", () => {
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.photo.should.be.instanceOf(Photo);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.not.be.equal(user.photo);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).not.toEqual(user.photo);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -955,12 +924,12 @@ describe("basic functionality", () => {
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.not.be.equal(user.photo);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).not.toEqual(user.photo);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -993,9 +962,7 @@ describe("basic functionality", () => {
         }
 
         class User {
-
             id: number;
-
             firstName: string;
 
             @Expose({
@@ -1021,7 +988,6 @@ describe("basic functionality", () => {
             })
             @Type(type => Photo)
             photos: Photo[];
-
         }
 
         const user = new User();
@@ -1058,20 +1024,20 @@ describe("basic functionality", () => {
         fromExistUser.photo.metadata = "taken by Camera";
 
         const plainUser1: any = classToPlain(user);
-        plainUser1.should.not.be.instanceOf(User);
-        plainUser1.should.be.eql({
+        expect(plainUser1).not.toBeInstanceOf(User);
+        expect(plainUser1).toEqual({
             firstName: "Umed",
             photo: {
                 id: 1
             }
         });
-        expect(plainUser1.lastName).to.be.undefined;
-        expect(plainUser1.password).to.be.undefined;
-        expect(plainUser1.isActive).to.be.undefined;
+        expect(plainUser1.lastName).toBeUndefined();
+        expect(plainUser1.password).toBeUndefined();
+        expect(plainUser1.isActive).toBeUndefined();
 
-        const plainUser2: any = classToPlain(user, { groups: ["user"] });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        const plainUser2: any = classToPlain(user, {groups: ["user"]});
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1080,12 +1046,12 @@ describe("basic functionality", () => {
                 filename: "myphoto.jpg"
             }
         });
-        expect(plainUser2.isActive).to.be.undefined;
+        expect(plainUser2.isActive).toBeUndefined();
 
-        const transformedUser2 = plainToClass(User, fromPlainUser, { groups: ["user"] });
-        transformedUser2.should.be.instanceOf(User);
-        transformedUser2.photo.should.be.instanceOf(Photo);
-        transformedUser2.should.be.eql({
+        const transformedUser2 = plainToClass(User, fromPlainUser, {groups: ["user"]});
+        expect(transformedUser2).toBeInstanceOf(User);
+        expect(transformedUser2.photo).toBeInstanceOf(Photo);
+        expect(transformedUser2).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1095,10 +1061,10 @@ describe("basic functionality", () => {
             }
         });
 
-        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { groups: ["user"] });
-        fromExistTransformedUser.should.be.equal(fromExistUser);
-        fromExistTransformedUser.photo.should.be.equal(fromExistUser.photo);
-        fromExistTransformedUser.should.be.eql({
+        const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, {groups: ["user"]});
+        expect(fromExistTransformedUser).toEqual(fromExistUser);
+        expect(fromExistTransformedUser.photo).toEqual(fromExistUser.photo);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -1110,12 +1076,12 @@ describe("basic functionality", () => {
             }
         });
 
-        const classToClassUser = classToClass(user, { groups: ["user"] });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.photo.should.be.instanceOf(Photo);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.not.be.equal(user.photo);
-        classToClassUser.should.be.eql({
+        const classToClassUser = classToClass(user, {groups: ["user"]});
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).not.toEqual(user.photo);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1125,13 +1091,13 @@ describe("basic functionality", () => {
             }
         });
 
-        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { groups: ["user"] });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.not.be.equal(user.photo);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, {groups: ["user"]});
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).not.toEqual(user.photo);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -1143,9 +1109,9 @@ describe("basic functionality", () => {
             }
         });
 
-        const plainUser3: any = classToPlain(user, { groups: ["guest"] });
-        plainUser3.should.not.be.instanceOf(User);
-        plainUser3.should.be.eql({
+        const plainUser3: any = classToPlain(user, {groups: ["guest"]});
+        expect(plainUser3).not.toBeInstanceOf(User);
+        expect(plainUser3).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1153,13 +1119,13 @@ describe("basic functionality", () => {
                 filename: "myphoto.jpg"
             }
         });
-        expect(plainUser3.password).to.be.undefined;
-        expect(plainUser3.isActive).to.be.undefined;
+        expect(plainUser3.password).toBeUndefined();
+        expect(plainUser3.isActive).toBeUndefined();
 
-        const transformedUser3 = plainToClass(User, fromPlainUser, { groups: ["guest"] });
-        transformedUser3.should.be.instanceOf(User);
-        transformedUser3.photo.should.be.instanceOf(Photo);
-        transformedUser3.should.be.eql({
+        const transformedUser3 = plainToClass(User, fromPlainUser, {groups: ["guest"]});
+        expect(transformedUser3).toBeInstanceOf(User);
+        expect(transformedUser3.photo).toBeInstanceOf(Photo);
+        expect(transformedUser3).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1168,9 +1134,9 @@ describe("basic functionality", () => {
             }
         });
 
-        const plainUser4: any = classToPlain(user, { groups: ["admin"] });
-        plainUser4.should.not.be.instanceOf(User);
-        plainUser4.should.be.eql({
+        const plainUser4: any = classToPlain(user, {groups: ["admin"]});
+        expect(plainUser4).not.toBeInstanceOf(User);
+        expect(plainUser4).toEqual({
             firstName: "Umed",
             isActive: false,
             photo: {
@@ -1182,14 +1148,14 @@ describe("basic functionality", () => {
                 status: 1
             }]
         });
-        expect(plainUser4.lastName).to.be.undefined;
-        expect(plainUser4.password).to.be.undefined;
+        expect(plainUser4.lastName).toBeUndefined();
+        expect(plainUser4.password).toBeUndefined();
 
-        const transformedUser4 = plainToClass(User, fromPlainUser, { groups: ["admin"] });
-        transformedUser4.should.be.instanceOf(User);
-        transformedUser4.photo.should.be.instanceOf(Photo);
-        transformedUser4.photos[0].should.be.instanceOf(Photo);
-        transformedUser4.should.be.eql({
+        const transformedUser4 = plainToClass(User, fromPlainUser, {groups: ["admin"]});
+        expect(transformedUser4).toBeInstanceOf(User);
+        expect(transformedUser4.photo).toBeInstanceOf(Photo);
+        expect(transformedUser4.photos[0]).toBeInstanceOf(Photo);
+        expect(transformedUser4).toEqual({
             firstName: "Umed",
             isActive: false,
             photo: {
@@ -1202,9 +1168,9 @@ describe("basic functionality", () => {
             }]
         });
 
-        const plainUser5: any = classToPlain(user, { groups: ["admin", "user"] });
-        plainUser5.should.not.be.instanceOf(User);
-        plainUser5.should.be.eql({
+        const plainUser5: any = classToPlain(user, {groups: ["admin", "user"]});
+        expect(plainUser5).not.toBeInstanceOf(User);
+        expect(plainUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1221,9 +1187,9 @@ describe("basic functionality", () => {
             }]
         });
 
-        const transformedUser5 = plainToClass(User, fromPlainUser, { groups: ["admin", "user"] });
-        transformedUser5.should.be.instanceOf(User);
-        transformedUser5.should.be.eql({
+        const transformedUser5 = plainToClass(User, fromPlainUser, {groups: ["admin", "user"]});
+        expect(transformedUser5).toBeInstanceOf(User);
+        expect(transformedUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1260,7 +1226,6 @@ describe("basic functionality", () => {
         }
 
         class User {
-
             @Expose({
                 since: 1,
                 until: 2
@@ -1283,7 +1248,6 @@ describe("basic functionality", () => {
             })
             @Type(type => Photo)
             photos: Photo[];
-
         }
 
         const user = new User();
@@ -1313,8 +1277,8 @@ describe("basic functionality", () => {
         };
 
         const plainUser1: any = classToPlain(user);
-        plainUser1.should.not.be.instanceOf(User);
-        plainUser1.should.be.eql({
+        expect(plainUser1).not.toBeInstanceOf(User);
+        expect(plainUser1).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1330,10 +1294,10 @@ describe("basic functionality", () => {
         });
 
         const transformedUser1 = plainToClass(User, fromPlainUser);
-        transformedUser1.should.be.instanceOf(User);
-        transformedUser1.photo.should.be.instanceOf(Photo);
-        transformedUser1.photos[0].should.be.instanceOf(Photo);
-        transformedUser1.should.be.eql({
+        expect(transformedUser1).toBeInstanceOf(User);
+        expect(transformedUser1.photo).toBeInstanceOf(Photo);
+        expect(transformedUser1.photos[0]).toBeInstanceOf(Photo);
+        expect(transformedUser1).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1348,45 +1312,45 @@ describe("basic functionality", () => {
             }]
         });
 
-        const plainUser2: any = classToPlain(user, { version: 0.3 });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        const plainUser2: any = classToPlain(user, {version: 0.3});
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             photo: {
                 id: 1
             }
         });
 
-        const transformedUser2 = plainToClass(User, fromPlainUser, { version: 0.3 });
-        transformedUser2.should.be.instanceOf(User);
-        transformedUser2.photo.should.be.instanceOf(Photo);
-        transformedUser2.should.be.eql({
+        const transformedUser2 = plainToClass(User, fromPlainUser, {version: 0.3});
+        expect(transformedUser2).toBeInstanceOf(User);
+        expect(transformedUser2.photo).toBeInstanceOf(Photo);
+        expect(transformedUser2).toEqual({
             photo: {
                 id: 1
             }
         });
 
-        const plainUser3: any = classToPlain(user, { version: 0.5 });
-        plainUser3.should.not.be.instanceOf(User);
-        plainUser3.should.be.eql({
+        const plainUser3: any = classToPlain(user, {version: 0.5});
+        expect(plainUser3).not.toBeInstanceOf(User);
+        expect(plainUser3).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1
             }
         });
 
-        const transformedUser3 = plainToClass(User, fromPlainUser, { version: 0.5 });
-        transformedUser3.should.be.instanceOf(User);
-        transformedUser3.photo.should.be.instanceOf(Photo);
-        transformedUser3.should.be.eql({
+        const transformedUser3 = plainToClass(User, fromPlainUser, {version: 0.5});
+        expect(transformedUser3).toBeInstanceOf(User);
+        expect(transformedUser3.photo).toBeInstanceOf(Photo);
+        expect(transformedUser3).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1
             }
         });
 
-        const plainUser4: any = classToPlain(user, { version: 1 });
-        plainUser4.should.not.be.instanceOf(User);
-        plainUser4.should.be.eql({
+        const plainUser4: any = classToPlain(user, {version: 1});
+        expect(plainUser4).not.toBeInstanceOf(User);
+        expect(plainUser4).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1394,10 +1358,10 @@ describe("basic functionality", () => {
             }
         });
 
-        const transformedUser4 = plainToClass(User, fromPlainUser, { version: 1 });
-        transformedUser4.should.be.instanceOf(User);
-        transformedUser4.photo.should.be.instanceOf(Photo);
-        transformedUser4.should.be.eql({
+        const transformedUser4 = plainToClass(User, fromPlainUser, {version: 1});
+        expect(transformedUser4).toBeInstanceOf(User);
+        expect(transformedUser4.photo).toBeInstanceOf(Photo);
+        expect(transformedUser4).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1405,21 +1369,9 @@ describe("basic functionality", () => {
             }
         });
 
-        const plainUser5: any = classToPlain(user, { version: 1.5 });
-        plainUser5.should.not.be.instanceOf(User);
-        plainUser5.should.be.eql({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            photo: {
-                id: 1,
-                filename: "myphoto.jpg"
-            }
-        });
-
-        const transformedUser5 = plainToClass(User, fromPlainUser, { version: 1.5 });
-        transformedUser5.should.be.instanceOf(User);
-        transformedUser5.photo.should.be.instanceOf(Photo);
-        transformedUser5.should.be.eql({
+        const plainUser5: any = classToPlain(user, {version: 1.5});
+        expect(plainUser5).not.toBeInstanceOf(User);
+        expect(plainUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1428,9 +1380,21 @@ describe("basic functionality", () => {
             }
         });
 
-        const plainUser6: any = classToPlain(user, { version: 2 });
-        plainUser6.should.not.be.instanceOf(User);
-        plainUser6.should.be.eql({
+        const transformedUser5 = plainToClass(User, fromPlainUser, {version: 1.5});
+        expect(transformedUser5).toBeInstanceOf(User);
+        expect(transformedUser5.photo).toBeInstanceOf(Photo);
+        expect(transformedUser5).toEqual({
+            firstName: "Umed",
+            lastName: "Khudoiberdiev",
+            photo: {
+                id: 1,
+                filename: "myphoto.jpg"
+            }
+        });
+
+        const plainUser6: any = classToPlain(user, {version: 2});
+        expect(plainUser6).not.toBeInstanceOf(User);
+        expect(plainUser6).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1438,10 +1402,10 @@ describe("basic functionality", () => {
             }
         });
 
-        const transformedUser6 = plainToClass(User, fromPlainUser, { version: 2 });
-        transformedUser6.should.be.instanceOf(User);
-        transformedUser6.photo.should.be.instanceOf(Photo);
-        transformedUser6.should.be.eql({
+        const transformedUser6 = plainToClass(User, fromPlainUser, {version: 2});
+        expect(transformedUser6).toBeInstanceOf(User);
+        expect(transformedUser6.photo).toBeInstanceOf(Photo);
+        expect(transformedUser6).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1449,9 +1413,9 @@ describe("basic functionality", () => {
             }
         });
 
-        const plainUser7: any = classToPlain(user, { version: 3 });
-        plainUser7.should.not.be.instanceOf(User);
-        plainUser7.should.be.eql({
+        const plainUser7: any = classToPlain(user, {version: 3});
+        expect(plainUser7).not.toBeInstanceOf(User);
+        expect(plainUser7).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1463,11 +1427,11 @@ describe("basic functionality", () => {
             }]
         });
 
-        const transformedUser7 = plainToClass(User, fromPlainUser, { version: 3 });
-        transformedUser7.should.be.instanceOf(User);
-        transformedUser7.photo.should.be.instanceOf(Photo);
-        transformedUser7.photos[0].should.be.instanceOf(Photo);
-        transformedUser7.should.be.eql({
+        const transformedUser7 = plainToClass(User, fromPlainUser, {version: 3});
+        expect(transformedUser7).toBeInstanceOf(User);
+        expect(transformedUser7.photo).toBeInstanceOf(Photo);
+        expect(transformedUser7.photos[0]).toBeInstanceOf(Photo);
+        expect(transformedUser7).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1515,8 +1479,8 @@ describe("basic functionality", () => {
         };
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             name: "Umed Khudoiberdiev",
@@ -1524,23 +1488,21 @@ describe("basic functionality", () => {
         });
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
+        expect(transformedUser).toBeInstanceOf(User);
         const likeUser = new User();
         likeUser.firstName = "Umed";
         likeUser.lastName = "Khudoiberdiev";
-        transformedUser.should.be.eql(likeUser);
-
+        expect(transformedUser).toEqual(likeUser);
     });
 
     it("should expose with alternative name if its given", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
-            @Expose({ name: "myName" })
+            @Expose({name: "myName"})
             firstName: string;
 
-            @Expose({ name: "secondName" })
+            @Expose({name: "secondName"})
             lastName: string;
 
             @Exclude()
@@ -1551,11 +1513,10 @@ describe("basic functionality", () => {
                 return this.firstName + " " + this.lastName;
             }
 
-            @Expose({ name: "fullName" })
+            @Expose({name: "fullName"})
             getName(): string {
                 return this.firstName + " " + this.lastName;
             }
-
         }
 
         const user = new User();
@@ -1570,8 +1531,8 @@ describe("basic functionality", () => {
         };
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             myName: "Umed",
             secondName: "Khudoiberdiev",
             name: "Umed Khudoiberdiev",
@@ -1579,12 +1540,11 @@ describe("basic functionality", () => {
         });
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
+        expect(transformedUser).toBeInstanceOf(User);
         const likeUser = new User();
         likeUser.firstName = "Umed";
         likeUser.lastName = "Khudoiberdiev";
-        transformedUser.should.be.eql(likeUser);
-
+        expect(transformedUser).toEqual(likeUser);
     });
 
     it("should exclude all prefixed properties if prefix is given", () => {
@@ -1611,7 +1571,6 @@ describe("basic functionality", () => {
             get name(): string {
                 return this._firstName + " " + this._lastName;
             }
-
         }
 
         const user = new User();
@@ -1636,9 +1595,9 @@ describe("basic functionality", () => {
             }
         };
 
-        const plainUser: any = classToPlain(user, { excludePrefixes: ["_", "$"] });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        const plainUser: any = classToPlain(user, {excludePrefixes: ["_", "$"]});
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             name: "Umed Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1646,19 +1605,17 @@ describe("basic functionality", () => {
             }
         });
 
-        const transformedUser = plainToClass(User, fromPlainUser, { excludePrefixes: ["_", "$"] });
-        transformedUser.should.be.instanceOf(User);
+        const transformedUser = plainToClass(User, fromPlainUser, {excludePrefixes: ["_", "$"]});
+        expect(transformedUser).toBeInstanceOf(User);
         const likeUser = new User();
         likeUser.photo = new Photo();
         likeUser.photo.id = 1;
         likeUser.photo.status = 1;
-        transformedUser.should.be.eql(likeUser);
-
+        expect(transformedUser).toEqual(likeUser);
     });
 
     it("should transform array", () => {
         defaultMetadataStorage.clear();
-
 
         class User {
             id: number;
@@ -1672,7 +1629,6 @@ describe("basic functionality", () => {
             get name(): string {
                 return this.firstName + " " + this.lastName;
             }
-
         }
 
         const user1 = new User();
@@ -1688,7 +1644,7 @@ describe("basic functionality", () => {
         const users = [user1, user2];
 
         const plainUsers: any = classToPlain(users);
-        plainUsers.should.be.eql([{
+        expect(plainUsers).toEqual([{
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             name: "Umed Khudoiberdiev"
@@ -1708,9 +1664,9 @@ describe("basic functionality", () => {
             name: "Dima Zotov"
         }];
 
-        const existUsers = [{ id: 1, age: 27 }, { id: 2, age: 30 }];
+        const existUsers = [{id: 1, age: 27}, {id: 2, age: 30}];
         const plainUser2 = classToPlainFromExist(users, existUsers);
-        plainUser2.should.be.eql([{
+        expect(plainUser2).toEqual([{
             id: 1,
             age: 27,
             firstName: "Umed",
@@ -1726,8 +1682,8 @@ describe("basic functionality", () => {
 
         const transformedUser = plainToClass(User, fromPlainUsers);
 
-        transformedUser[0].should.be.instanceOf(User);
-        transformedUser[1].should.be.instanceOf(User);
+        expect(transformedUser[0]).toBeInstanceOf(User);
+        expect(transformedUser[1]).toBeInstanceOf(User);
         const likeUser1 = new User();
         likeUser1.firstName = "Umed";
         likeUser1.lastName = "Khudoiberdiev";
@@ -1735,13 +1691,13 @@ describe("basic functionality", () => {
         const likeUser2 = new User();
         likeUser2.firstName = "Dima";
         likeUser2.lastName = "Zotov";
-        transformedUser.should.be.eql([likeUser1, likeUser2]);
+        expect(transformedUser).toEqual([likeUser1, likeUser2]);
 
         const classToClassUsers = classToClass(users);
-        classToClassUsers[0].should.be.instanceOf(User);
-        classToClassUsers[1].should.be.instanceOf(User);
-        classToClassUsers[0].should.not.be.equal(user1);
-        classToClassUsers[1].should.not.be.equal(user1);
+        expect(classToClassUsers[0]).toBeInstanceOf(User);
+        expect(classToClassUsers[1]).toBeInstanceOf(User);
+        expect(classToClassUsers[0]).not.toEqual(user1);
+        expect(classToClassUsers[1]).not.toEqual(user1);
 
         const classUserLike1 = new User();
         classUserLike1.firstName = "Umed";
@@ -1751,7 +1707,7 @@ describe("basic functionality", () => {
         classUserLike2.firstName = "Dima";
         classUserLike2.lastName = "Zotov";
 
-        classToClassUsers.should.be.eql([classUserLike1, classUserLike2]);
+        expect(classToClassUsers).toEqual([classUserLike1, classUserLike2]);
 
         const fromExistUser1 = new User();
         fromExistUser1.id = 1;
@@ -1762,11 +1718,11 @@ describe("basic functionality", () => {
         const fromExistUsers = [fromExistUser1, fromExistUser2];
 
         const classToClassFromExistUser = classToClassFromExist(users, fromExistUsers);
-        classToClassFromExistUser[0].should.be.instanceOf(User);
-        classToClassFromExistUser[1].should.be.instanceOf(User);
-        classToClassFromExistUser[0].should.not.be.equal(user1);
-        classToClassFromExistUser[1].should.not.be.equal(user1);
-        classToClassFromExistUser.should.be.eql(fromExistUsers);
+        expect(classToClassFromExistUser[0]).toBeInstanceOf(User);
+        expect(classToClassFromExistUser[1]).toBeInstanceOf(User);
+        expect(classToClassFromExistUser[0]).not.toEqual(user1);
+        expect(classToClassFromExistUser[1]).not.toEqual(user1);
+        expect(classToClassFromExistUser).toEqual(fromExistUsers);
 
         const fromExistUserLike1 = new User();
         fromExistUserLike1.id = 1;
@@ -1778,8 +1734,7 @@ describe("basic functionality", () => {
         fromExistUserLike2.firstName = "Dima";
         fromExistUserLike2.lastName = "Zotov";
 
-        classToClassFromExistUser.should.be.eql([fromExistUserLike1, fromExistUserLike2]);
-
+        expect(classToClassFromExistUser).toEqual([fromExistUserLike1, fromExistUserLike2]);
     });
 
     it("should transform objects with null prototype", () => {
@@ -1791,8 +1746,7 @@ describe("basic functionality", () => {
         obj.a = "JS FTW";
 
         const transformedClass = plainToClass(TestClass, obj);
-
-        transformedClass.should.be.instanceOf(TestClass);
+        expect(transformedClass).toBeInstanceOf(TestClass);
     });
 
     it("should default union types where the plain type is an array to an array result", () => {
@@ -1809,19 +1763,18 @@ describe("basic functionality", () => {
         }
 
         const obj = Object.create(null);
-        obj.usersDefined = [{ name: "a-name" }];
+        obj.usersDefined = [{name: "a-name"}];
         obj.usersUndefined = undefined;
 
-        const transformedClass = plainToClass(TestClass, obj as Object);
+        const transformedClass = plainToClass(TestClass, obj as Record<string, any>);
 
-        transformedClass.should.be.instanceOf(TestClass);
+        expect(transformedClass).toBeInstanceOf(TestClass);
 
-        transformedClass.usersDefined.should.be.instanceOf(Array);
-        transformedClass.usersDefined.length.should.equal(1);
-        transformedClass.usersDefined[0].should.be.instanceOf(User);
-        transformedClass.usersDefined[0].name.should.equal("a-name");
+        expect(transformedClass.usersDefined).toBeInstanceOf(Array);
+        expect(transformedClass.usersDefined.length).toEqual(1);
+        expect(transformedClass.usersDefined[0]).toBeInstanceOf(User);
+        expect(transformedClass.usersDefined[0].name).toEqual("a-name");
 
-        expect(transformedClass.usersUndefined).to.equal(undefined);
+        expect(transformedClass.usersUndefined).toBeUndefined();
     });
-
 });
