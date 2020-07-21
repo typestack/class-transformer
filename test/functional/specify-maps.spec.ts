@@ -1,17 +1,9 @@
 import "reflect-metadata";
-import {
-    classToPlain,
-    classToPlainFromExist,
-    plainToClass,
-    plainToClassFromExist,
-    classToClass, classToClassFromExist
-} from "../../src/index";
+import {classToClass, classToClassFromExist, classToPlain, classToPlainFromExist, plainToClass, plainToClassFromExist} from "../../src/index";
 import {defaultMetadataStorage} from "../../src/storage";
 import {Exclude, Expose, Type} from "../../src/decorators";
-import {expect} from "chai";
 
 describe("specifying target maps", () => {
-
     it("should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour", () => {
         defaultMetadataStorage.clear();
 
@@ -37,8 +29,8 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
@@ -46,27 +38,27 @@ describe("specifying target maps", () => {
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -74,19 +66,19 @@ describe("specifying target maps", () => {
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toBe(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -120,53 +112,53 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
 
         const existUser = { id: 1, age: 27, password: "yayayaya" };
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "yayayaya"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
@@ -199,41 +191,41 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({});
-        expect(plainUser.firstName).to.be.undefined;
-        expect(plainUser.lastName).to.be.undefined;
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({});
+        expect(plainUser.firstName).toBeUndefined();
+        expect(plainUser.lastName).toBeUndefined();
+        expect(plainUser.password).toBeUndefined();
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({});
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({});
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({});
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({});
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1
         });
     });
@@ -243,7 +235,6 @@ describe("specifying target maps", () => {
 
         @Exclude()
         class User {
-
             id: number;
 
             @Expose()
@@ -270,52 +261,52 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser);
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
@@ -326,7 +317,6 @@ describe("specifying target maps", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
 
             @Expose()
@@ -353,52 +343,52 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user, { strategy: "excludeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "excludeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser, { strategy: "excludeAll" });
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "excludeAll" });
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassUser = classToClass(user, { strategy: "excludeAll" });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "excludeAll" });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev"
@@ -409,9 +399,7 @@ describe("specifying target maps", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
-
             firstName: string;
 
             @Exclude()
@@ -436,48 +424,48 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed"
         });
-        expect(plainUser.lastName).to.be.undefined;
-        expect(plainUser.password).to.be.undefined;
+        expect(plainUser.lastName).toBeUndefined();
+        expect(plainUser.password).toBeUndefined();
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed"
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "Umed"
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed"
         });
 
         const classToClassUser = classToClass(user, { strategy: "exposeAll" });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "Umed"
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed"
         });
@@ -487,7 +475,6 @@ describe("specifying target maps", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             id: number;
 
             @Type(type => String)
@@ -531,8 +518,8 @@ describe("specifying target maps", () => {
         fromExistUser.id = 1;
 
         const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "321",
             lastName: "123",
             password: 123,
@@ -543,8 +530,8 @@ describe("specifying target maps", () => {
 
         const existUser = { id: 1, age: 27 };
         const plainUser2 = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "321",
@@ -554,11 +541,11 @@ describe("specifying target maps", () => {
             registrationDate: new Date(date.toString()),
             lastVisitDate: date.toString(),
         });
-        plainUser2.should.be.equal(existUser);
+        expect(plainUser2).toEqual(existUser);
 
         const transformedUser = plainToClass(User, fromPlainUser, { strategy: "exposeAll" });
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser).toEqual({
             firstName: "321",
             lastName: "123",
             password: 123,
@@ -568,8 +555,8 @@ describe("specifying target maps", () => {
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { strategy: "exposeAll" });
-        fromExistTransformedUser.should.be.instanceOf(User);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toBeInstanceOf(User);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -580,9 +567,9 @@ describe("specifying target maps", () => {
         });
 
         const classToClassUser = classToClass(user, { strategy: "exposeAll" });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).toEqual({
             firstName: "321",
             lastName: "123",
             password: 123,
@@ -592,10 +579,10 @@ describe("specifying target maps", () => {
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { strategy: "exposeAll" });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "321",
             lastName: "123",
@@ -610,22 +597,17 @@ describe("specifying target maps", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
-
             id: number;
-
             name: string;
 
             @Exclude()
             filename: string;
 
             uploadDate: Date;
-
         }
 
         class User {
-
             firstName: string;
-
             lastName: string;
 
             @Exclude()
@@ -647,9 +629,9 @@ describe("specifying target maps", () => {
         user.photo = photo;
 
         const plainUser: any = classToPlain(user, { strategy: "exposeAll" });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.photo.should.not.be.instanceOf(Photo);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser.photo).not.toBeInstanceOf(Photo);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -658,16 +640,16 @@ describe("specifying target maps", () => {
                 uploadDate: photo.uploadDate
             }
         });
-        expect(plainUser.password).to.be.undefined;
-        expect(plainUser.photo.filename).to.be.undefined;
-        expect(plainUser.photo.uploadDate).to.be.eql(photo.uploadDate);
-        expect(plainUser.photo.uploadDate).not.to.be.equal(photo.uploadDate);
+        expect(plainUser.password).toBeUndefined();
+        expect(plainUser.photo.filename).toBeUndefined();
+        expect(plainUser.photo.uploadDate).toEqual(photo.uploadDate);
+        expect(plainUser.photo.uploadDate).not.toBe(photo.uploadDate);
 
         const existUser = { id: 1, age: 27, photo: { id: 2, description: "photo" } };
         const plainUser2: any = classToPlainFromExist(user, existUser, { strategy: "exposeAll" });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.photo.should.not.be.instanceOf(Photo);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2.photo).not.toBeInstanceOf(Photo);
+        expect(plainUser2).toEqual({
             id: 1,
             age: 27,
             firstName: "Umed",
@@ -679,25 +661,22 @@ describe("specifying target maps", () => {
                 description: "photo"
             }
         });
-        plainUser2.should.be.equal(existUser);
-        expect(plainUser2.password).to.be.undefined;
-        expect(plainUser2.photo.filename).to.be.undefined;
-        expect(plainUser2.photo.uploadDate).to.be.eql(photo.uploadDate);
-        expect(plainUser2.photo.uploadDate).not.to.be.equal(photo.uploadDate);
+        expect(plainUser2).toEqual(existUser);
+        expect(plainUser2.password).toBeUndefined();
+        expect(plainUser2.photo.filename).toBeUndefined();
+        expect(plainUser2.photo.uploadDate).toEqual(photo.uploadDate);
+        expect(plainUser2.photo.uploadDate).not.toBe(photo.uploadDate);
     });
 
     it("should transform nested objects too and make sure given type is used instead of automatically guessed one", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
-
             id: number;
-
             name: string;
 
             @Exclude()
             filename: string;
-
         }
 
         class ExtendedPhoto implements Photo {
@@ -710,11 +689,8 @@ describe("specifying target maps", () => {
         }
 
         class User {
-
             id: number;
-
             firstName: string;
-
             lastName: string;
 
             @Exclude()
@@ -736,8 +712,8 @@ describe("specifying target maps", () => {
         user.photo = photo;
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -745,34 +721,27 @@ describe("specifying target maps", () => {
                 filename: "iam.jpg"
             }
         });
-        expect(plainUser.password).to.be.undefined;
-        expect(plainUser.photo.name).to.be.undefined;
+        expect(plainUser.password).toBeUndefined();
+        expect(plainUser.photo.name).toBeUndefined();
     });
 
     it("should convert given plain object to class instance object", () => {
         defaultMetadataStorage.clear();
 
         class Photo {
-
             id: number;
-
             name: string;
 
             @Exclude()
             filename: string;
 
             metadata: string;
-
             uploadDate: Date;
-
         }
 
         class User {
-
             id: number;
-
             firstName: string;
-
             lastName: string;
 
             @Exclude()
@@ -811,9 +780,9 @@ describe("specifying target maps", () => {
         fromExistUser.photo = fromExistPhoto;
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
-        transformedUser.photo.should.be.instanceOf(Photo);
-        transformedUser.should.be.eql({
+        expect(transformedUser).toBeInstanceOf(User);
+        expect(transformedUser.photo).toBeInstanceOf(Photo);
+        expect(transformedUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -824,9 +793,9 @@ describe("specifying target maps", () => {
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
-        fromExistTransformedUser.should.be.equal(fromExistUser);
-        fromExistTransformedUser.photo.should.be.equal(fromExistPhoto);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toEqual(fromExistUser);
+        expect(fromExistTransformedUser.photo).toEqual(fromExistPhoto);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -839,11 +808,11 @@ describe("specifying target maps", () => {
         });
 
         const classToClassUser = classToClass(user);
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.photo.should.be.instanceOf(Photo);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.not.be.equal(user.photo);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).not.toEqual(user.photo);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -854,12 +823,12 @@ describe("specifying target maps", () => {
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser);
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.not.be.equal(user.photo);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).not.toEqual(user.photo);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -892,9 +861,7 @@ describe("specifying target maps", () => {
         }
 
         class User {
-
             id: number;
-
             firstName: string;
 
             @Expose({
@@ -920,7 +887,6 @@ describe("specifying target maps", () => {
             })
             @Type(type => Photo)
             photos: Photo[];
-
         }
 
         const user = new User();
@@ -957,20 +923,20 @@ describe("specifying target maps", () => {
         fromExistUser.photo.metadata = "taken by Camera";
 
         const plainUser1: any = classToPlain(user);
-        plainUser1.should.not.be.instanceOf(User);
-        plainUser1.should.be.eql({
+        expect(plainUser1).not.toBeInstanceOf(User);
+        expect(plainUser1).toEqual({
             firstName: "Umed",
             photo: {
                 id: 1
             }
         });
-        expect(plainUser1.lastName).to.be.undefined;
-        expect(plainUser1.password).to.be.undefined;
-        expect(plainUser1.isActive).to.be.undefined;
+        expect(plainUser1.lastName).toBeUndefined();
+        expect(plainUser1.password).toBeUndefined();
+        expect(plainUser1.isActive).toBeUndefined();
 
         const plainUser2: any = classToPlain(user, { groups: ["user"] });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -979,12 +945,12 @@ describe("specifying target maps", () => {
                 filename: "myphoto.jpg"
             }
         });
-        expect(plainUser2.isActive).to.be.undefined;
+        expect(plainUser2.isActive).toBeUndefined();
 
         const transformedUser2 = plainToClass(User, fromPlainUser, { groups: ["user"] });
-        transformedUser2.should.be.instanceOf(User);
-        transformedUser2.photo.should.be.instanceOf(Photo);
-        transformedUser2.should.be.eql({
+        expect(transformedUser2).toBeInstanceOf(User);
+        expect(transformedUser2.photo).toBeInstanceOf(Photo);
+        expect(transformedUser2).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -995,9 +961,9 @@ describe("specifying target maps", () => {
         });
 
         const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { groups: ["user"] });
-        fromExistTransformedUser.should.be.equal(fromExistUser);
-        fromExistTransformedUser.photo.should.be.equal(fromExistUser.photo);
-        fromExistTransformedUser.should.be.eql({
+        expect(fromExistTransformedUser).toEqual(fromExistUser);
+        expect(fromExistTransformedUser.photo).toEqual(fromExistUser.photo);
+        expect(fromExistTransformedUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -1010,11 +976,11 @@ describe("specifying target maps", () => {
         });
 
         const classToClassUser = classToClass(user, { groups: ["user"] });
-        classToClassUser.should.be.instanceOf(User);
-        classToClassUser.photo.should.be.instanceOf(Photo);
-        classToClassUser.should.not.be.equal(user);
-        classToClassUser.should.not.be.equal(user.photo);
-        classToClassUser.should.be.eql({
+        expect(classToClassUser).toBeInstanceOf(User);
+        expect(classToClassUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassUser).not.toEqual(user);
+        expect(classToClassUser).not.toEqual(user.photo);
+        expect(classToClassUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1025,12 +991,12 @@ describe("specifying target maps", () => {
         });
 
         const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { groups: ["user"] });
-        classToClassFromExistUser.should.be.instanceOf(User);
-        classToClassFromExistUser.photo.should.be.instanceOf(Photo);
-        classToClassFromExistUser.should.not.be.equal(user);
-        classToClassFromExistUser.should.not.be.equal(user.photo);
-        classToClassFromExistUser.should.be.equal(fromExistUser);
-        classToClassFromExistUser.should.be.eql({
+        expect(classToClassFromExistUser).toBeInstanceOf(User);
+        expect(classToClassFromExistUser.photo).toBeInstanceOf(Photo);
+        expect(classToClassFromExistUser).not.toEqual(user);
+        expect(classToClassFromExistUser).not.toEqual(user.photo);
+        expect(classToClassFromExistUser).toEqual(fromExistUser);
+        expect(classToClassFromExistUser).toEqual({
             id: 1,
             firstName: "Umed",
             lastName: "Khudoiberdiev",
@@ -1043,8 +1009,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser3: any = classToPlain(user, { groups: ["guest"] });
-        plainUser3.should.not.be.instanceOf(User);
-        plainUser3.should.be.eql({
+        expect(plainUser3).not.toBeInstanceOf(User);
+        expect(plainUser3).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1052,13 +1018,13 @@ describe("specifying target maps", () => {
                 filename: "myphoto.jpg"
             }
         });
-        expect(plainUser3.password).to.be.undefined;
-        expect(plainUser3.isActive).to.be.undefined;
+        expect(plainUser3.password).toBeUndefined();
+        expect(plainUser3.isActive).toBeUndefined();
 
         const transformedUser3 = plainToClass(User, fromPlainUser, { groups: ["guest"] });
-        transformedUser3.should.be.instanceOf(User);
-        transformedUser3.photo.should.be.instanceOf(Photo);
-        transformedUser3.should.be.eql({
+        expect(transformedUser3).toBeInstanceOf(User);
+        expect(transformedUser3.photo).toBeInstanceOf(Photo);
+        expect(transformedUser3).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1068,8 +1034,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser4: any = classToPlain(user, { groups: ["admin"] });
-        plainUser4.should.not.be.instanceOf(User);
-        plainUser4.should.be.eql({
+        expect(plainUser4).not.toBeInstanceOf(User);
+        expect(plainUser4).toEqual({
             firstName: "Umed",
             isActive: false,
             photo: {
@@ -1081,14 +1047,14 @@ describe("specifying target maps", () => {
                 status: 1
             }]
         });
-        expect(plainUser4.lastName).to.be.undefined;
-        expect(plainUser4.password).to.be.undefined;
+        expect(plainUser4.lastName).toBeUndefined();
+        expect(plainUser4.password).toBeUndefined();
 
         const transformedUser4 = plainToClass(User, fromPlainUser, { groups: ["admin"] });
-        transformedUser4.should.be.instanceOf(User);
-        transformedUser4.photo.should.be.instanceOf(Photo);
-        transformedUser4.photos[0].should.be.instanceOf(Photo);
-        transformedUser4.should.be.eql({
+        expect(transformedUser4).toBeInstanceOf(User);
+        expect(transformedUser4.photo).toBeInstanceOf(Photo);
+        expect(transformedUser4.photos[0]).toBeInstanceOf(Photo);
+        expect(transformedUser4).toEqual({
             firstName: "Umed",
             isActive: false,
             photo: {
@@ -1102,8 +1068,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser5: any = classToPlain(user, { groups: ["admin", "user"] });
-        plainUser5.should.not.be.instanceOf(User);
-        plainUser5.should.be.eql({
+        expect(plainUser5).not.toBeInstanceOf(User);
+        expect(plainUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1121,8 +1087,8 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser5 = plainToClass(User, fromPlainUser, { groups: ["admin", "user"] });
-        transformedUser5.should.be.instanceOf(User);
-        transformedUser5.should.be.eql({
+        expect(transformedUser5).toBeInstanceOf(User);
+        expect(transformedUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             password: "imnosuperman",
@@ -1159,7 +1125,6 @@ describe("specifying target maps", () => {
         }
 
         class User {
-
             @Expose({
                 since: 1,
                 until: 2
@@ -1182,7 +1147,6 @@ describe("specifying target maps", () => {
             })
             @Type(type => Photo)
             photos: Photo[];
-
         }
 
         const user = new User();
@@ -1212,8 +1176,8 @@ describe("specifying target maps", () => {
         };
 
         const plainUser1: any = classToPlain(user);
-        plainUser1.should.not.be.instanceOf(User);
-        plainUser1.should.be.eql({
+        expect(plainUser1).not.toBeInstanceOf(User);
+        expect(plainUser1).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1229,10 +1193,10 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser1 = plainToClass(User, fromPlainUser);
-        transformedUser1.should.be.instanceOf(User);
-        transformedUser1.photo.should.be.instanceOf(Photo);
-        transformedUser1.photos[0].should.be.instanceOf(Photo);
-        transformedUser1.should.be.eql({
+        expect(transformedUser1).toBeInstanceOf(User);
+        expect(transformedUser1.photo).toBeInstanceOf(Photo);
+        expect(transformedUser1.photos[0]).toBeInstanceOf(Photo);
+        expect(transformedUser1).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1248,25 +1212,25 @@ describe("specifying target maps", () => {
         });
 
         const plainUser2: any = classToPlain(user, { version: 0.3 });
-        plainUser2.should.not.be.instanceOf(User);
-        plainUser2.should.be.eql({
+        expect(plainUser2).not.toBeInstanceOf(User);
+        expect(plainUser2).toEqual({
             photo: {
                 id: 1
             }
         });
 
         const transformedUser2 = plainToClass(User, fromPlainUser, { version: 0.3 });
-        transformedUser2.should.be.instanceOf(User);
-        transformedUser2.photo.should.be.instanceOf(Photo);
-        transformedUser2.should.be.eql({
+        expect(transformedUser2).toBeInstanceOf(User);
+        expect(transformedUser2.photo).toBeInstanceOf(Photo);
+        expect(transformedUser2).toEqual({
             photo: {
                 id: 1
             }
         });
 
         const plainUser3: any = classToPlain(user, { version: 0.5 });
-        plainUser3.should.not.be.instanceOf(User);
-        plainUser3.should.be.eql({
+        expect(plainUser3).not.toBeInstanceOf(User);
+        expect(plainUser3).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1
@@ -1274,9 +1238,9 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser3 = plainToClass(User, fromPlainUser, { version: 0.5 });
-        transformedUser3.should.be.instanceOf(User);
-        transformedUser3.photo.should.be.instanceOf(Photo);
-        transformedUser3.should.be.eql({
+        expect(transformedUser3).toBeInstanceOf(User);
+        expect(transformedUser3.photo).toBeInstanceOf(Photo);
+        expect(transformedUser3).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1
@@ -1284,8 +1248,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser4: any = classToPlain(user, { version: 1 });
-        plainUser4.should.not.be.instanceOf(User);
-        plainUser4.should.be.eql({
+        expect(plainUser4).not.toBeInstanceOf(User);
+        expect(plainUser4).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1294,9 +1258,9 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser4 = plainToClass(User, fromPlainUser, { version: 1 });
-        transformedUser4.should.be.instanceOf(User);
-        transformedUser4.photo.should.be.instanceOf(Photo);
-        transformedUser4.should.be.eql({
+        expect(transformedUser4).toBeInstanceOf(User);
+        expect(transformedUser4.photo).toBeInstanceOf(Photo);
+        expect(transformedUser4).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1305,8 +1269,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser5: any = classToPlain(user, { version: 1.5 });
-        plainUser5.should.not.be.instanceOf(User);
-        plainUser5.should.be.eql({
+        expect(plainUser5).not.toBeInstanceOf(User);
+        expect(plainUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1316,9 +1280,9 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser5 = plainToClass(User, fromPlainUser, { version: 1.5 });
-        transformedUser5.should.be.instanceOf(User);
-        transformedUser5.photo.should.be.instanceOf(Photo);
-        transformedUser5.should.be.eql({
+        expect(transformedUser5).toBeInstanceOf(User);
+        expect(transformedUser5.photo).toBeInstanceOf(Photo);
+        expect(transformedUser5).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             photo: {
@@ -1328,8 +1292,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser6: any = classToPlain(user, { version: 2 });
-        plainUser6.should.not.be.instanceOf(User);
-        plainUser6.should.be.eql({
+        expect(plainUser6).not.toBeInstanceOf(User);
+        expect(plainUser6).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1338,9 +1302,9 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser6 = plainToClass(User, fromPlainUser, { version: 2 });
-        transformedUser6.should.be.instanceOf(User);
-        transformedUser6.photo.should.be.instanceOf(Photo);
-        transformedUser6.should.be.eql({
+        expect(transformedUser6).toBeInstanceOf(User);
+        expect(transformedUser6.photo).toBeInstanceOf(Photo);
+        expect(transformedUser6).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1349,8 +1313,8 @@ describe("specifying target maps", () => {
         });
 
         const plainUser7: any = classToPlain(user, { version: 3 });
-        plainUser7.should.not.be.instanceOf(User);
-        plainUser7.should.be.eql({
+        expect(plainUser7).not.toBeInstanceOf(User);
+        expect(plainUser7).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1363,10 +1327,10 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser7 = plainToClass(User, fromPlainUser, { version: 3 });
-        transformedUser7.should.be.instanceOf(User);
-        transformedUser7.photo.should.be.instanceOf(Photo);
-        transformedUser7.photos[0].should.be.instanceOf(Photo);
-        transformedUser7.should.be.eql({
+        expect(transformedUser7).toBeInstanceOf(User);
+        expect(transformedUser7.photo).toBeInstanceOf(Photo);
+        expect(transformedUser7.photos[0]).toBeInstanceOf(Photo);
+        expect(transformedUser7).toEqual({
             lastName: "Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1377,7 +1341,6 @@ describe("specifying target maps", () => {
                 status: 1
             }]
         });
-
     });
 
     it("should expose method and accessors that have @Expose()", () => {
@@ -1399,7 +1362,6 @@ describe("specifying target maps", () => {
             getName(): string {
                 return this.firstName + " " + this.lastName;
             }
-
         }
 
         const user = new User();
@@ -1414,8 +1376,8 @@ describe("specifying target maps", () => {
         };
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             name: "Umed Khudoiberdiev",
@@ -1423,19 +1385,17 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
+        expect(transformedUser).toBeInstanceOf(User);
         const likeUser = new User();
         likeUser.firstName = "Umed";
         likeUser.lastName = "Khudoiberdiev";
-        transformedUser.should.be.eql(likeUser);
-
+        expect(transformedUser).toEqual(likeUser);
     });
 
     it("should expose with alternative name if its given", () => {
         defaultMetadataStorage.clear();
 
         class User {
-
             @Expose({ name: "myName" })
             firstName: string;
 
@@ -1454,7 +1414,6 @@ describe("specifying target maps", () => {
             getName(): string {
                 return this.firstName + " " + this.lastName;
             }
-
         }
 
         const user = new User();
@@ -1469,8 +1428,8 @@ describe("specifying target maps", () => {
         };
 
         const plainUser: any = classToPlain(user);
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             myName: "Umed",
             secondName: "Khudoiberdiev",
             name: "Umed Khudoiberdiev",
@@ -1478,12 +1437,11 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser = plainToClass(User, fromPlainUser);
-        transformedUser.should.be.instanceOf(User);
+        expect(transformedUser).toBeInstanceOf(User);
         const likeUser = new User();
         likeUser.firstName = "Umed";
         likeUser.lastName = "Khudoiberdiev";
-        transformedUser.should.be.eql(likeUser);
-
+        expect(transformedUser).toEqual(likeUser);
     });
 
     it("should exclude all prefixed properties if prefix is given", () => {
@@ -1510,7 +1468,6 @@ describe("specifying target maps", () => {
             get name(): string {
                 return this._firstName + " " + this._lastName;
             }
-
         }
 
         const user = new User();
@@ -1536,8 +1493,8 @@ describe("specifying target maps", () => {
         };
 
         const plainUser: any = classToPlain(user, { excludePrefixes: ["_", "$"] });
-        plainUser.should.not.be.instanceOf(User);
-        plainUser.should.be.eql({
+        expect(plainUser).not.toBeInstanceOf(User);
+        expect(plainUser).toEqual({
             name: "Umed Khudoiberdiev",
             photo: {
                 id: 1,
@@ -1546,18 +1503,16 @@ describe("specifying target maps", () => {
         });
 
         const transformedUser = plainToClass(User, fromPlainUser, { excludePrefixes: ["_", "$"] });
-        transformedUser.should.be.instanceOf(User);
+        expect(transformedUser).toBeInstanceOf(User);
         const likeUser = new User();
         likeUser.photo = new Photo();
         likeUser.photo.id = 1;
         likeUser.photo.status = 1;
-        transformedUser.should.be.eql(likeUser);
-
+        expect(transformedUser).toEqual(likeUser);
     });
 
     it("should be able to transform array too", () => {
         defaultMetadataStorage.clear();
-
 
         class User {
             id: number;
@@ -1571,7 +1526,6 @@ describe("specifying target maps", () => {
             get name(): string {
                 return this.firstName + " " + this.lastName;
             }
-
         }
 
         const user1 = new User();
@@ -1587,7 +1541,7 @@ describe("specifying target maps", () => {
         const users = [user1, user2];
 
         const plainUsers: any = classToPlain(users);
-        plainUsers.should.be.eql([{
+        expect(plainUsers).toEqual([{
             firstName: "Umed",
             lastName: "Khudoiberdiev",
             name: "Umed Khudoiberdiev"
@@ -1609,7 +1563,7 @@ describe("specifying target maps", () => {
 
         const existUsers = [{ id: 1, age: 27 }, { id: 2, age: 30 }];
         const plainUser2 = classToPlainFromExist(users, existUsers);
-        plainUser2.should.be.eql([{
+        expect(plainUser2).toEqual([{
             id: 1,
             age: 27,
             firstName: "Umed",
@@ -1625,8 +1579,8 @@ describe("specifying target maps", () => {
 
         const transformedUser = plainToClass(User, fromPlainUsers);
 
-        transformedUser[0].should.be.instanceOf(User);
-        transformedUser[1].should.be.instanceOf(User);
+        expect(transformedUser[0]).toBeInstanceOf(User);
+        expect(transformedUser[1]).toBeInstanceOf(User);
         const likeUser1 = new User();
         likeUser1.firstName = "Umed";
         likeUser1.lastName = "Khudoiberdiev";
@@ -1634,13 +1588,13 @@ describe("specifying target maps", () => {
         const likeUser2 = new User();
         likeUser2.firstName = "Dima";
         likeUser2.lastName = "Zotov";
-        transformedUser.should.be.eql([likeUser1, likeUser2]);
+        expect(transformedUser).toEqual([likeUser1, likeUser2]);
 
         const classToClassUsers = classToClass(users);
-        classToClassUsers[0].should.be.instanceOf(User);
-        classToClassUsers[1].should.be.instanceOf(User);
-        classToClassUsers[0].should.not.be.equal(user1);
-        classToClassUsers[1].should.not.be.equal(user1);
+        expect(classToClassUsers[0]).toBeInstanceOf(User);
+        expect(classToClassUsers[1]).toBeInstanceOf(User);
+        expect(classToClassUsers[0]).not.toEqual(user1);
+        expect(classToClassUsers[1]).not.toEqual(user1);
 
         const classUserLike1 = new User();
         classUserLike1.firstName = "Umed";
@@ -1650,7 +1604,7 @@ describe("specifying target maps", () => {
         classUserLike2.firstName = "Dima";
         classUserLike2.lastName = "Zotov";
 
-        classToClassUsers.should.be.eql([classUserLike1, classUserLike2]);
+        expect(classToClassUsers).toEqual([classUserLike1, classUserLike2]);
 
         const fromExistUser1 = new User();
         fromExistUser1.id = 1;
@@ -1661,11 +1615,11 @@ describe("specifying target maps", () => {
         const fromExistUsers = [fromExistUser1, fromExistUser2];
 
         const classToClassFromExistUser = classToClassFromExist(users, fromExistUsers);
-        classToClassFromExistUser[0].should.be.instanceOf(User);
-        classToClassFromExistUser[1].should.be.instanceOf(User);
-        classToClassFromExistUser[0].should.not.be.equal(user1);
-        classToClassFromExistUser[1].should.not.be.equal(user1);
-        classToClassFromExistUser.should.be.eql(fromExistUsers);
+        expect(classToClassFromExistUser[0]).toBeInstanceOf(User);
+        expect(classToClassFromExistUser[1]).toBeInstanceOf(User);
+        expect(classToClassFromExistUser[0]).not.toEqual(user1);
+        expect(classToClassFromExistUser[1]).not.toEqual(user1);
+        expect(classToClassFromExistUser).toEqual(fromExistUsers);
 
         const fromExistUserLike1 = new User();
         fromExistUserLike1.id = 1;
@@ -1677,8 +1631,6 @@ describe("specifying target maps", () => {
         fromExistUserLike2.firstName = "Dima";
         fromExistUserLike2.lastName = "Zotov";
 
-        classToClassFromExistUser.should.be.eql([fromExistUserLike1, fromExistUserLike2]);
-
+        expect(classToClassFromExistUser).toEqual([fromExistUserLike1, fromExistUserLike2]);
     });
-
 });
