@@ -14,9 +14,9 @@ export class ClassTransformer {
     /**
      * Converts class (constructor) object to plain (literal) object. Also works with arrays.
      */
-    classToPlain<T extends Object>(object: T, options?: ClassTransformOptions): Object;
-    classToPlain<T extends Object>(object: T[], options?: ClassTransformOptions): Object[];
-    classToPlain<T extends Object>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
+    classToPlain<T extends Record<string, any>>(object: T, options?: ClassTransformOptions): Record<string, any>;
+    classToPlain<T extends Record<string, any>>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
+    classToPlain<T extends Record<string, any>>(object: T|T[], options?: ClassTransformOptions): Record<string, any>|Record<string, any>[] {
         const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
         return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
     }
@@ -26,9 +26,9 @@ export class ClassTransformer {
      * Uses given plain object as source object (it means fills given plain object with data from class object).
      * Also works with arrays.
      */
-    classToPlainFromExist<T extends Object, P>(object: T, plainObject: P, options?: ClassTransformOptions): T;
-    classToPlainFromExist<T extends Object, P>(object: T, plainObjects: P[], options?: ClassTransformOptions): T[];
-    classToPlainFromExist<T extends Object, P>(object: T, plainObject: P|P[], options?: ClassTransformOptions): T|T[] {
+    classToPlainFromExist<T extends Record<string, any>, P>(object: T, plainObject: P, options?: ClassTransformOptions): T;
+    classToPlainFromExist<T extends Record<string, any>, P>(object: T, plainObjects: P[], options?: ClassTransformOptions): T[];
+    classToPlainFromExist<T extends Record<string, any>, P>(object: T, plainObject: P|P[], options?: ClassTransformOptions): T|T[] {
         const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
         return executor.transform(plainObject, object, undefined, undefined, undefined, undefined);
     }
@@ -36,9 +36,9 @@ export class ClassTransformer {
     /**
      * Converts plain (literal) object to class (constructor) object. Also works with arrays.
      */
-    plainToClass<T extends Object, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T[];
-    plainToClass<T extends Object, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
-    plainToClass<T extends Object, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): T|T[] {
+    plainToClass<T extends Record<string, any>, V extends Array<any>>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T[];
+    plainToClass<T extends Record<string, any>, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
+    plainToClass<T extends Record<string, any>, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): T|T[] {
         const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, options || {});
         return executor.transform(undefined, plain, cls, undefined, undefined, undefined);
     }
@@ -48,9 +48,9 @@ export class ClassTransformer {
      * Uses given object as source object (it means fills given object with data from plain object).
      * Also works with arrays.
      */
-    plainToClassFromExist<T extends Object, V extends Array<any>>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
-    plainToClassFromExist<T extends Object, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T[];
-    plainToClassFromExist<T extends Object, V>(clsObject: T, plain: V|V[], options?: ClassTransformOptions): T|T[] {
+    plainToClassFromExist<T extends Record<string, any>, V extends Array<any>>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
+    plainToClassFromExist<T extends Record<string, any>, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T[];
+    plainToClassFromExist<T extends Record<string, any>, V>(clsObject: T, plain: V|V[], options?: ClassTransformOptions): T|T[] {
         const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, options || {});
         return executor.transform(clsObject, plain, undefined, undefined, undefined, undefined);
     }
