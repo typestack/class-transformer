@@ -215,7 +215,7 @@ export class MetadataStorage {
                 }
             }
         }
-        return (metadataFromAncestorsTarget).reverse().concat((metadataFromTarget || []).reverse());
+        return (metadataFromAncestorsTarget).slice().reverse().concat((metadataFromTarget || []).slice().reverse());
     }
 
     private getAncestors(target: Function): Function[] {
