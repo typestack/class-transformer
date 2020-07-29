@@ -294,7 +294,7 @@ export class TransformOperationExecutor {
             // Apply the default transformation
             finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
           } else {
-            if (subValue === undefined) {
+            if (subValue === undefined && this.options.exposeDefaultValues) {
               // Set default value if nothing provided
               finalValue = newValue[newValueKey];
             } else {
