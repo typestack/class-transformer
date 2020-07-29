@@ -1,262 +1,256 @@
-import "reflect-metadata";
-import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose, TransformClassToClass, TransformClassToPlain, TransformPlainToClass} from "../../src/decorators";
+import 'reflect-metadata';
+import { defaultMetadataStorage } from '../../src/storage';
+import {
+  Exclude,
+  Expose,
+  TransformClassToClass,
+  TransformClassToPlain,
+  TransformPlainToClass,
+} from '../../src/decorators';
 
-describe("transformer methods decorator", () => {
-    it("should expose non configuration properties and return User instance class", () => {
-        defaultMetadataStorage.clear();
+describe('transformer methods decorator', () => {
+  it('should expose non configuration properties and return User instance class', () => {
+    defaultMetadataStorage.clear();
 
-        @Exclude()
-        class User {
-            id: number;
+    @Exclude()
+    class User {
+      id: number;
 
-            @Expose()
-            firstName: string;
+      @Expose()
+      firstName: string;
 
-            @Expose()
-            lastName: string;
+      @Expose()
+      lastName: string;
 
-            password: string;
-        }
+      password: string;
+    }
 
-        class UserController {
-            @TransformClassToClass()
-            getUser(): User {
-                const user = new User();
-                user.firstName = "Snir";
-                user.lastName = "Segal";
-                user.password = "imnosuperman";
-
-                return user;
-            }
-        }
-
-        const controller = new UserController();
-
-        const result = controller.getUser();
-        expect(result.password).toBeUndefined();
-
-        const plainUser = {
-            firstName: "Snir",
-            lastName: "Segal"
-        };
-
-
-        expect(result).toEqual(plainUser);
-        expect(result).toBeInstanceOf(User);
-    });
-
-    it("should expose non configuration properties and return User instance class instead of plain object", () => {
-        defaultMetadataStorage.clear();
-
-        @Exclude()
-        class User {
-
-            id: number;
-
-            @Expose()
-            firstName: string;
-
-            @Expose()
-            lastName: string;
-
-            password: string;
-        }
-
-        class UserController {
-
-            @TransformPlainToClass(User)
-            getUser(): User {
-                const user: any = {};
-                user.firstName = "Snir";
-                user.lastName = "Segal";
-                user.password = "imnosuperman";
-
-                return user;
-            }
-        }
-
-        const controller = new UserController();
-
-        const result = controller.getUser();
-        expect(result.password).toBeUndefined();
-
+    class UserController {
+      @TransformClassToClass()
+      getUser(): User {
         const user = new User();
-        user.firstName = "Snir";
-        user.lastName = "Segal";
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
 
-        expect(result).toEqual(user);
-        expect(result).toBeInstanceOf(User);
-    });
+        return user;
+      }
+    }
 
-    it("should expose non configuration properties", () => {
-        defaultMetadataStorage.clear();
+    const controller = new UserController();
 
-        @Exclude()
-        class User {
+    const result = controller.getUser();
+    expect(result.password).toBeUndefined();
 
-            id: number;
+    const plainUser = {
+      firstName: 'Snir',
+      lastName: 'Segal',
+    };
 
-            @Expose()
-            firstName: string;
+    expect(result).toEqual(plainUser);
+    expect(result).toBeInstanceOf(User);
+  });
 
-            @Expose()
-            lastName: string;
+  it('should expose non configuration properties and return User instance class instead of plain object', () => {
+    defaultMetadataStorage.clear();
 
-            password: string;
-        }
+    @Exclude()
+    class User {
+      id: number;
 
-        class UserController {
+      @Expose()
+      firstName: string;
 
-            @TransformClassToPlain()
-            getUser(): User {
-                const user = new User();
-                user.firstName = "Snir";
-                user.lastName = "Segal";
-                user.password = "imnosuperman";
+      @Expose()
+      lastName: string;
 
-                return user;
-            }
-        }
+      password: string;
+    }
 
-        const controller = new UserController();
+    class UserController {
+      @TransformPlainToClass(User)
+      getUser(): User {
+        const user: any = {};
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
 
-        const result = controller.getUser();
-            expect(result.password).toBeUndefined();
+        return user;
+      }
+    }
 
-        const plainUser = {
-            firstName: "Snir",
-            lastName: "Segal"
-        };
+    const controller = new UserController();
 
-        expect(result).toEqual(plainUser);
-    });
+    const result = controller.getUser();
+    expect(result.password).toBeUndefined();
 
-    it("should expose non configuration properties and properties with specific groups", () => {
-        defaultMetadataStorage.clear();
+    const user = new User();
+    user.firstName = 'Snir';
+    user.lastName = 'Segal';
 
-        @Exclude()
-        class User {
+    expect(result).toEqual(user);
+    expect(result).toBeInstanceOf(User);
+  });
 
-            id: number;
+  it('should expose non configuration properties', () => {
+    defaultMetadataStorage.clear();
 
-            @Expose()
-            firstName: string;
+    @Exclude()
+    class User {
+      id: number;
 
-            @Expose()
-            lastName: string;
+      @Expose()
+      firstName: string;
 
-            @Expose({ groups: ["user.permissions"] })
-            roles: string[];
+      @Expose()
+      lastName: string;
 
-            password: string;
-        }
+      password: string;
+    }
 
-        class UserController {
+    class UserController {
+      @TransformClassToPlain()
+      getUser(): User {
+        const user = new User();
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
 
-            @TransformClassToPlain({ groups: ["user.permissions"] })
-            getUserWithRoles(): User {
-                const user = new User();
-                user.firstName = "Snir";
-                user.lastName = "Segal";
-                user.password = "imnosuperman";
-                user.roles = ["USER", "MANAGER"];
+        return user;
+      }
+    }
 
-                return user;
-            }
+    const controller = new UserController();
 
-        }
+    const result = controller.getUser();
+    expect(result.password).toBeUndefined();
 
-        const controller = new UserController();
+    const plainUser = {
+      firstName: 'Snir',
+      lastName: 'Segal',
+    };
 
-        const result = controller.getUserWithRoles();
-        expect(result.password).toBeUndefined();
+    expect(result).toEqual(plainUser);
+  });
 
-        const plainUser = {
-            firstName: "Snir",
-            lastName: "Segal",
-            roles: ["USER", "MANAGER"]
-        };
+  it('should expose non configuration properties and properties with specific groups', () => {
+    defaultMetadataStorage.clear();
 
-        expect(result).toEqual(plainUser);
-    });
+    @Exclude()
+    class User {
+      id: number;
 
-    it("should expose non configuration properties with specific version", () => {
-        defaultMetadataStorage.clear();
+      @Expose()
+      firstName: string;
 
-        @Exclude()
-        class User {
+      @Expose()
+      lastName: string;
 
-            id: number;
+      @Expose({ groups: ['user.permissions'] })
+      roles: string[];
 
-            @Expose()
-            firstName: string;
+      password: string;
+    }
 
-            @Expose()
-            lastName: string;
+    class UserController {
+      @TransformClassToPlain({ groups: ['user.permissions'] })
+      getUserWithRoles(): User {
+        const user = new User();
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
+        user.roles = ['USER', 'MANAGER'];
 
-            @Expose({ groups: ["user.permissions"] })
-            roles: string[];
+        return user;
+      }
+    }
 
-            @Expose({ since: 2 })
-            websiteUrl?: string;
+    const controller = new UserController();
 
-            password: string;
-        }
+    const result = controller.getUserWithRoles();
+    expect(result.password).toBeUndefined();
 
-        class UserController {
+    const plainUser = {
+      firstName: 'Snir',
+      lastName: 'Segal',
+      roles: ['USER', 'MANAGER'],
+    };
 
-            @TransformClassToPlain({ version: 1 })
-            getUserVersion1(): User {
-                const user = new User();
-                user.firstName = "Snir";
-                user.lastName = "Segal";
-                user.password = "imnosuperman";
-                user.roles = ["USER", "MANAGER"];
-                user.websiteUrl = "http://www.github.com";
+    expect(result).toEqual(plainUser);
+  });
 
-                return user;
-            }
+  it('should expose non configuration properties with specific version', () => {
+    defaultMetadataStorage.clear();
 
-            @TransformClassToPlain({ version: 2 })
-            getUserVersion2(): User {
-                const user = new User();
-                user.firstName = "Snir";
-                user.lastName = "Segal";
-                user.password = "imnosuperman";
-                user.roles = ["USER", "MANAGER"];
-                user.websiteUrl = "http://www.github.com";
+    @Exclude()
+    class User {
+      id: number;
 
-                return user;
-            }
+      @Expose()
+      firstName: string;
 
-        }
+      @Expose()
+      lastName: string;
 
-        const controller = new UserController();
+      @Expose({ groups: ['user.permissions'] })
+      roles: string[];
 
-        const resultV2 = controller.getUserVersion2();
-        expect(resultV2.password).toBeUndefined();
-        expect(resultV2.roles).toBeUndefined();
+      @Expose({ since: 2 })
+      websiteUrl?: string;
 
-        const plainUserV2 = {
-            firstName: "Snir",
-            lastName: "Segal",
-            websiteUrl: "http://www.github.com"
-        };
+      password: string;
+    }
 
-        expect(resultV2).toEqual(plainUserV2);
+    class UserController {
+      @TransformClassToPlain({ version: 1 })
+      getUserVersion1(): User {
+        const user = new User();
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
+        user.roles = ['USER', 'MANAGER'];
+        user.websiteUrl = 'http://www.github.com';
 
-        const resultV1 = controller.getUserVersion1();
-        expect(resultV1.password).toBeUndefined();
-        expect(resultV1.roles).toBeUndefined();
-        expect(resultV1.websiteUrl).toBeUndefined();
+        return user;
+      }
 
-        const plainUserV1 = {
-            firstName: "Snir",
-            lastName: "Segal"
-        };
+      @TransformClassToPlain({ version: 2 })
+      getUserVersion2(): User {
+        const user = new User();
+        user.firstName = 'Snir';
+        user.lastName = 'Segal';
+        user.password = 'imnosuperman';
+        user.roles = ['USER', 'MANAGER'];
+        user.websiteUrl = 'http://www.github.com';
 
-        expect(resultV1).toEqual(plainUserV1);
-    });
+        return user;
+      }
+    }
 
+    const controller = new UserController();
+
+    const resultV2 = controller.getUserVersion2();
+    expect(resultV2.password).toBeUndefined();
+    expect(resultV2.roles).toBeUndefined();
+
+    const plainUserV2 = {
+      firstName: 'Snir',
+      lastName: 'Segal',
+      websiteUrl: 'http://www.github.com',
+    };
+
+    expect(resultV2).toEqual(plainUserV2);
+
+    const resultV1 = controller.getUserVersion1();
+    expect(resultV1.password).toBeUndefined();
+    expect(resultV1.roles).toBeUndefined();
+    expect(resultV1.websiteUrl).toBeUndefined();
+
+    const plainUserV1 = {
+      firstName: 'Snir',
+      lastName: 'Segal',
+    };
+
+    expect(resultV1).toEqual(plainUserV1);
+  });
 });
