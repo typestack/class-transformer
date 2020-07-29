@@ -1,13 +1,37 @@
-# Changelog and release notes
+# Changelog
 
-### 0.2.3 [BREAKING CHANGE]
+_This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
+
+### [0.3.1][v0.3.1] - 2020-07-29
+
+#### Added
+
+- table of content added to readme
+
+#### Changed
+
+- moved from Mocha to Jest
+- added Prettier for code formatting
+- added Eslint for linting
+- updated CI configuration
+- removed some unused dev dependencies
+- updated dependencies to latest version
+
+#### Fixed
+
+- circular dependency fixed
+- dev dependencies removed from package.json before publishing (no more security warnings)
+- transformer oder is deterministic now (#231)
+- fix prototype pollution issue (#367)
+
+### [0.2.3][v0.2.3] [BREAKING CHANGE]
 
 #### Changed
 
 - `enableImplicitConversion` has been added and imlplicit value conversion is disabled by default.
 - reverted #234 - fix: write properties with defined default values on prototype which broke the `@Exclude` decorator.
 
-### 0.2.2 [BREAKING CHANGE]
+### [0.2.2][v0.2.2] [BREAKING CHANGE]
 
 > **NOTE:** This version is deprecated.
 
@@ -17,7 +41,7 @@ This version has introduced a breaking-change when this library is used with cla
 
 - implicity type conversion between values.
 
-### 0.2.1
+### [0.2.1][v0.2.1]
 
 > **NOTE:** This version is deprecated.
 
@@ -25,7 +49,7 @@ This version has introduced a breaking-change when this library is used with cla
 
 - add option to strip unkown properties via using the `excludeExtraneousValues` option
 
-### 0.2.0 [BREAKING CHANGE]
+### [0.2.0][v0.2.0] [BREAKING CHANGE]
 
 #### Added
 
@@ -117,3 +141,10 @@ This version has introduced a breaking-change when this library is used with cla
 
 - Library has changed its name from `serializer.ts` to `constructor-utils`.
 - Added `constructor-utils` namespace.
+
+[v0.3.1]: https://github.com/typestack/class-transformer/compare/v0.2.3...v0.3.1
+[v0.2.3]: https://github.com/typestack/class-transformer/compare/v0.2.2...v0.2.3
+[v0.2.2]: https://github.com/typestack/class-transformer/compare/v0.2.1...v0.2.2
+[v0.2.1]: https://github.com/typestack/class-transformer/compare/v0.2.0...v0.2.1
+[v0.2.0]: https://github.com/typestack/class-transformer/compare/v0.1.10...v0.2.0
+[keep-a-changelog]: https://keepachangelog.com/en/1.0.0/
