@@ -12,7 +12,7 @@ import {
 import { ExcludeMetadata } from './metadata/ExcludeMetadata';
 import { TransformMetadata } from './metadata/TransformMetadata';
 import { ClassTransformOptions } from './ClassTransformOptions';
-import { TransformationType } from './TransformOperationExecutor';
+import { TransformationType } from './enums';
 
 /**
  * Defines a custom logic for value transformation.

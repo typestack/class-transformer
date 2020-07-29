@@ -2,12 +2,7 @@ import { ClassTransformOptions } from './ClassTransformOptions';
 import { defaultMetadataStorage } from './storage';
 import { TypeHelpOptions, TypeOptions } from './metadata/ExposeExcludeOptions';
 import { TypeMetadata } from './metadata/TypeMetadata';
-
-export enum TransformationType {
-  PLAIN_TO_CLASS,
-  CLASS_TO_PLAIN,
-  CLASS_TO_CLASS,
-}
+import { TransformationType } from './enums';
 
 export function testForBuffer(): boolean {
   try {
