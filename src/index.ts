@@ -11,9 +11,9 @@ const classTransformer = new ClassTransformer();
 /**
  * Converts class (constructor) object to plain (literal) object. Also works with arrays.
  */
-export function classToPlain<T>(object: T, options?: ClassTransformOptions): Object;
-export function classToPlain<T>(object: T[], options?: ClassTransformOptions): Object[];
-export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions): Object|Object[] {
+export function classToPlain<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
+export function classToPlain<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
+export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions): Record<string, any>|Record<string, any>[] {
     return classTransformer.classToPlain(object, options);
 }
 
@@ -22,9 +22,9 @@ export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions):
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
  */
-export function classToPlainFromExist<T>(object: T, plainObject: Object, options?: ClassTransformOptions): Object;
-export function classToPlainFromExist<T>(object: T, plainObjects: Object[], options?: ClassTransformOptions): Object[];
-export function classToPlainFromExist<T>(object: T, plainObject: Object|Object[], options?: ClassTransformOptions): Object|Object[] {
+export function classToPlainFromExist<T>(object: T, plainObject: Record<string, any>, options?: ClassTransformOptions): Record<string, any>;
+export function classToPlainFromExist<T>(object: T, plainObjects: Record<string, any>[], options?: ClassTransformOptions): Record<string, any>[];
+export function classToPlainFromExist<T>(object: T, plainObject: Record<string, any>|Record<string, any>[], options?: ClassTransformOptions): Record<string, any>|Record<string, any>[] {
     return classTransformer.classToPlainFromExist(object, plainObject, options);
 }
 

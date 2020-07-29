@@ -14,6 +14,41 @@ This tool is super useful on both frontend and backend.
 Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is available [here](https://github.com/pleerock/class-transformer-demo).
 
+- [What is class-transformer](#what-is-class-transformer)
+- [Installation](#installation)
+  - [Node.js](#nodejs)
+  - [Browser](#browser)
+- [Methods](#methods)
+  - [plainToClass](#plaintoclass)
+  - [plainToClassFromExist](#plaintoclassfromexist)
+  - [classToPlain](#classtoplain)
+  - [classToClass](#classtoclass)
+  - [serialize](#serialize)
+  - [deserialize and deserializeArray](#deserialize-and-deserializearray)
+- [Enforcing type-safe instance](#enforcing-type-safe-instance)
+- [Working with nested objects](#working-with-nested-objects)
+  - [Providing more than one type option](#providing-more-than-one-type-option)
+- [Exposing getters and method return values](#exposing-getters-and-method-return-values)
+- [Exposing properties with different names](#exposing-properties-with-different-names)
+- [Skipping specific properties](#skipping-specific-properties)
+- [Skipping depend of operation](#skipping-depend-of-operation)
+- [Skipping all properties of the class](#skipping-all-properties-of-the-class)
+- [Skipping private properties, or some prefixed properties](#skipping-private-properties-or-some-prefixed-properties)
+- [Using groups to control excluded properties](#using-groups-to-control-excluded-properties)
+- [Using versioning to control exposed and excluded properties](#using-versioning-to-control-exposed-and-excluded-properties)
+- [Сonverting date strings into Date objects](#сonverting-date-strings-into-date-objects)
+- [Working with arrays](#working-with-arrays)
+- [Additional data transformation](#additional-data-transformation)
+  - [Basic usage](#basic-usage)
+  - [Advanced usage](#advanced-usage)
+- [Other decorators](#other-decorators)
+- [Working with generics](#working-with-generics)
+- [Implicit type conversion](#implicit-type-conversion)
+- [How does it handle circular references?](#how-does-it-handle-circular-references)
+- [Example with Angular2](#example-with-angular2)
+- [Samples](#samples)
+- [Release notes](#release-notes)
+
 ## What is class-transformer
 
 In JavaScript there are two types of objects:
@@ -176,7 +211,7 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 
 ## Methods
 
-#### plainToClass
+### plainToClass
 
 This method transforms a plain javascript object to instance of specific class.
 
@@ -186,7 +221,7 @@ import {plainToClass} from "class-transformer";
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
-#### plainToClassFromExist
+### plainToClassFromExist
 
 This method transforms a plain object into a instance using a already filled Object which is a instance from the target class.
 
@@ -197,7 +232,7 @@ defaultUser.role = 'user';
 let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
 ```
 
-#### classToPlain
+### classToPlain
 
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
 
@@ -206,7 +241,7 @@ import {classToPlain} from "class-transformer";
 let photo = classToPlain(photo);
 ```
 
-#### classToClass
+### classToClass
 
 This method transforms your class object into new instance of the class object.
 This maybe treated as deep clone of your objects.
@@ -218,7 +253,7 @@ let photo = classToClass(photo);
 
 You can also use a `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
 
-#### serialize
+### serialize
 
 You can serialize your model right to the json using `serialize` method:
 
@@ -229,7 +264,7 @@ let photo = serialize(photo);
 
 `serialize` works with both arrays and non-arrays.
 
-#### deserialize and deserializeArray
+### deserialize and deserializeArray
 
 You can deserialize your model to from a json using `deserialize` method:
 
@@ -545,7 +580,7 @@ You can pass any number of prefixes and all properties that begin with these pre
 For example:
 
 ```typescript
-import {Expose} from "class-transformer";
+import {Expose, classToPlain} from "class-transformer";
 
 export class User {
 
@@ -561,7 +596,7 @@ export class User {
 
     @Expose()
     get name() {
-        return this.firstName + " " + this.lastName;
+        return this._firstName + " " + this._lastName;
     }
 
 }
@@ -569,7 +604,7 @@ export class User {
 const user = new User();
 user.id = 1;
 user.setName("Johny", "Cage");
-user._password = 123;
+user._password = "123";
 
 const plainUser = classToPlain(user, { excludePrefixes: ["_"] });
 // here plainUser will be equal to
@@ -581,9 +616,8 @@ const plainUser = classToPlain(user, { excludePrefixes: ["_"] });
 You can use groups to control what data will be exposed and what will not be:
 
 ```typescript
-import {Exclude, Expose} from "class-transformer";
+import {Exclude, Expose, classToPlain} from "class-transformer";
 
-@Exclude()
 export class User {
 
     id: number;
@@ -596,10 +630,7 @@ export class User {
     @Expose({ groups: ["user"] }) // this means that this data will be exposed only to users
     password: string;
 }
-```
 
-```typescript
-import {classToPlain} from "class-transformer";
 let user1 = classToPlain(user, { groups: ["user"] }); // will contain id, name, email and password
 let user2 = classToPlain(user, { groups: ["admin"] }); // will contain id, name and email
 ```
@@ -610,9 +641,8 @@ If you are building an API that has different versions, class-transformer has ex
 You can control which properties of your model should be exposed or excluded in what version. Example:
 
 ```typescript
-import {Exclude, Expose} from "class-transformer";
+import {Exclude, Expose, classToPlain} from "class-transformer";
 
-@Exclude()
 export class User {
 
     id: number;
@@ -625,15 +655,12 @@ export class User {
     @Expose({ since: 2.1 }) // this means that this property will be exposed for version starting from 2.1
     password: string;
 }
-```
 
-```typescript
-import {classToPlain} from "class-transformer";
 let user1 = classToPlain(user, { version: 0.5 }); // will contain id and name
 let user2 = classToPlain(user, { version: 0.7 }); // will contain id, name and email
 let user3 = classToPlain(user, { version: 1 }); // will contain id and name
 let user4 = classToPlain(user, { version: 2 }); // will contain id and name
-let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name nad password
+let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and password
 ```
 
 ## Сonverting date strings into Date objects
@@ -886,4 +913,4 @@ usages.
 
 ## Release notes
 
-See information about breaking changes and release notes [here](https://github.com/pleerock/class-transformer/tree/master/doc/release-notes.md).
+See information about breaking changes and release notes [here](https://github.com/typestack/class-transformer/blob/master/CHANGELOG.md).
