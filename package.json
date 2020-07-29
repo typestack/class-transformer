@@ -45,6 +45,7 @@
     "eslint-plugin-jest": "23.8.2",
     "jest": "25.2.7",
     "json": "9.0.6",
+    "prettier": "^2.0.5",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "ts-jest": "25.3.0",
