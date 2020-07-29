@@ -21,8 +21,9 @@ _This changelog follows the [keep a changelog][keep-a-changelog]_ format to main
 
 - circular dependency fixed
 - dev dependencies removed from package.json before publishing (no more security warnings)
-- transformer oder is deterministic now (#231)
+- transformer order is deterministic now (#231)
 - fix prototype pollution issue (#367)
+- various fixes in documentation
 
 ### [0.2.3][v0.2.3] [BREAKING CHANGE]
 
