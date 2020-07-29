@@ -1,19 +1,17 @@
-import {Type, Exclude} from "../../src/decorators";
-import {Album} from "./Album";
-import {Authorable} from "./Authorable";
+import { Type, Exclude } from '../../src/decorators';
+import { Album } from './Album';
+import { Authorable } from './Authorable';
 
 export class Photo extends Authorable {
+  id: string;
 
-    id: string;
+  filename: string;
 
-    filename: string;
+  description: string;
 
-    description: string;
+  @Exclude() // this will ignore skipping inherited from Authorable class
+  authorEmail: string;
 
-    @Exclude() // this will ignore skipping inherited from Authorable class
-    authorEmail: string;
-
-    @Type(() => Album)
-    albums: Album[];
-
+  @Type(() => Album)
+  albums: Album[];
 }

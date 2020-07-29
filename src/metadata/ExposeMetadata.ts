@@ -1,10 +1,5 @@
-import {ExposeOptions} from "./ExposeExcludeOptions";
+import { ExposeOptions } from './ExposeExcludeOptions';
 
 export class ExposeMetadata {
-
-    constructor(public target: Function,
-                public propertyName: string,
-                public options: ExposeOptions) {
-    }
-
+  constructor(public target: Function, public propertyName: string, public options: ExposeOptions) {}
 }

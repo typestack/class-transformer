@@ -1,14 +1,12 @@
-import {Type, Exclude} from "../../src/decorators";
-import {User} from "./User";
+import { Type, Exclude } from '../../src/decorators';
+import { User } from './User';
 
 export class Authorable {
-    
-    authorName: string;
+  authorName: string;
 
-    @Exclude()
-    authorEmail: string;
-    
-    @Type(() => User)
-    author: User;
+  @Exclude()
+  authorEmail: string;
 
+  @Type(() => User)
+  author: User;
 }

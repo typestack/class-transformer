@@ -1,164 +1,164 @@
-import "reflect-metadata";
-import {classToPlain, plainToClass} from "../../src/index";
-import {defaultMetadataStorage} from "../../src/storage";
-import {Exclude, Expose} from "../../src/decorators";
+import 'reflect-metadata';
+import { classToPlain, plainToClass } from '../../src/index';
+import { defaultMetadataStorage } from '../../src/storage';
+import { Exclude, Expose } from '../../src/decorators';
 
-describe("filtering by transformation option", () => {
-    it("@Exclude with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
-        defaultMetadataStorage.clear();
+describe('filtering by transformation option', () => {
+  it('@Exclude with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations', () => {
+    defaultMetadataStorage.clear();
 
-        class User {
-            id: number;
-            firstName: string;
-            lastName: string;
+    class User {
+      id: number;
+      firstName: string;
+      lastName: string;
 
-            @Exclude({ toPlainOnly: true })
-            password: string;
-        }
+      @Exclude({ toPlainOnly: true })
+      password: string;
+    }
 
-        const user = new User();
-        user.firstName = "Umed";
-        user.lastName = "Khudoiberdiev";
-        user.password = "imnosuperman";
+    const user = new User();
+    user.firstName = 'Umed';
+    user.lastName = 'Khudoiberdiev';
+    user.password = 'imnosuperman';
 
-        const plainUser = {
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        };
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    };
 
-        const plainedUser = classToPlain(user);
-        expect(plainedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev"
-        });
-
-        const classedUser = plainToClass(User, plainUser);
-        expect(classedUser).toBeInstanceOf(User);
-        expect(classedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        });
+    const plainedUser = classToPlain(user);
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
     });
 
-    it("@Exclude with toClassOnly set to true then it should be excluded only during plainToClass and plainToClassFromExist operations", () => {
-        defaultMetadataStorage.clear();
+    const classedUser = plainToClass(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    });
+  });
 
-        class User {
-            id: number;
-            firstName: string;
-            lastName: string;
+  it('@Exclude with toClassOnly set to true then it should be excluded only during plainToClass and plainToClassFromExist operations', () => {
+    defaultMetadataStorage.clear();
 
-            @Exclude({ toClassOnly: true })
-            password: string;
-        }
+    class User {
+      id: number;
+      firstName: string;
+      lastName: string;
 
-        const user = new User();
-        user.firstName = "Umed";
-        user.lastName = "Khudoiberdiev";
-        user.password = "imnosuperman";
+      @Exclude({ toClassOnly: true })
+      password: string;
+    }
 
-        const plainUser = {
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        };
+    const user = new User();
+    user.firstName = 'Umed';
+    user.lastName = 'Khudoiberdiev';
+    user.password = 'imnosuperman';
 
-        const classedUser = plainToClass(User, plainUser);
-        expect(classedUser).toBeInstanceOf(User);
-        expect(classedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev"
-        });
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    };
 
-        const plainedUser = classToPlain(user);
-        expect(plainedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        });
+    const classedUser = plainToClass(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
     });
 
-    it("@Expose with toClassOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
-        defaultMetadataStorage.clear();
+    const plainedUser = classToPlain(user);
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    });
+  });
 
-        @Exclude()
-        class User {
-            @Expose()
-            firstName: string;
+  it('@Expose with toClassOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations', () => {
+    defaultMetadataStorage.clear();
 
-            @Expose()
-            lastName: string;
+    @Exclude()
+    class User {
+      @Expose()
+      firstName: string;
 
-            @Expose({ toClassOnly: true })
-            password: string;
-        }
+      @Expose()
+      lastName: string;
 
-        const user = new User();
-        user.firstName = "Umed";
-        user.lastName = "Khudoiberdiev";
-        user.password = "imnosuperman";
+      @Expose({ toClassOnly: true })
+      password: string;
+    }
 
-        const plainUser = {
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        };
+    const user = new User();
+    user.firstName = 'Umed';
+    user.lastName = 'Khudoiberdiev';
+    user.password = 'imnosuperman';
 
-        const plainedUser = classToPlain(user);
-        expect(plainedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev"
-        });
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    };
 
-        const classedUser = plainToClass(User, plainUser);
-        expect(classedUser).toBeInstanceOf(User);
-        expect(classedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        });
+    const plainedUser = classToPlain(user);
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
     });
 
-    it("@Expose with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations", () => {
-        defaultMetadataStorage.clear();
-
-        @Exclude()
-        class User {
-            @Expose()
-            firstName: string;
-
-            @Expose()
-            lastName: string;
-
-            @Expose({ toPlainOnly: true })
-            password: string;
-        }
-
-        const user = new User();
-        user.firstName = "Umed";
-        user.lastName = "Khudoiberdiev";
-        user.password = "imnosuperman";
-
-        const plainUser = {
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        };
-
-        const plainedUser = classToPlain(user);
-        expect(plainedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev",
-            password: "imnosuperman"
-        });
-
-        const classedUser = plainToClass(User, plainUser);
-        expect(classedUser).toBeInstanceOf(User);
-        expect(classedUser).toEqual({
-            firstName: "Umed",
-            lastName: "Khudoiberdiev"
-        });
+    const classedUser = plainToClass(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
     });
+  });
+
+  it('@Expose with toPlainOnly set to true then it should be excluded only during classToPlain and classToPlainFromExist operations', () => {
+    defaultMetadataStorage.clear();
+
+    @Exclude()
+    class User {
+      @Expose()
+      firstName: string;
+
+      @Expose()
+      lastName: string;
+
+      @Expose({ toPlainOnly: true })
+      password: string;
+    }
+
+    const user = new User();
+    user.firstName = 'Umed';
+    user.lastName = 'Khudoiberdiev';
+    user.password = 'imnosuperman';
+
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    };
+
+    const plainedUser = classToPlain(user);
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    });
+
+    const classedUser = plainToClass(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+    });
+  });
 });

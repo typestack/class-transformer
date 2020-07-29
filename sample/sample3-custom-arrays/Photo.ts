@@ -1,18 +1,16 @@
-import {Album} from "./Album";
-import {AlbumArray} from "./AlbumArray";
-import {Type} from "../../src/decorators";
+import { Album } from './Album';
+import { AlbumArray } from './AlbumArray';
+import { Type } from '../../src/decorators';
 
 export class Photo {
+  id: string;
 
-    id: string;
+  filename: string;
 
-    filename: string;
+  description: string;
 
-    description: string;
+  tags: string[];
 
-    tags: string[];
-
-    @Type(() => Album)
-    albums: AlbumArray;
-
+  @Type(() => Album)
+  albums: AlbumArray;
 }
