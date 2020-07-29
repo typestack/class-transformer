@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { classToClass, classToPlain, plainToClass } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Expose, Transform, Type } from '../../src/decorators';
-import { TransformationType } from '../../src/TransformOperationExecutor';
+import { TransformationType } from '../../src/TransformationType';
 import dayjs from 'dayjs';
 
 describe('custom transformation decorator', () => {
