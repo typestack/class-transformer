@@ -8,7 +8,7 @@ import {
   plainToClassFromExist,
 } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose, Type } from '../../src/decorators';
+import { Exclude, Expose, Type, Transform } from '../../src/decorators';
 
 describe('basic functionality', () => {
   it('should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour', () => {
@@ -1818,5 +1818,48 @@ describe('basic functionality', () => {
     expect(transformedClass.usersDefined[0].name).toEqual('a-name');
 
     expect(transformedClass.usersUndefined).toBeUndefined();
+  });
+
+  it('should set default value if nothing provided', () => {
+    defaultMetadataStorage.clear();
+
+    class User {
+      @Expose({ name: 'AGE' })
+      @Transform(value => parseInt(value, 10))
+      age: number;
+
+      @Expose({ name: 'AGE_WITH_DEFAULT' })
+      @Transform(value => parseInt(value, 10))
+      ageWithDefault: number = 18;
+
+      @Expose({ name: 'FIRST_NAME' })
+      firstName: string;
+
+      @Expose({ name: 'FIRST_NAME_WITH_DEFAULT' })
+      firstNameWithDefault: string = 'default first name';
+
+      @Transform(value => !!value)
+      admin: boolean;
+
+      @Transform(value => !!value)
+      adminWithDefault: boolean = false;
+
+      lastName: string;
+
+      lastNameWithDefault: string = 'default last name';
+    }
+
+    const fromPlainUser = {};
+    const transformedUser = plainToClass(User, fromPlainUser);
+
+    expect(transformedUser).toBeInstanceOf(User);
+    expect(transformedUser).toEqual({
+      age: undefined,
+      ageWithDefault: 18,
+      firstName: undefined,
+      firstNameWithDefault: 'default first name',
+      adminWithDefault: false,
+      lastNameWithDefault: 'default last name',
+    });
   });
 });
