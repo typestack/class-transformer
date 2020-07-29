@@ -1,5 +1,6 @@
 import { ClassTransformOptions } from './ClassTransformOptions';
-import { TransformOperationExecutor, TransformationType } from './TransformOperationExecutor';
+import { TransformOperationExecutor } from './TransformOperationExecutor';
+import { TransformationType } from './enums';
 
 export type ClassType<T> = {
   new (...args: any[]): T;

@@ -1,5 +1,5 @@
 import { TransformOptions } from './ExposeExcludeOptions';
-import { TransformationType } from '../TransformOperationExecutor';
+import { TransformationType } from '../enums';
 
 export class TransformMetadata {
   constructor(

@@ -1,8 +1,8 @@
 import { TypeMetadata } from './TypeMetadata';
 import { ExposeMetadata } from './ExposeMetadata';
 import { ExcludeMetadata } from './ExcludeMetadata';
-import { TransformationType } from '../TransformOperationExecutor';
 import { TransformMetadata } from './TransformMetadata';
+import { TransformationType } from '../enums';
 
 /**
  * Storage all library metadata.
