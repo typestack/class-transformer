@@ -1,0 +1,35 @@
+name: CI
+on: push
+jobs:
+  checks:
+    name: Linters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: npm ci --ignore-scripts
+      - run: npm run prettier:check
+      - run: npm run lint:check
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setting up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+      - run: npm ci --ignore-scripts
+      - run: npm run test:ci
+      - run: npm install codecov -g
+      - run: codecov -f ./coverage/clover.xml -t ${{ secrets.CODECOV_TOKEN }}
+  build:
+    name: Build
+    needs: [tests, checks]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: npm ci --ignore-scripts
+      - run: npm run build
