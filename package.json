@@ -63,6 +63,7 @@
     "@typescript-eslint/parser": "^3.7.1",
     "dayjs": "1.8.23",
     "eslint": "^7.5.0",
+    "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jest": "^23.19.0",
     "husky": "^4.2.5",
     "jest": "^26.1.0",
