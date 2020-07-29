@@ -1,20 +1,29 @@
 {
   "name": "class-transformer",
-  "version": "0.2.3",
+  "version": "0.3.1",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "private": true,
   "author": {
     "name": "Umed Khudoiberdiev",
     "email": "pleerock.me@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Jonathas Morais",
+      "url": "https://github.com/jotamorais"
+    },
+    {
+      "name": "Rob Muchal",
+      "url": "https://github.com/rmuchall"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pleerock/class-transformer.git"
+    "url": "https://github.com/typestack/class-transformer.git"
   },
   "bugs": {
-    "url": "https://github.com/pleerock/class-transformer/issues"
+    "url": "https://github.com/typestack/class-transformer/issues"
   },
   "tags": [
     "serialization",
@@ -24,32 +33,46 @@
     "object-to-class",
     "typescript-serializer"
   ],
-  "dependencies": {},
+  "scripts": {
+    "build": "rimraf build && tsc --project tsconfig.prod.json",
+    "prettier:fix": "prettier --write \"**/*.{ts,md}\"",
+    "prettier:check": "prettier --check \"**/*.{ts,md}\"",
+    "lint:fix": "eslint --max-warnings 0 --fix --ext .ts src/",
+    "lint:check": "eslint --max-warnings 0 --ext .ts src/",
+    "test": "jest --coverage --verbose",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand --coverage --verbose"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.md": [
+      "npm run prettier:fix"
+    ],
+    "*.ts": [
+      "npm run prettier:fix"
+    ]
+  },
   "devDependencies": {
-    "@types/jest": "25.1.5",
-    "@types/node": "13.11.0",
-    "@typescript-eslint/eslint-plugin": "2.26.0",
-    "@typescript-eslint/parser": "2.26.0",
-    "copyfiles": "2.2.0",
+    "@types/jest": "^26.0.7",
+    "@types/node": "^14.0.27",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
     "dayjs": "1.8.23",
-    "eslint": "6.8.0",
-    "eslint-plugin-jest": "23.8.2",
-    "jest": "25.2.7",
-    "json": "9.0.6",
+    "eslint": "^7.5.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.19.0",
+    "husky": "^4.2.5",
+    "jest": "^26.1.0",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
-    "ts-jest": "25.3.0",
-    "ts-node": "8.8.1",
-    "typescript": "3.8.3"
-  },
-  "scripts": {
-    "build": "rimraf build && echo Using TypeScript && tsc --version && tsc --pretty",
-    "clean": "rimraf build coverage",
-    "copy": "copyfiles -u 3 \"build/compiled/src/**/*\" build/package && copyfiles package.json README.md build/package",
-    "lint": "eslint --config ./.eslintrc.js --ext .ts ./src ./test",
-    "package": "npm run build && npm run copy && npm run public && rimraf build/compiled",
-    "pretest": "npm run lint",
-    "public": "json -I -f build/package/package.json -e 'this.private=false'",
-    "test": "jest --coverage"
+    "ts-jest": "^26.1.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   }
 }

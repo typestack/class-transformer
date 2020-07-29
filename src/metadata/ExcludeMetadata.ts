@@ -1,10 +1,5 @@
-import {ExcludeOptions} from "./ExposeExcludeOptions";
+import { ExcludeOptions } from './ExposeExcludeOptions';
 
 export class ExcludeMetadata {
-
-    constructor(public target: Function,
-                public propertyName: string,
-                public options: ExcludeOptions) {
-    }
-
+  constructor(public target: Function, public propertyName: string, public options: ExcludeOptions) {}
 }

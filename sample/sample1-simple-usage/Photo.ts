@@ -1,30 +1,28 @@
-import {Type} from "../../src/decorators";
-import {Album} from "./Album";
-import {User} from "./User";
+import { Type } from '../../src/decorators';
+import { Album } from './Album';
+import { User } from './User';
 
 export class Photo {
+  id: string;
 
-    id: string;
+  filename: string;
 
-    filename: string;
+  description: string;
 
-    description: string;
+  tags: string[];
 
-    tags: string[];
+  @Type(() => User)
+  author: User;
 
-    @Type(() => User)
-    author: User;
+  @Type(() => Album)
+  albums: Album[];
 
-    @Type(() => Album)
-    albums: Album[];
-    
-    get name() {
-        return this.id + "_" + this.filename;
-    }
+  get name() {
+    return this.id + '_' + this.filename;
+  }
 
-    getAlbums() {
-        console.log("this is not serialized/deserialized");
-        return this.albums;
-    }
-
+  getAlbums() {
+    console.log('this is not serialized/deserialized');
+    return this.albums;
+  }
 }

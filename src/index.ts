@@ -1,10 +1,10 @@
-import {ClassTransformer, ClassType} from "./ClassTransformer";
-import {ClassTransformOptions} from "./ClassTransformOptions";
+import { ClassTransformer, ClassType } from './ClassTransformer';
+import { ClassTransformOptions } from './ClassTransformOptions';
 
-export {ClassTransformer} from "./ClassTransformer";
-export {ClassTransformOptions} from "./ClassTransformOptions";
-export * from "./metadata/ExposeExcludeOptions";
-export * from "./decorators";
+export { ClassTransformer } from './ClassTransformer';
+export { ClassTransformOptions } from './ClassTransformOptions';
+export * from './metadata/ExposeExcludeOptions';
+export * from './decorators';
 
 const classTransformer = new ClassTransformer();
 
@@ -13,8 +13,11 @@ const classTransformer = new ClassTransformer();
  */
 export function classToPlain<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
 export function classToPlain<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
-export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions): Record<string, any>|Record<string, any>[] {
-    return classTransformer.classToPlain(object, options);
+export function classToPlain<T>(
+  object: T | T[],
+  options?: ClassTransformOptions
+): Record<string, any> | Record<string, any>[] {
+  return classTransformer.classToPlain(object, options);
 }
 
 /**
@@ -22,10 +25,22 @@ export function classToPlain<T>(object: T|T[], options?: ClassTransformOptions):
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
  */
-export function classToPlainFromExist<T>(object: T, plainObject: Record<string, any>, options?: ClassTransformOptions): Record<string, any>;
-export function classToPlainFromExist<T>(object: T, plainObjects: Record<string, any>[], options?: ClassTransformOptions): Record<string, any>[];
-export function classToPlainFromExist<T>(object: T, plainObject: Record<string, any>|Record<string, any>[], options?: ClassTransformOptions): Record<string, any>|Record<string, any>[] {
-    return classTransformer.classToPlainFromExist(object, plainObject, options);
+export function classToPlainFromExist<T>(
+  object: T,
+  plainObject: Record<string, any>,
+  options?: ClassTransformOptions
+): Record<string, any>;
+export function classToPlainFromExist<T>(
+  object: T,
+  plainObjects: Record<string, any>[],
+  options?: ClassTransformOptions
+): Record<string, any>[];
+export function classToPlainFromExist<T>(
+  object: T,
+  plainObject: Record<string, any> | Record<string, any>[],
+  options?: ClassTransformOptions
+): Record<string, any> | Record<string, any>[] {
+  return classTransformer.classToPlainFromExist(object, plainObject, options);
 }
 
 /**
@@ -33,8 +48,8 @@ export function classToPlainFromExist<T>(object: T, plainObject: Record<string, 
  */
 export function plainToClass<T, V>(cls: ClassType<T>, plain: V[], options?: ClassTransformOptions): T[];
 export function plainToClass<T, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
-export function plainToClass<T, V>(cls: ClassType<T>, plain: V|V[], options?: ClassTransformOptions): T|T[] {
-    return classTransformer.plainToClass(cls, plain as any, options);
+export function plainToClass<T, V>(cls: ClassType<T>, plain: V | V[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.plainToClass(cls, plain as any, options);
 }
 
 /**
@@ -44,8 +59,8 @@ export function plainToClass<T, V>(cls: ClassType<T>, plain: V|V[], options?: Cl
  */
 export function plainToClassFromExist<T, V>(clsObject: T[], plain: V[], options?: ClassTransformOptions): T[];
 export function plainToClassFromExist<T, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
-export function plainToClassFromExist<T, V>(clsObject: T, plain: V|V[], options?: ClassTransformOptions): T|T[] {
-    return classTransformer.plainToClassFromExist(clsObject, plain, options);
+export function plainToClassFromExist<T, V>(clsObject: T, plain: V | V[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.plainToClassFromExist(clsObject, plain, options);
 }
 
 /**
@@ -53,8 +68,8 @@ export function plainToClassFromExist<T, V>(clsObject: T, plain: V|V[], options?
  */
 export function classToClass<T>(object: T, options?: ClassTransformOptions): T;
 export function classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
-export function classToClass<T>(object: T|T[], options?: ClassTransformOptions): T|T[] {
-    return classTransformer.classToClass(object, options);
+export function classToClass<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.classToClass(object, options);
 }
 
 /**
@@ -64,8 +79,8 @@ export function classToClass<T>(object: T|T[], options?: ClassTransformOptions):
  */
 export function classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
 export function classToClassFromExist<T>(object: T, fromObjects: T[], options?: ClassTransformOptions): T[];
-export function classToClassFromExist<T>(object: T, fromObject: T|T[], options?: ClassTransformOptions): T|T[] {
-    return classTransformer.classToClassFromExist(object, fromObject, options);
+export function classToClassFromExist<T>(object: T, fromObject: T | T[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.classToClassFromExist(object, fromObject, options);
 }
 
 /**
@@ -73,22 +88,22 @@ export function classToClassFromExist<T>(object: T, fromObject: T|T[], options?:
  */
 export function serialize<T>(object: T, options?: ClassTransformOptions): string;
 export function serialize<T>(object: T[], options?: ClassTransformOptions): string;
-export function serialize<T>(object: T|T[], options?: ClassTransformOptions): string {
-    return classTransformer.serialize(object, options);
+export function serialize<T>(object: T | T[], options?: ClassTransformOptions): string {
+  return classTransformer.serialize(object, options);
 }
 
 /**
  * Deserializes given JSON string to a object of the given class.
  */
 export function deserialize<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T {
-    return classTransformer.deserialize(cls, json, options);
+  return classTransformer.deserialize(cls, json, options);
 }
 
 /**
  * Deserializes given JSON string to an array of objects of the given class.
  */
 export function deserializeArray<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T[] {
-    return classTransformer.deserializeArray(cls, json, options);
+  return classTransformer.deserializeArray(cls, json, options);
 }
 
 /**
@@ -96,7 +111,7 @@ export function deserializeArray<T>(cls: ClassType<T>, json: string, options?: C
  */
 
 export enum TransformationType {
-    PLAIN_TO_CLASS,
-    CLASS_TO_PLAIN,
-    CLASS_TO_CLASS
+  PLAIN_TO_CLASS,
+  CLASS_TO_PLAIN,
+  CLASS_TO_CLASS,
 }

@@ -1,14 +1,12 @@
-import {Type, Exclude} from "../../src/decorators";
-import {Photo} from "./Photo";
+import { Type, Exclude } from '../../src/decorators';
+import { Photo } from './Photo';
 
 export class Album {
+  id: string;
 
-    id: string;
+  @Exclude()
+  name: string;
 
-    @Exclude()
-    name: string;
-
-    @Type(() => Photo)
-    photos: Photo[];
-
+  @Type(() => Photo)
+  photos: Photo[];
 }

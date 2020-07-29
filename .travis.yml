@@ -1,7 +1,0 @@
-language: node_js
-node_js:
-  - stable
-  - 8
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
