@@ -1455,9 +1455,9 @@ describe("basic functionality", () => {
 
     const data = plainToClass(User, { classValue: ClassValue });
     expect(data).toBeInstanceOf(User);
-    data.classValue.should.be.eq(ClassValue);
+    expect(data.classValue).toEqual(ClassValue);
     const instance = new data.classValue();
-    instance.should.be.instanceOf(ClassValue);
+    expect(instance).toBeInstanceOf(ClassValue);
   });
 
   it("should set function as value in plainToClass", () => {
@@ -1471,7 +1471,7 @@ describe("basic functionality", () => {
     const data = plainToClass(User, { testFunction });
     expect(data).toBeInstanceOf(User);
     expect(data.testFunction).toEqual(testFunction);
-    data.testFunction().should.be.eq(10);
+    expect(data.testFunction()).toEqual(10);
   });
 
   it("should expose method and accessors that have @Expose()", () => {
