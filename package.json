@@ -52,13 +52,13 @@
     "typescript": "3.8.3"
   },
   "scripts": {
-    "build": "rimraf build && echo Using TypeScript && tsc --version && tsc --pretty",
-    "clean": "rimraf build coverage",
-    "copy": "copyfiles -u 3 \"build/compiled/src/**/*\" build/package && copyfiles package.json README.md build/package",
-    "lint": "eslint --config ./.eslintrc.js --ext .ts ./src ./test",
-    "package": "npm run build && npm run copy && npm run public && rimraf build/compiled",
-    "pretest": "npm run lint",
-    "public": "json -I -f build/package/package.json -e 'this.private=false'",
-    "test": "jest --coverage"
+    "build": "rimraf build && tsc --project tsconfig.prod.json",
+    "prettier:fix": "prettier --write \"**/*.{ts,md}\"",
+    "prettier:check": "prettier --check \"**/*.{ts,md}\"",
+    "lint:fix": "eslint --max-warnings 0 --fix --ext .ts src/",
+    "lint:check": "eslint --max-warnings 0 --ext .ts src/",
+    "test": "jest --coverage --verbose",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand --coverage --verbose"
   }
 }
