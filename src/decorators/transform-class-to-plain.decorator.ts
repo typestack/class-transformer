@@ -3,6 +3,8 @@ import { ClassTransformOptions } from '../interfaces';
 
 /**
  * Transform the object from class to plain object and return only with the exposed properties.
+ *
+ * Can be applied to functions and getters/setters only.
  */
 export function TransformClassToPlain(params?: ClassTransformOptions): MethodDecorator {
   return function (target: Record<string, any>, propertyKey: string | Symbol, descriptor: PropertyDescriptor): void {

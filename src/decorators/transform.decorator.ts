@@ -4,6 +4,8 @@ import { TransformationType } from '../enums';
 
 /**
  * Defines a custom logic for value transformation.
+ *
+ * Can be applied to properties only.
  */
 export function Transform(
   transformFn: (value: any, obj: any, transformationType: TransformationType) => any,

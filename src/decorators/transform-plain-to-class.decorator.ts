@@ -3,6 +3,8 @@ import { ClassTransformOptions, ClassConstructor } from '../interfaces';
 
 /**
  * Return the class instance only with the exposed properties.
+ *
+ * Can be applied to functions and getters/setters only.
  */
 export function TransformPlainToClass(
   classType: ClassConstructor<any>,

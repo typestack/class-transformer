@@ -3,6 +3,8 @@ import { ClassTransformOptions } from '../interfaces';
 
 /**
  * Return the class instance only with the exposed properties.
+ *
+ * Can be applied to functions and getters/setters only.
  */
 export function TransformClassToClass(params?: ClassTransformOptions): MethodDecorator {
   return function (target: Record<string, any>, propertyKey: string | Symbol, descriptor: PropertyDescriptor): void {
