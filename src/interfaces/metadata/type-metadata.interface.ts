@@ -7,7 +7,7 @@ export interface TypeMetadata {
   target: Function;
 
   /**
-   * The property name this metadata belongs to on the target (class).
+   * The property name this metadata belongs to on the target (property only).
    */
   propertyName: string;
 
