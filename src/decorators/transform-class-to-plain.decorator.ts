@@ -4,8 +4,8 @@ import { ClassTransformOptions } from '../interfaces';
 /**
  * Transform the object from class to plain object and return only with the exposed properties.
  */
-export function TransformClassToPlain(params?: ClassTransformOptions): Function {
-  return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor): void {
+export function TransformClassToPlain(params?: ClassTransformOptions): MethodDecorator {
+  return function (target: Record<string, any>, propertyKey: string | Symbol, descriptor: PropertyDescriptor): void {
     const classTransformer: ClassTransformer = new ClassTransformer();
     const originalMethod = descriptor.value;
 

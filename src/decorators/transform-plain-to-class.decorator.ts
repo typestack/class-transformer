@@ -4,11 +4,11 @@ import { ClassTransformOptions, ClassConstructor } from '../interfaces';
 /**
  * Return the class instance only with the exposed properties.
  */
-export function TransformPlainToClass<T = unknown>(
-  classType: ClassConstructor<T>,
+export function TransformPlainToClass(
+  classType: ClassConstructor<any>,
   params?: ClassTransformOptions
-): Function {
-  return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor): void {
+): MethodDecorator {
+  return function (target: Record<string, any>, propertyKey: string | Symbol, descriptor: PropertyDescriptor): void {
     const classTransformer: ClassTransformer = new ClassTransformer();
     const originalMethod = descriptor.value;
 

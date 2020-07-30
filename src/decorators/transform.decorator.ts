@@ -8,11 +8,11 @@ import { TransformationType } from '../enums';
 export function Transform(
   transformFn: (value: any, obj: any, transformationType: TransformationType) => any,
   options: TransformOptions = {}
-) {
-  return function (target: any, propertyName: string): void {
+): PropertyDecorator {
+  return function (target: any, propertyName: string | Symbol): void {
     defaultMetadataStorage.addTransformMetadata({
       target: target.constructor,
-      propertyName,
+      propertyName: propertyName as string,
       transformFn,
       options,
     });
