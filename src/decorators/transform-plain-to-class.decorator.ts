@@ -1,10 +1,14 @@
 import { ClassTransformer } from '../ClassTransformer';
 import { ClassTransformOptions } from '../ClassTransformOptions';
+import { ClassConstructor } from '../interfaces';
 
 /**
  * Return the class instance only with the exposed properties.
  */
-export function TransformPlainToClass(classType: any, params?: ClassTransformOptions): Function {
+export function TransformPlainToClass<T = unknown>(
+  classType: ClassConstructor<T>,
+  params?: ClassTransformOptions
+): Function {
   return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor): void {
     const classTransformer: ClassTransformer = new ClassTransformer();
     const originalMethod = descriptor.value;
