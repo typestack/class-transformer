@@ -26,7 +26,6 @@ jobs:
       - run: codecov -f ./coverage/clover.xml -t ${{ secrets.CODECOV_TOKEN }}
   build:
     name: Build
-    needs: [tests, checks]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
