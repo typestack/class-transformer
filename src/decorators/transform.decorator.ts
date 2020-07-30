@@ -13,6 +13,7 @@ export function Transform(
   return function (target: any, propertyName: string | Symbol): void {
     defaultMetadataStorage.addTransformMetadata({
       target: target.constructor,
+      type: 'transform',
       propertyName: propertyName as string,
       transformFn,
       options,

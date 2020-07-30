@@ -1,10 +1,12 @@
-import { ExposeOptions } from '..';
+import { ExposeOptions, ClassConstructor } from '..';
 
 /**
  * This object represents metadata assigned to a property via the @Expose decorator.
  */
-export interface ExposeMetadata {
-  target: Function;
+export interface ExposeMetadata<T = unknown> {
+  target: ClassConstructor<T>;
+
+  type: 'expose';
 
   /**
    * The property name this metadata belongs to on the target (class or property).

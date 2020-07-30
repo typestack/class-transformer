@@ -1,10 +1,12 @@
-import { TypeHelpOptions, TypeOptions } from '..';
+import { TypeHelpOptions, TypeOptions, ClassConstructor } from '..';
 
 /**
  * This object represents metadata assigned to a property via the @Type decorator.
  */
-export interface TypeMetadata {
-  target: Function;
+export interface TypeMetadata<T = unknown> {
+  target: ClassConstructor<T>;
+
+  type: 'type';
 
   /**
    * The property name this metadata belongs to on the target (property only).

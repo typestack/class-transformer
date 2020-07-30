@@ -1,10 +1,12 @@
-import { ExcludeOptions } from '..';
+import { ExcludeOptions, ClassConstructor } from '..';
 
 /**
  * This object represents metadata assigned to a property via the @Exclude decorator.
  */
-export interface ExcludeMetadata {
-  target: Function;
+export interface ExcludeMetadata<T = unknown> {
+  target: ClassConstructor<T>;
+
+  type: 'exclude';
 
   /**
    * The property name this metadata belongs to on the target (class or property).

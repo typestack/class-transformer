@@ -15,6 +15,7 @@ export function Type(
     const reflectedType = (Reflect as any).getMetadata('design:type', target, propertyName);
     defaultMetadataStorage.addTypeMetadata({
       target: target.constructor,
+      type: 'type',
       propertyName: propertyName as string,
       reflectedType,
       typeFunction,

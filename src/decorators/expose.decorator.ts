@@ -18,6 +18,7 @@ export function Expose(options: ExposeOptions = {}): PropertyDecorator & ClassDe
   return function (object: any, propertyName?: string | Symbol): void {
     defaultMetadataStorage.addExposeMetadata({
       target: object instanceof Function ? object : object.constructor,
+      type: 'expose',
       propertyName: propertyName as string,
       options,
     });
