@@ -1,4 +1,4 @@
-import { TypeMetadata, ExposeMetadata, ExcludeMetadata, TransformMetadata } from './interfaces';
+import { TypeMetadata, ExposeMetadata, ExcludeMetadata, TransformMetadata, MetaDataType } from './interfaces';
 import { TransformationType } from './enums';
 
 /**
@@ -19,14 +19,36 @@ export class MetadataStorage {
   // Adder Methods
   // -------------------------------------------------------------------------
 
-  addTypeMetadata(metadata: TypeMetadata): void {
+  /**
+   * Temporally shim function mapping between new and old format
+   */
+  setMetaData(metadata: MetaDataType<any>) {
+    switch (metadata.type) {
+      case 'expose':
+        this.addExposeMetadata(metadata);
+        break;
+      case 'exclude':
+        this.addExcludeMetadata(metadata);
+        break;
+      case 'transform':
+        this.addTransformMetadata(metadata);
+        break;
+      case 'type':
+        this.addTypeMetadata(metadata);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private addTypeMetadata(metadata: TypeMetadata): void {
     if (!this._typeMetadatas.has(metadata.target)) {
       this._typeMetadatas.set(metadata.target, new Map<string, TypeMetadata>());
     }
     this._typeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
   }
 
-  addTransformMetadata(metadata: TransformMetadata): void {
+  private addTransformMetadata(metadata: TransformMetadata): void {
     if (!this._transformMetadatas.has(metadata.target)) {
       this._transformMetadatas.set(metadata.target, new Map<string, TransformMetadata[]>());
     }
@@ -36,14 +58,14 @@ export class MetadataStorage {
     this._transformMetadatas.get(metadata.target).get(metadata.propertyName).push(metadata);
   }
 
-  addExposeMetadata(metadata: ExposeMetadata): void {
+  private addExposeMetadata(metadata: ExposeMetadata): void {
     if (!this._exposeMetadatas.has(metadata.target)) {
       this._exposeMetadatas.set(metadata.target, new Map<string, ExposeMetadata>());
     }
     this._exposeMetadatas.get(metadata.target).set(metadata.propertyName, metadata);
   }
 
-  addExcludeMetadata(metadata: ExcludeMetadata): void {
+  private addExcludeMetadata(metadata: ExcludeMetadata): void {
     if (!this._excludeMetadatas.has(metadata.target)) {
       this._excludeMetadatas.set(metadata.target, new Map<string, ExcludeMetadata>());
     }

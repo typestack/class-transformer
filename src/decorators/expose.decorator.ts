@@ -16,7 +16,7 @@ export function Expose(options: ExposeOptions = {}): PropertyDecorator & ClassDe
    * decorator only receives one parameter.
    */
   return function (object: any, propertyName?: string | Symbol): void {
-    defaultMetadataStorage.addExposeMetadata({
+    defaultMetadataStorage.setMetaData({
       target: object instanceof Function ? object : object.constructor,
       type: 'expose',
       propertyName: propertyName as string,
