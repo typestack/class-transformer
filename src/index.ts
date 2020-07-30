@@ -1,10 +1,11 @@
-import { ClassTransformer, ClassType } from './ClassTransformer';
-import { ClassTransformOptions } from './ClassTransformOptions';
+import { ClassTransformer } from './ClassTransformer';
+import { ClassTransformOptions } from './interfaces';
+import { ClassConstructor } from './interfaces';
 
 export { ClassTransformer } from './ClassTransformer';
-export { ClassTransformOptions } from './ClassTransformOptions';
-export * from './metadata/ExposeExcludeOptions';
 export * from './decorators';
+export * from './interfaces';
+export * from './enums';
 
 const classTransformer = new ClassTransformer();
 
@@ -46,9 +47,9 @@ export function classToPlainFromExist<T>(
 /**
  * Converts plain (literal) object to class (constructor) object. Also works with arrays.
  */
-export function plainToClass<T, V>(cls: ClassType<T>, plain: V[], options?: ClassTransformOptions): T[];
-export function plainToClass<T, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
-export function plainToClass<T, V>(cls: ClassType<T>, plain: V | V[], options?: ClassTransformOptions): T | T[] {
+export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V[], options?: ClassTransformOptions): T[];
+export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
+export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V | V[], options?: ClassTransformOptions): T | T[] {
   return classTransformer.plainToClass(cls, plain as any, options);
 }
 
@@ -95,23 +96,13 @@ export function serialize<T>(object: T | T[], options?: ClassTransformOptions): 
 /**
  * Deserializes given JSON string to a object of the given class.
  */
-export function deserialize<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T {
+export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
   return classTransformer.deserialize(cls, json, options);
 }
 
 /**
  * Deserializes given JSON string to an array of objects of the given class.
  */
-export function deserializeArray<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T[] {
+export function deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
   return classTransformer.deserializeArray(cls, json, options);
-}
-
-/**
- * Enum representing the different transformation types.
- */
-
-export enum TransformationType {
-  PLAIN_TO_CLASS,
-  CLASS_TO_PLAIN,
-  CLASS_TO_CLASS,
 }

@@ -1,10 +1,7 @@
-import { ClassTransformOptions } from './ClassTransformOptions';
+import { ClassTransformOptions } from './interfaces';
 import { TransformOperationExecutor } from './TransformOperationExecutor';
 import { TransformationType } from './enums';
-
-export type ClassType<T> = {
-  new (...args: any[]): T;
-};
+import { ClassConstructor } from './interfaces';
 
 export class ClassTransformer {
   // -------------------------------------------------------------------------
@@ -52,13 +49,17 @@ export class ClassTransformer {
    * Converts plain (literal) object to class (constructor) object. Also works with arrays.
    */
   plainToClass<T extends Record<string, any>, V extends Array<any>>(
-    cls: ClassType<T>,
+    cls: ClassConstructor<T>,
     plain: V,
     options?: ClassTransformOptions
   ): T[];
-  plainToClass<T extends Record<string, any>, V>(cls: ClassType<T>, plain: V, options?: ClassTransformOptions): T;
   plainToClass<T extends Record<string, any>, V>(
-    cls: ClassType<T>,
+    cls: ClassConstructor<T>,
+    plain: V,
+    options?: ClassTransformOptions
+  ): T;
+  plainToClass<T extends Record<string, any>, V>(
+    cls: ClassConstructor<T>,
     plain: V | V[],
     options?: ClassTransformOptions
   ): T | T[] {
@@ -120,7 +121,7 @@ export class ClassTransformer {
   /**
    * Deserializes given JSON string to a object of the given class.
    */
-  deserialize<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T {
+  deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
     const jsonObject: T = JSON.parse(json);
     return this.plainToClass(cls, jsonObject, options);
   }
@@ -128,7 +129,7 @@ export class ClassTransformer {
   /**
    * Deserializes given JSON string to an array of objects of the given class.
    */
-  deserializeArray<T>(cls: ClassType<T>, json: string, options?: ClassTransformOptions): T[] {
+  deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
     const jsonObject: any[] = JSON.parse(json);
     return this.plainToClass(cls, jsonObject, options);
   }
