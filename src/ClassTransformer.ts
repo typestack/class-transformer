@@ -1,4 +1,4 @@
-import { ClassTransformOptions } from './ClassTransformOptions';
+import { ClassTransformOptions } from './interfaces';
 import { TransformOperationExecutor } from './TransformOperationExecutor';
 import { TransformationType } from './enums';
 import { ClassConstructor } from './interfaces';

@@ -1,5 +1,5 @@
 import { ClassTransformer } from '../ClassTransformer';
-import { ClassTransformOptions } from '../ClassTransformOptions';
+import { ClassTransformOptions } from '../interfaces';
 
 /**
  * Transform the object from class to plain object and return only with the exposed properties.

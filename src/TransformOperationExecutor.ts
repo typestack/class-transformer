@@ -1,4 +1,4 @@
-import { ClassTransformOptions } from './ClassTransformOptions';
+import { ClassTransformOptions } from './interfaces';
 import { defaultMetadataStorage } from './storage';
 import { TypeHelpOptions, TypeOptions } from './metadata/ExposeExcludeOptions';
 import { TypeMetadata } from './metadata/TypeMetadata';

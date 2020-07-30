@@ -1,6 +1,5 @@
 import { ClassTransformer } from '../ClassTransformer';
-import { ClassTransformOptions } from '../ClassTransformOptions';
-import { ClassConstructor } from '../interfaces';
+import { ClassTransformOptions, ClassConstructor } from '../interfaces';
 
 /**
  * Return the class instance only with the exposed properties.
