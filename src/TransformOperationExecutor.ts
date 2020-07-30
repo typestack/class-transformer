@@ -3,17 +3,7 @@ import { defaultMetadataStorage } from './storage';
 import { TypeHelpOptions, TypeOptions } from './metadata/ExposeExcludeOptions';
 import { TypeMetadata } from './metadata/TypeMetadata';
 import { TransformationType } from './enums';
-
-export function testForBuffer(): boolean {
-  try {
-    Buffer.isBuffer({
-      /* empty object */
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { getGlobal } from './utils';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
   const array = new (arrayType as any)();
@@ -125,7 +115,7 @@ export class TransformOperationExecutor {
       }
       if (value === null || value === undefined) return value;
       return new Date(value);
-    } else if (testForBuffer() && (targetType === Buffer || value instanceof Buffer) && !isMap) {
+    } else if (!!getGlobal().Buffer && (targetType === Buffer || value instanceof Buffer) && !isMap) {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
     } else if (typeof value === 'object' && value !== null) {
