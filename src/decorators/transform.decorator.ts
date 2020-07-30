@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from '../storage';
-import { TransformOptions } from '../metadata/ExposeExcludeOptions';
+import { TransformOptions } from '../interfaces';
 import { TransformMetadata } from '../metadata/TransformMetadata';
 import { TransformationType } from '../enums';
 

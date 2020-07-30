@@ -1,6 +1,6 @@
 import { ClassTransformOptions } from './interfaces';
 import { defaultMetadataStorage } from './storage';
-import { TypeHelpOptions, TypeOptions } from './metadata/ExposeExcludeOptions';
+import { TypeHelpOptions, TypeOptions } from './interfaces';
 import { TypeMetadata } from './metadata/TypeMetadata';
 import { TransformationType } from './enums';
 import { getGlobal } from './utils';

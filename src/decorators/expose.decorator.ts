@@ -1,6 +1,6 @@
 import { defaultMetadataStorage } from '../storage';
 import { ExposeMetadata } from '../metadata/ExposeMetadata';
-import { ExposeOptions } from '../metadata/ExposeExcludeOptions';
+import { ExposeOptions } from '../interfaces';
 
 /**
  * Marks property as included in the process of transformation. By default it includes the property for both

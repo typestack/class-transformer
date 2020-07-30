@@ -1,6 +1,6 @@
 import { defaultMetadataStorage } from '../storage';
 import { TypeMetadata } from '../metadata/TypeMetadata';
-import { TypeHelpOptions, TypeOptions } from '../metadata/ExposeExcludeOptions';
+import { TypeHelpOptions, TypeOptions } from '../interfaces';
 
 /**
  * Specifies a type of the property.

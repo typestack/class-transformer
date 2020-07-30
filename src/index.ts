@@ -3,7 +3,6 @@ import { ClassTransformOptions } from './interfaces';
 import { ClassConstructor } from './interfaces';
 
 export { ClassTransformer } from './ClassTransformer';
-export * from './metadata/ExposeExcludeOptions';
 export * from './decorators';
 export * from './interfaces';
 export * from './enums';

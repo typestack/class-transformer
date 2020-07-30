@@ -1,4 +1,4 @@
-import { TransformOptions } from './ExposeExcludeOptions';
+import { TransformOptions } from '../interfaces';
 import { TransformationType } from '../enums';
 
 export class TransformMetadata {

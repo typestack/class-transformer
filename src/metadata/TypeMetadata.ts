@@ -1,4 +1,4 @@
-import { TypeHelpOptions, TypeOptions } from './ExposeExcludeOptions';
+import { TypeHelpOptions, TypeOptions } from '../interfaces';
 
 export class TypeMetadata {
   constructor(

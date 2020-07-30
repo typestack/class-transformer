@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from '../storage';
-import { ExcludeOptions } from '../metadata/ExposeExcludeOptions';
+import { ExcludeOptions } from '../interfaces';
 import { ExcludeMetadata } from '../metadata/ExcludeMetadata';
 
 /**
