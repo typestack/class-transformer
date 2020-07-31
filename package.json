@@ -64,7 +64,7 @@
     "dayjs": "1.8.31",
     "eslint": "^7.5.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-jest": "^23.19.0",
+    "eslint-plugin-jest": "^23.20.0",
     "husky": "^4.2.5",
     "jest": "^26.1.0",
     "lint-staged": "^10.2.11",
