@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v1
-      - name: Setting up Node.js ${{ matrix.node-version }}
+      - name: Setting up Node.js (v${{ matrix.node-version }}.x)
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
@@ -28,6 +28,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run test:ci
       - run: npm install codecov -g
+        if: ${{ matrix.node-version == 14 }}
       - run: codecov -f ./coverage/clover.xml -t ${{ secrets.CODECOV_TOKEN }}
         if: ${{ matrix.node-version == 14 }}
   build:
