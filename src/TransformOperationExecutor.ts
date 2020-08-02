@@ -294,14 +294,19 @@ export class TransformOperationExecutor {
             // Apply the default transformation
             finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
           } else {
-            finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
-            finalValue = this.applyCustomTransformations(
-              finalValue,
-              targetType as Function,
-              transformKey,
-              value,
-              this.transformationType
-            );
+            if (subValue === undefined && this.options.exposeDefaultValues) {
+              // Set default value if nothing provided
+              finalValue = newValue[newValueKey];
+            } else {
+              finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+              finalValue = this.applyCustomTransformations(
+                finalValue,
+                targetType as Function,
+                transformKey,
+                value,
+                this.transformationType
+              );
+            }
           }
 
           if (newValue instanceof Map) {
