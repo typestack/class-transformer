@@ -1,6 +1,5 @@
 import { defaultMetadataStorage } from '../storage';
-import { TransformOptions } from '../interfaces';
-import { TransformationType } from '../enums';
+import { TransformFnParams, TransformOptions } from '../interfaces';
 
 /**
  * Defines a custom logic for value transformation.
@@ -8,7 +7,7 @@ import { TransformationType } from '../enums';
  * Can be applied to properties only.
  */
 export function Transform(
-  transformFn: (value: any, obj: any, transformationType: TransformationType) => any,
+  transformFn: (params: TransformFnParams) => any,
   options: TransformOptions = {}
 ): PropertyDecorator {
   return function (target: any, propertyName: string | Symbol): void {

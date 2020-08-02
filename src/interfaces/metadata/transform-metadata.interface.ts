@@ -15,10 +15,17 @@ export interface TransformMetadata {
   /**
    * The custom transformation function provided by the user in the @Transform decorator.
    */
-  transformFn: (value: any, obj: any, transformationType: TransformationType) => any;
+  transformFn: (params: TransformFnParams) => any;
 
   /**
    * Options passed to the @Transform operator for this property.
    */
   options: TransformOptions;
+}
+
+export interface TransformFnParams {
+  value: any;
+  key: string;
+  obj: any;
+  type: TransformationType;
 }
