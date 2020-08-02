@@ -28,6 +28,7 @@ jobs:
       - run: npm run test:ci
       - run: npm install codecov -g
       - run: codecov -f ./coverage/clover.xml -t ${{ secrets.CODECOV_TOKEN }}
+        if: ${{ matrix.node-version == 14 }}
   build:
     name: Build
     runs-on: ubuntu-latest
