@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10, 12, 14]
+        node-version: ['10.x', '12.x', '14.x']
       fail-fast: false
     steps:
       - uses: actions/checkout@v1
@@ -28,9 +28,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run test:ci
       - run: npm install codecov -g
-        if: ${{ matrix.node-version == 14 }}
+        if: ${{ matrix.node-version == '14.x' }}
       - run: codecov -f ./coverage/clover.xml -t ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.node-version == 14 }}
+        if: ${{ matrix.node-version == '14.x' }}
   build:
     name: Build
     runs-on: ubuntu-latest
