@@ -1,5 +1,5 @@
-import { TransformationType } from '../../enums';
 import { TransformOptions } from '..';
+import { TransformFnParams } from './transform-fn-params.interface';
 
 /**
  * This object represents metadata assigned to a property via the @Transform decorator.
@@ -21,11 +21,4 @@ export interface TransformMetadata {
    * Options passed to the @Transform operator for this property.
    */
   options: TransformOptions;
-}
-
-export interface TransformFnParams {
-  value: any;
-  key: string;
-  obj: any;
-  type: TransformationType;
 }
