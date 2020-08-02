@@ -1,7 +1,7 @@
 # class-transformer
 
 ![Build Status](https://github.com/typestack/class-transformer/workflows/CI/badge.svg)
-[![codecov](https://codecov.io/gh/typestack/class-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
+[![codecov](https://codecov.io/gh/typestack/class-transformer/branch/develop/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
