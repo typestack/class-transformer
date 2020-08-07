@@ -127,7 +127,7 @@ export class TransformOperationExecutor {
         this.recursionStack.add(value);
       }
 
-      const keys = this.getKeys(targetType as Function, value);
+      const keys = this.getKeys(targetType as Function, value, isMap);
       let newValue: any = source ? source : {};
       if (
         !source &&
@@ -390,19 +390,24 @@ export class TransformOperationExecutor {
     return meta ? meta.reflectedType : undefined;
   }
 
-  private getKeys(target: Function, object: Record<string, any>): string[] {
+  private getKeys(target: Function, object: Record<string, any>, isMap: boolean): string[] {
     // determine exclusion strategy
     let strategy = defaultMetadataStorage.getStrategy(target);
     if (strategy === 'none') strategy = this.options.strategy || 'exposeAll'; // exposeAll is default strategy
 
     // get all keys that need to expose
     let keys: any[] = [];
-    if (strategy === 'exposeAll') {
+    if (strategy === 'exposeAll' || isMap) {
       if (object instanceof Map) {
         keys = Array.from(object.keys());
       } else {
         keys = Object.keys(object);
       }
+    }
+
+    if (isMap) {
+      // expose & exclude do not apply for map keys only to fields
+      return keys;
     }
 
     if (!this.options.ignoreDecorators && target) {

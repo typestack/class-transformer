@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { classToPlain, plainToClass } from '../../src/index';
+import { classToPlain, plainToClass, Expose } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Type } from '../../src/decorators';
 
@@ -251,5 +251,99 @@ describe('es6 data types', () => {
         { model: 'ak-47', range: 800 },
       ],
     });
+  });
+
+  it('using Map with objects with Expose', () => {
+    defaultMetadataStorage.clear();
+
+    class Weapon {
+      constructor(public model: string, public range: number) {}
+    }
+
+    class User {
+      @Expose() id: number;
+      @Expose() name: string;
+      @Expose()
+      @Type(() => Weapon)
+      weapons: Map<string, Weapon>;
+    }
+
+    const plainUser = {
+      id: 1,
+      name: 'Max Pain',
+      weapons: {
+        firstWeapon: {
+          model: 'knife',
+          range: 1,
+        },
+        secondWeapon: {
+          model: 'eagle',
+          range: 200,
+        },
+        thirdWeapon: {
+          model: 'ak-47',
+          range: 800,
+        },
+      },
+    };
+
+    const weapons = new Map<string, Weapon>();
+    weapons.set('firstWeapon', new Weapon('knife', 1));
+    weapons.set('secondWeapon', new Weapon('eagle', 200));
+    weapons.set('thirdWeapon', new Weapon('ak-47', 800));
+
+    const user = new User();
+    user.id = 1;
+    user.name = 'Max Pain';
+    user.weapons = weapons;
+    const plainedUser = classToPlain(user);
+    expect(plainedUser).not.toBeInstanceOf(User);
+    expect(plainedUser).toEqual({
+      id: 1,
+      name: 'Max Pain',
+      weapons: {
+        firstWeapon: {
+          model: 'knife',
+          range: 1,
+        },
+        secondWeapon: {
+          model: 'eagle',
+          range: 200,
+        },
+        thirdWeapon: {
+          model: 'ak-47',
+          range: 800,
+        },
+      },
+    });
+
+    function checkPlainToClassUser(classUser: User) {
+      expect(classedUser).toBeInstanceOf(User);
+      expect(classedUser.id).toEqual(1);
+      expect(classedUser.name).toEqual('Max Pain');
+      expect(classedUser.weapons).toBeInstanceOf(Map);
+      expect(classedUser.weapons.size).toEqual(3);
+      expect(classedUser.weapons.get('firstWeapon')).toBeInstanceOf(Weapon);
+      expect(classedUser.weapons.get('firstWeapon')).toEqual({
+        model: 'knife',
+        range: 1,
+      });
+      expect(classedUser.weapons.get('secondWeapon')).toBeInstanceOf(Weapon);
+      expect(classedUser.weapons.get('secondWeapon')).toEqual({
+        model: 'eagle',
+        range: 200,
+      });
+      expect(classedUser.weapons.get('thirdWeapon')).toBeInstanceOf(Weapon);
+      expect(classedUser.weapons.get('thirdWeapon')).toEqual({
+        model: 'ak-47',
+        range: 800,
+      });
+    }
+
+    const classedUser = plainToClass(User, plainUser, { excludeExtraneousValues: false });
+    checkPlainToClassUser(classedUser);
+
+    const classedUser2 = plainToClass(User, plainUser, { excludeExtraneousValues: true });
+    checkPlainToClassUser(classedUser2);
   });
 });
