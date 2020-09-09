@@ -829,8 +829,8 @@ const controller = new UserController();
 const user = controller.getUser();
 ```
 
-the `user` variable will contain only firstName,lastName, email properties becuase they are
-the exposed variables. email property is also exposed becuase we metioned the group "user.email".
+the `user` variable will contain only firstName,lastName, email properties because they are
+the exposed variables. email property is also exposed because we metioned the group "user.email".
 
 ## Working with generics[⬆](#table-of-contents)
 
