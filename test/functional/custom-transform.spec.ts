@@ -681,4 +681,47 @@ describe("custom transformation decorator", () => {
         }).to.not.throw();
     });
 
+    it("should run custom transformer directly", () => {
+        defaultMetadataStorage.clear();
+        expect(() => {
+            const json = {
+                hobbies: [
+                    { ty: "sport", name: "sailing" },
+                    { ty: "relax", name: "reading" },
+                    { ty: "sport", name: "jogging" },
+                    { ty: "relax", name: "movies" }
+                ]
+            };
+            class Hobby {
+                @Expose({ name: "ty" })
+                public type: string;
+                public name: string;
+            }
+
+            function SportsHobbiesFromJson(objects: any[]): Hobby[] {
+                const hobbies: Hobby[] = [];
+                if (objects) {
+                    for (const o of objects) {
+                        const hobby = new Hobby();
+                        if (o.ty == 'sport') {
+                            hobby.type = 'sport';
+                            hobby.name = o.name;
+                            hobbies.push(hobby);
+                        }
+                    }
+                }
+                return hobbies;
+            }
+
+            class Person {
+                @Expose({ name: "hobbies", directly: true })
+                @Transform(value => SportsHobbiesFromJson(value), { toClassOnly: true })
+                public hobbies: Hobby[];
+            }
+            model = plainToClass(Person, json);
+            expect(model instanceof Person);
+            model.hobbies.length.should.be.equal(2);
+            model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === "sport"));
+        }).to.not.throw();
+    });
 });

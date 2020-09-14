@@ -26,10 +26,11 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@types/chai": "^3.4.34",
     "@types/es6-shim": "^0.31.32",
+    "@types/gulp": "^4.0.6",
     "@types/mocha": "^2.2.33",
+    "@types/moment": "^2.13.0",
     "@types/node": "0.0.2",
     "@types/sinon": "^2.2.2",
     "chai": "^4.2.0",
@@ -54,9 +55,10 @@
     "remap-istanbul": "^0.7.0",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
+    "ts-node": "^9.0.0",
     "tslint": "^4.0.2",
     "tslint-stylish": "^2.1.0-beta",
-    "typescript": "^2.0.10"
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "test": "gulp tests",

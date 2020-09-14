@@ -28,6 +28,7 @@ export interface ExposeOptions {
     groups?: string[];
     toClassOnly?: boolean;
     toPlainOnly?: boolean;
+    directly?: boolean;
 }
 
 export interface ExcludeOptions {

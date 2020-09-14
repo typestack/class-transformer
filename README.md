@@ -663,6 +663,29 @@ Note, that dates will be converted to strings when you'll try to convert class o
 Same technique can be used with `Number`, `String`, `Boolean`
 primitive types when you want to convert your values into these types.
 
+## Keep the object as it is
+
+Sometimes you have some properties keep it as it is and use your custom transform on the object.
+
+```typescript
+import {Type} from "class-transformer";
+
+export class User {
+
+    id: number;
+
+    email: string;
+
+    password: string;
+
+    @Expose({ directly : true})
+    @Transform(value => customTransformer(value), { toClassOnly: true })
+    albums: Album[];
+}
+```
+
+Note, the value pass to the customTransformer directly without default transform.
+
 ## Working with arrays
 
 When you are using arrays you must provide a type of the object that array contains.

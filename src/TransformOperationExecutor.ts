@@ -241,9 +241,16 @@ export class TransformOperationExecutor {
                         // If nothing change, it means no custom transformation was applied, so use the subValue.
                         finalValue = (value[transformKey] === finalValue) ? subValue : finalValue;
                         // Apply the default transformation
-                        finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
+                        const exposeMetadata = defaultMetadataStorage.findExposeMetadata((targetType as Function), key);
+                        // Apply the default transformation if not directly
+                        if (!(exposeMetadata && exposeMetadata.options.directly))
+                            finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
                     } else {
-                        finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+                        const exposeMetadata = defaultMetadataStorage.findExposeMetadataByCustomName((targetType as Function), key);
+                        if (exposeMetadata && exposeMetadata.options.directly)
+                            finalValue = subValue;
+                        else
+                            finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
                         finalValue = this.applyCustomTransformations(finalValue, (targetType as Function), transformKey, value, this.transformationType);
                     }
 
