@@ -4,13 +4,13 @@
 [![codecov](https://codecov.io/gh/typestack/class-transformer/branch/develop/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
 
-Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
-Class-transformer allows you to transform plain object to some instance of class and versa.
-Also it allows to serialize / deserialize object based on criteria.
-This tool is super useful on both frontend and backend.
+It's the ES6 and Typescript era. Nowadays, we're working with classes and constructor objects more then ever.
+Class-transformer allows you to transform plain objects to some instance of a class and vice versa.
+It also allows us to serialize and deserialize objects based on certain criteria.
+This tool is super useful for both frontend and backend.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
-Source code is available [here](https://github.com/pleerock/class-transformer-demo).
+For an example on how to use class-transformer with Angular 2, see [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
+The source code is available [here](https://github.com/pleerock/class-transformer-demo).
 
 ## Table of contents
 
@@ -49,25 +49,25 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
 - [Samples](#samples)
 - [Release notes](#release-notes)
 
-## What is class-transformer[⬆](#table-of-contents)
+## What is class-transformer? [⬆](#table-of-contents)
 
 In JavaScript there are two types of objects:
 
 - plain (literal) objects
 - class (constructor) objects
 
-Plain objects are objects that are instances of `Object` class.
+Plain objects are objects that are instances of the `Object` class.
 Sometimes they are called **literal** objects, when created via `{}` notation.
-Class objects are instances of classes with own defined constructor, properties and methods.
-Usually you define them via `class` notation.
+Class objects are instances of classes with their own defined constructor, properties and methods.
+Usually you define them via the `class` notation.
 
-So, what is the problem?
+So, what's the problem?
 
-Sometimes you want to transform plain javascript object to the ES6 **classes** you have.
-For example, if you are loading a json from your backend, some api or from a json file,
-and after you `JSON.parse` it you have a plain javascript object, not instance of class you have.
+Sometimes you want to transform plain Javascript objects to the ES6 **classes** you have.
+For example, you might be loading some JSON from your backend, some API or from a JSON file,
+and after you `JSON.parse` it you have a plain javascript object, not an instance of the class you have.
 
-For example you have a list of users in your `users.json` that you are loading:
+For example, if you have a list of users in your `users.json` that you are loading:
 
 ```json
 [
@@ -111,7 +111,7 @@ export class User {
 }
 ```
 
-You are assuming that you are downloading users of type `User` from `users.json` file and may want to write
+You are assuming that you are downloading users of type `User` from the `users.json` file, and you may want to write
 following code:
 
 ```typescript
@@ -123,20 +123,20 @@ fetch('users.json').then((users: User[]) => {
 ```
 
 In this code you can use `users[0].id`, you can also use `users[0].firstName` and `users[0].lastName`.
-However you cannot use `users[0].getName()` or `users[0].isAdult()` because "users" actually is
-array of plain javascript objects, not instances of User object.
-You actually lied to compiler when you said that its `users: User[]`.
+However you cannot use `users[0].getName()` or `users[0].isAdult()` because "users" is actually
+an array of plain Javascript objects, not instances of the User class.
+You actually lied to the compiler when you said that it's `users: User[]`.
 
-So what to do? How to make a `users` array of instances of `User` objects instead of plain javascript objects?
-Solution is to create new instances of User object and manually copy all properties to new objects.
-But things may go wrong very fast once you have a more complex object hierarchy.
+So, what should you do? How do we turn the `users` array into a set of `User` objects instead of plain Javascript objects?
+One solution is to create new instances of the User object and manually copy all of its properties to new objects.
+But things may go wrong very quickly once you have a more complex object hierarchy.
 
-Alternatives? Yes, you can use class-transformer. Purpose of this library is to help you to map you plain javascript
-objects to the instances of classes you have.
+Alternatively, you can use class-transformer. The purpose of this library is to help you to map plain Javascript
+objects to the instances of the classes you have.
 
-This library also great for models exposed in your APIs,
+This library is also great for models exposed in your APIs,
 because it provides a great tooling to control what your models are exposing in your API.
-Here is example how it will look like:
+Here is example of what it will look like:
 
 ```typescript
 fetch('users.json').then((users: Object[]) => {
@@ -147,15 +147,15 @@ fetch('users.json').then((users: Object[]) => {
 
 Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 
-## Installation[⬆](#table-of-contents)
+## Installation [⬆](#table-of-contents)
 
-### Node.js[⬆](#table-of-contents)
+### Node.js [⬆](#table-of-contents)
 
-1. Install module:
+1. Install the module:
 
    `npm install class-transformer --save`
 
-2. `reflect-metadata` shim is required, install it too:
+2. The `reflect-metadata` shim is required, install it too:
 
    `npm install reflect-metadata --save`
 
@@ -165,7 +165,7 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    import 'reflect-metadata';
    ```
 
-3. ES6 features are used, if you are using old version of node.js you may need to install es6-shim:
+3. ES6 features are used. If you are using old version of Node.js, you may need to install `es6-shim`:
 
    `npm install es6-shim --save`
 
@@ -175,9 +175,9 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    import 'es6-shim';
    ```
 
-### Browser[⬆](#table-of-contents)
+### Browser [⬆](#table-of-contents)
 
-1. Install module:
+1. Install the module:
 
    `npm install class-transformer --save`
 
@@ -197,9 +197,9 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    </html>
    ```
 
-   If you are using angular 2 you should already have this shim installed.
+   If you are using Angular 2, you should already have this shim installed.
 
-3. If you are using system.js you may want to add this into `map` and `package` config:
+3. If you are using `system.js` you may want to add this into `map` and `package` config:
 
    ```json
    {
@@ -212,11 +212,11 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    }
    ```
 
-## Methods[⬆](#table-of-contents)
+## Methods [⬆](#table-of-contents)
 
-### plainToClass[⬆](#table-of-contents)
+### plainToClass [⬆](#table-of-contents)
 
-This method transforms a plain javascript object to instance of specific class.
+This method transforms a plain Javascript object to an instance of a specific class.
 
 ```typescript
 import { plainToClass } from 'class-transformer';
@@ -224,9 +224,9 @@ import { plainToClass } from 'class-transformer';
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
-### plainToClassFromExist[⬆](#table-of-contents)
+### plainToClassFromExist [⬆](#table-of-contents)
 
-This method transforms a plain object into a instance using a already filled Object which is a instance from the target class.
+This method transforms a plain object into an instance, using an already filled Object which is an instance from the target class.
 
 ```typescript
 const defaultUser = new User();
@@ -235,30 +235,30 @@ defaultUser.role = 'user';
 let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
 ```
 
-### classToPlain[⬆](#table-of-contents)
+### classToPlain [⬆](#table-of-contents)
 
-This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
+This method transforms your class object back to a plain Javascript object, that can be passed to `JSON.stringify` later.
 
 ```typescript
 import { classToPlain } from 'class-transformer';
 let photo = classToPlain(photo);
 ```
 
-### classToClass[⬆](#table-of-contents)
+### classToClass [⬆](#table-of-contents)
 
-This method transforms your class object into new instance of the class object.
-This maybe treated as deep clone of your objects.
+This method transforms your class object into a new instance of the class object.
+This can be treated as a deep clone of your objects.
 
 ```typescript
 import { classToClass } from 'class-transformer';
 let photo = classToClass(photo);
 ```
 
-You can also use a `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
+You can also use an `ignoreDecorators` option in the transformation options to ignore all decorators your classes are using.
 
-### serialize[⬆](#table-of-contents)
+### serialize [⬆](#table-of-contents)
 
-You can serialize your model right to the json using `serialize` method:
+You can serialize your model right to JSON using the `serialize` method:
 
 ```typescript
 import { serialize } from 'class-transformer';
@@ -267,23 +267,23 @@ let photo = serialize(photo);
 
 `serialize` works with both arrays and non-arrays.
 
-### deserialize and deserializeArray[⬆](#table-of-contents)
+### deserialize and deserializeArray [⬆](#table-of-contents)
 
-You can deserialize your model to from a json using `deserialize` method:
+You can deserialize your model from JSON using the `deserialize` method:
 
 ```typescript
 import { deserialize } from 'class-transformer';
 let photo = deserialize(Photo, photo);
 ```
 
-To make deserialization to work with arrays use `deserializeArray` method:
+To make deserialization work with arrays, use the `deserializeArray` method:
 
 ```typescript
 import { deserializeArray } from 'class-transformer';
 let photos = deserializeArray(Photo, photos);
 ```
 
-## Enforcing type-safe instance[⬆](#table-of-contents)
+## Enforcing type-safe instances [⬆](#table-of-contents)
 
 The default behaviour of the `plainToClass` method is to set _all_ properties from the plain object,
 even those which are not specified in the class.
@@ -339,16 +339,15 @@ console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true })
 // }
 ```
 
-## Working with nested objects[⬆](#table-of-contents)
+## Working with nested objects [⬆](#table-of-contents)
 
 When you are trying to transform objects that have nested objects,
-its required to known what type of object you are trying to transform.
+`class-transformer` needs to know the types of the objects you are trying to transform.
 Since Typescript does not have good reflection abilities yet,
-we should implicitly specify what type of object each property contain.
-This is done using `@Type` decorator.
+we should explicitly specify the object types of each property.
+This is done using the `@Type` decorator.
 
-Lets say we have an album with photos.
-And we are trying to convert album plain object to class object:
+Lets say we have an album with photos, and we are trying to convert the plain album object to a class object:
 
 ```typescript
 import { Type, plainToClass } from 'class-transformer';
@@ -371,16 +370,16 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
-### Providing more than one type option[⬆](#table-of-contents)
+### Providing more than one type option [⬆](#table-of-contents)
 
 In case the nested object can be of different types, you can provide an additional options object,
 that specifies a discriminator. The discriminator option must define a `property` that holds the sub
-type name for the object and the possible `subTypes`, the nested object can converted to. A sub type
+type name for the object and the possible `subTypes` that the nested object can converted to. A sub type
 has a `value`, that holds the constructor of the Type and the `name`, that can match with the `property`
 of the discriminator.
 
-Lets say we have an album that has a top photo. But this photo can be of certain different types.
-And we are trying to convert album plain object to class object. The plain object input has to define
+Lets say we have an album that has a top photo. But this photo can be of certain different types,
+and we are trying to convert album plain object to class object. The plain object input has to define
 the additional property `__type`. This property is removed during transformation by default:
 
 **JSON input**:
@@ -439,12 +438,12 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with a UnderWater object without `__type` property.
 ```
 
-Hint: The same applies for arrays with different sub types. Moreover you can specify `keepDiscriminatorProperty: true`
-in the options to keep the discriminator property also inside your resulting class.
+Hint: The same applies for arrays with different sub-types. Moreover, you can specify `keepDiscriminatorProperty: true`
+in the options to also keep the discriminator property inside the resulting class.
 
 ## Exposing getters and method return values[⬆](#table-of-contents)
 
-You can expose what your getter or method return by setting a `@Expose()` decorator to those getters or methods:
+You can expose what your getter or method returns by adding an `@Expose()` decorator to those getters or methods:
 
 ```typescript
 import { Expose } from 'class-transformer';
@@ -467,10 +466,10 @@ export class User {
 }
 ```
 
-## Exposing properties with different names[⬆](#table-of-contents)
+## Exposing properties with different names [⬆](#table-of-contents)
 
-If you want to expose some of properties with a different name,
-you can do it by specifying a `name` option to `@Expose` decorator:
+If you want to expose some properties with a different name,
+you can do it by adding a `name` option to the `@Expose` decorator:
 
 ```typescript
 import { Expose } from 'class-transformer';
@@ -493,10 +492,10 @@ export class User {
 }
 ```
 
-## Skipping specific properties[⬆](#table-of-contents)
+## Skipping specific properties [⬆](#table-of-contents)
 
 Sometimes you want to skip some properties during transformation.
-This can be done using `@Exclude` decorator:
+This can be done using the `@Exclude` decorator:
 
 ```typescript
 import { Exclude } from 'class-transformer';
@@ -511,11 +510,11 @@ export class User {
 }
 ```
 
-Now when you transform a User, `password` property will be skipped and not be included in the transformed result.
+Now when you transform a User, the `password` property will be skipped, and it won't be included in the transformed result.
 
-## Skipping depend of operation[⬆](#table-of-contents)
+## Skipping properties depending on the operation [⬆](#table-of-contents)
 
-You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
+You can control on what operations `class-transformer` will exclude properties. Use the `toClassOnly` or `toPlainOnly` options:
 
 ```typescript
 import { Exclude } from 'class-transformer';
@@ -530,9 +529,9 @@ export class User {
 }
 ```
 
-Now `password` property will be excluded only during `classToPlain` operation. Oppositely, use `toClassOnly` option.
+Now the `password` property will be excluded only during `classToPlain` operation. Conversely, use the `toClassOnly` option.
 
-## Skipping all properties of the class[⬆](#table-of-contents)
+## Skipping all properties of the class [⬆](#table-of-contents)
 
 You can skip all properties of the class, and expose only those are needed explicitly:
 
@@ -552,7 +551,7 @@ export class User {
 ```
 
 Now `id` and `email` will be exposed, and password will be excluded during transformation.
-Alternatively, you can set exclusion strategy during transformation:
+Alternatively, you can set the exclusion strategy during transformation:
 
 ```typescript
 import { classToPlain } from 'class-transformer';
@@ -563,7 +562,7 @@ In this case you don't need to `@Exclude()` a whole class.
 
 ## Skipping private properties, or some prefixed properties[⬆](#table-of-contents)
 
-If you name your private properties with a prefix, lets say with `_`,
+If you name your private properties with a prefix, let's say with `_`,
 then you can exclude such properties from transformation too:
 
 ```typescript
@@ -572,7 +571,7 @@ let photo = classToPlain(photo, { excludePrefixes: ['_'] });
 ```
 
 This will skip all properties that start with `_` prefix.
-You can pass any number of prefixes and all properties that begin with these prefixes will be ignored.
+You can pass any number of prefixes and all properties beginning with these prefixes will be ignored.
 For example:
 
 ```typescript
@@ -605,9 +604,9 @@ const plainUser = classToPlain(user, { excludePrefixes: ['_'] });
 // { id: 1, name: "Johny Cage" }
 ```
 
-## Using groups to control excluded properties[⬆](#table-of-contents)
+## Using groups to control excluded properties [⬆](#table-of-contents)
 
-You can use groups to control what data will be exposed and what will not be:
+You can use groups to control what data will be exposed or excluded:
 
 ```typescript
 import { Exclude, Expose, classToPlain } from 'class-transformer';
@@ -628,7 +627,7 @@ let user1 = classToPlain(user, { groups: ['user'] }); // will contain id, name, 
 let user2 = classToPlain(user, { groups: ['admin'] }); // will contain id, name and email
 ```
 
-## Using versioning to control exposed and excluded properties[⬆](#table-of-contents)
+## Using versioning to control exposed and excluded properties [⬆](#table-of-contents)
 
 If you are building an API that has different versions, class-transformer has extremely useful tools for that.
 You can control which properties of your model should be exposed or excluded in what version. Example:
@@ -657,9 +656,9 @@ let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and p
 
 ## Сonverting date strings into Date objects[⬆](#table-of-contents)
 
-Sometimes you have a Date in your plain javascript object received in a string format.
-And you want to create a real javascript Date object from it.
-You can do it simply by passing a Date object to the `@Type` decorator:
+Sometimes you have a date in your plain Javascript object in a string format,
+and you want to create a real Javascript `Date` object from it.
+You can do this by passing a Date object to the `@Type` decorator:
 
 ```typescript
 import { Type } from 'class-transformer';
@@ -676,15 +675,15 @@ export class User {
 }
 ```
 
-Note, that dates will be converted to strings when you'll try to convert class object to plain object.
+Note that dates will be converted to strings when you try to convert the class object to a plain object.
 
-Same technique can be used with `Number`, `String`, `Boolean`
+The same technique can be used with `Number`, `String`, and `Boolean`
 primitive types when you want to convert your values into these types.
 
 ## Working with arrays[⬆](#table-of-contents)
 
-When you are using arrays you must provide a type of the object that array contains.
-This type, you specify in a `@Type()` decorator:
+When you are using arrays, you must specify the type of the object that the array contains
+using a `@Type()` decorator:
 
 ```typescript
 import { Type } from 'class-transformer';
@@ -718,9 +717,9 @@ export class Photo {
 }
 ```
 
-Library will handle proper transformation automatically.
+The library will handle the transformation automatically.
 
-ES6 collections `Set` and `Map` also require the `@Type` decorator:
+The ES6 collections `Set` and `Map` also require the `@Type` decorator:
 
 ```typescript
 export class Skill {
@@ -743,13 +742,13 @@ export class Player {
 }
 ```
 
-## Additional data transformation[⬆](#table-of-contents)
+## Additional data transformation [⬆](#table-of-contents)
 
-### Basic usage[⬆](#table-of-contents)
+### Basic usage [⬆](#table-of-contents)
 
-You can perform additional data transformation using `@Transform` decorator.
-For example, you want to make your `Date` object to be a `moment` object when you are
-transforming object from plain to class:
+You can perform additional data transformation using the `@Transform` decorator.
+For example, if you want to turn your `Date` object into a `moment` object when you are
+transforming the object from plain to class:
 
 ```typescript
 import { Transform } from 'class-transformer';
@@ -766,12 +765,12 @@ export class Photo {
 ```
 
 Now when you call `plainToClass` and send a plain representation of the Photo object,
-it will convert a date value in your photo object to moment date.
-`@Transform` decorator also supports groups and versioning.
+it will convert a date value in your photo object to a moment date.
+The `@Transform` decorator also supports groups and versioning.
 
-### Advanced usage[⬆](#table-of-contents)
+### Advanced usage [⬆](#table-of-contents)
 
-The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
+The `@Transform` decorator accepts more arguments to let you configure how you want it to carry out the transformation.
 
 ```
 @Transform((value, obj, type) => value)
@@ -783,7 +782,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 | `obj`    | The transformation source object.             |
 | `type`   | The transformation type.                      |
 
-## Other decorators[⬆](#table-of-contents)
+## Other decorators [⬆](#table-of-contents)
 
 | Signature                | Example                                              | Description                                                                           |
 | ------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -792,7 +791,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 | `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class. |
 
 The above decorators accept one optional argument:
-ClassTransformOptions - The transform options like groups, version, name
+ClassTransformOptions - The transform options like groups, version, and name.
 
 An example:
 
@@ -829,21 +828,21 @@ const controller = new UserController();
 const user = controller.getUser();
 ```
 
-the `user` variable will contain only firstName,lastName, email properties because they are
-the exposed variables. email property is also exposed because we metioned the group "user.email".
+The `user` variable will contain only the `firstName`, `lastName`, and `email` properties because they are
+the exposed variables. The `email` property is also exposed because we metioned the group "user.email".
 
-## Working with generics[⬆](#table-of-contents)
+## Working with generics [⬆](#table-of-contents)
 
-Generics are not supported because TypeScript does not have good reflection abilities yet.
-Once TypeScript team provide us better runtime type reflection tools, generics will be implemented.
-There are some tweaks however you can use, that maybe can solve your problem.
-[Checkout this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
+Generics aren't supported because TypeScript doesn't have good reflection abilities yet.
+Once the TypeScript team provides us with better runtime type reflection tools, generics will be implemented.
+However, there are some tweaks you can use that might be able to solve your problem.
+[Check out this example.](https://github.com/pleerock/class-transformer/tree/master/sample/sample4-generics)
 
-## Implicit type conversion[⬆](#table-of-contents)
+## Implicit type conversion [⬆](#table-of-contents)
 
-> **NOTE** If you use class-validator together with class-transformer you propably DON'T want to enable this function.
+> **NOTE** If you use `class-validator` alongside `class-transformer`, you probably DON'T want to enable this function.
 
-Enables automatic conversion between built-in types based on type information provided by Typescript. Disabled by default.
+This enables automatic conversion between built-in types based on type information provided by Typescript. It's disabled by default.
 
 ```ts
 import { IsString } from 'class-validator';
@@ -862,16 +861,16 @@ const result2 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversi
  */
 ```
 
-## How does it handle circular references?[⬆](#table-of-contents)
+## How does class-transformer handle circular references? [⬆](#table-of-contents)
 
 Circular references are ignored.
-For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
-and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
-Circular references are not ignored only during `classToClass` operation.
+For example, if you are transforming a class `User` that contains the property `photos` of type `Photo`,
+and `Photo` contains a link `user` to its parent `User`, then `user` will be ignored during transformation.
+Circular references are only handled during a `classToClass` operation.
 
-## Example with Angular2[⬆](#table-of-contents)
+## Example with Angular2 [⬆](#table-of-contents)
 
-Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
+Let's say you want to download users and want them to be automatically mapped to instances of the `User` class.
 
 ```typescript
 import { plainToClass } from 'class-transformer';
@@ -886,16 +885,15 @@ this.http
   });
 ```
 
-You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
+You can also inject the `ClassTransformer` class as a service in `providers`, and use its methods.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
-Source code is [here](https://github.com/pleerock/class-transformer-demo).
+An example of how to use `class-transformer` with Angular 2 can be found in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
+The source code is [here](https://github.com/pleerock/class-transformer-demo).
 
-## Samples[⬆](#table-of-contents)
+## Samples [⬆](#table-of-contents)
 
-Take a look on samples in [./sample](https://github.com/pleerock/class-transformer/tree/master/sample) for more examples of
-usages.
+Take a look at the samples in [./sample](https://github.com/pleerock/class-transformer/tree/master/sample) for more example use cases.
 
-## Release notes[⬆](#table-of-contents)
+## Release notes [⬆](#table-of-contents)
 
-See information about breaking changes and release notes [here](https://github.com/typestack/class-transformer/blob/master/CHANGELOG.md).
+See information about breaking changes and the release notes [here](https://github.com/typestack/class-transformer/blob/master/CHANGELOG.md).
