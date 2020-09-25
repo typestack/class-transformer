@@ -137,7 +137,7 @@ export class TransformOperationExecutor {
         if (isMap) {
           newValue = new Map();
         } else if (targetType) {
-          newValue = new (targetType as any)();
+          newValue = new (targetType as any)(value);
         } else {
           newValue = {};
         }
