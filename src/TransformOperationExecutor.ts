@@ -199,13 +199,13 @@ export class TransformOperationExecutor {
               if (!(value[valueKey] instanceof Array)) {
                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                   type = metadata.options.discriminator.subTypes.find(subType => {
-                    if (subValue && metadata.options.discriminator.property in subValue) {
+                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
                       return subType.name === subValue[metadata.options.discriminator.property];
                     }
                   });
                   type === undefined ? (type = newType) : (type = type.value);
                   if (!metadata.options.keepDiscriminatorProperty) {
-                    if (subValue && metadata.options.discriminator.property in subValue) {
+                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
                       delete subValue[metadata.options.discriminator.property];
                     }
                   }
