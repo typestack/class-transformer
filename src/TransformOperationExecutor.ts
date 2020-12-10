@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from './storage';
-import { TypeHelpOptions, TypeOptions, ClassTransformOptions, TypeMetadata } from './interfaces';
+import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
 import { TransformationType } from './enums';
 import { getGlobal } from './utils';
 
@@ -214,9 +214,11 @@ export class TransformOperationExecutor {
                   type = subValue.constructor;
                 }
                 if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
-                  subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find(
-                    subType => subType.value === subValue.constructor
-                  ).name;
+                  if (subValue) {
+                    subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find(
+                      subType => subType.value === subValue.constructor
+                    ).name;
+                  }
                 }
               } else {
                 type = metadata;
