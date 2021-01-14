@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import 'reflect-metadata';
-import { classToClass, classToPlain, plainToClass, TransformFnParams } from '../../src/index';
+import { classToClass, classToPlain, ClassTransformOptions, plainToClass, TransformFnParams } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Expose, Transform, Type } from '../../src/decorators';
 import { TransformationType } from '../../src/enums';
@@ -121,11 +121,13 @@ describe('custom transformation decorator', () => {
     let keyArg: string;
     let objArg: any;
     let typeArg: TransformationType;
+    let optionsArg: ClassTransformOptions;
 
-    function transformCallback({ value, key, obj, type }: TransformFnParams): any {
+    function transformCallback({ value, key, obj, type, options }: TransformFnParams): any {
       keyArg = key;
       objArg = obj;
       typeArg = type;
+      optionsArg = options;
       return value;
     }
 
@@ -138,19 +140,26 @@ describe('custom transformation decorator', () => {
     const plainUser = {
       name: 'Johny Cage',
     };
+    const options: ClassTransformOptions = {
+      groups: ['user', 'user.email'],
+      version: 2,
+    };
 
-    plainToClass(User, plainUser);
+    plainToClass(User, plainUser, options);
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(plainUser);
     expect(typeArg).toEqual(TransformationType.PLAIN_TO_CLASS);
+    expect(optionsArg).toBe(options);
 
     const user = new User();
     user.name = 'Johny Cage';
+    optionsArg = undefined;
 
-    classToPlain(user);
+    classToPlain(user, options);
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(user);
     expect(typeArg).toEqual(TransformationType.CLASS_TO_PLAIN);
+    expect(optionsArg).toBe(options);
   });
 
   let model: any;

@@ -777,12 +777,13 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 @Transform(({ value, key, obj, type }) => value)
 ```
 
-| Argument | Description                                   |
-| -------- | --------------------------------------------- |
-| `value`  | The property value before the transformation. |
-| `key`    | The name of the transformed property.         |
-| `obj`    | The transformation source object.             |
-| `type`   | The transformation type.                      |
+| Argument  | Description                                             |
+| --------- | ------------------------------------------------------- |
+| `value`   | The property value before the transformation.           |
+| `key`     | The name of the transformed property.                   |
+| `obj`     | The transformation source object.                       |
+| `type`    | The transformation type.                                |
+| `options` | The options object passed to the transformation method. |
 
 ## Other decorators[⬆](#table-of-contents)
 
