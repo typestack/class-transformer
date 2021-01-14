@@ -1,6 +1,6 @@
 {
   "name": "class-transformer",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "author": "TypeStack contributors",
   "license": "MIT",
