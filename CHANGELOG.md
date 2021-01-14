@@ -2,6 +2,24 @@
 
 _This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
 
+### [0.3.2][v0.3.2] - 2021-01-14
+
+#### Added
+
+- `exposeDefaultValues` option has been added, when enabled properties will use their default values when no value is present for the property
+- the name of the currently transformed parameter is exposed in the `@Transform` decorator
+
+#### Fixed
+
+- fixed an issue with transforming `Map` (#319)
+- fixed an issue with sourcemap generation (#472)
+
+#### Changed
+
+- various internal refactors
+- various changes to the project tooling
+- various dev-dependencies has been updated
+
 ### [0.3.1][v0.3.1] - 2020-07-29
 
 #### Added
@@ -21,8 +39,9 @@ _This changelog follows the [keep a changelog][keep-a-changelog]_ format to main
 
 - circular dependency fixed
 - dev dependencies removed from package.json before publishing (no more security warnings)
-- transformer oder is deterministic now (#231)
+- transformer order is deterministic now (#231)
 - fix prototype pollution issue (#367)
+- various fixes in documentation
 
 ### [0.2.3][v0.2.3] [BREAKING CHANGE]
 

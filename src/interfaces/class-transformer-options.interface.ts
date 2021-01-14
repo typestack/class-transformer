@@ -1,18 +1,4 @@
-/**
- * Allows to specify a map of Types in the object without using @Type decorator.
- * This is useful when you have external classes.
- */
-export interface TargetMap {
-  /**
-   * Target which Types are being specified.
-   */
-  target: Function;
-
-  /**
-   * List of properties and their Types.
-   */
-  properties: { [key: string]: Function };
-}
+import { TargetMap } from './target-map.interface';
 
 /**
  * Options to be passed during transformation.
@@ -71,4 +57,10 @@ export interface ClassTransformOptions {
    * DEFAULT: `false`
    */
   enableImplicitConversion?: boolean;
+
+  /**
+   * If set to true then class transformer will take default values for unprovided fields.
+   * This is useful when you convert a plain object to a class and have an optional field with a default value.
+   */
+  exposeDefaultValues?: boolean;
 }

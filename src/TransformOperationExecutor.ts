@@ -1,19 +1,7 @@
-import { ClassTransformOptions } from './ClassTransformOptions';
 import { defaultMetadataStorage } from './storage';
-import { TypeHelpOptions, TypeOptions } from './metadata/ExposeExcludeOptions';
-import { TypeMetadata } from './metadata/TypeMetadata';
+import { TypeHelpOptions, TypeOptions, ClassTransformOptions, TypeMetadata } from './interfaces';
 import { TransformationType } from './enums';
-
-export function testForBuffer(): boolean {
-  try {
-    Buffer.isBuffer({
-      /* empty object */
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { getGlobal } from './utils';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
   const array = new (arrayType as any)();
@@ -125,7 +113,7 @@ export class TransformOperationExecutor {
       }
       if (value === null || value === undefined) return value;
       return new Date(value);
-    } else if (testForBuffer() && (targetType === Buffer || value instanceof Buffer) && !isMap) {
+    } else if (!!getGlobal().Buffer && (targetType === Buffer || value instanceof Buffer) && !isMap) {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
     } else if (typeof value === 'object' && value !== null) {
@@ -139,7 +127,7 @@ export class TransformOperationExecutor {
         this.recursionStack.add(value);
       }
 
-      const keys = this.getKeys(targetType as Function, value);
+      const keys = this.getKeys(targetType as Function, value, isMap);
       let newValue: any = source ? source : {};
       if (
         !source &&
@@ -306,14 +294,19 @@ export class TransformOperationExecutor {
             // Apply the default transformation
             finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
           } else {
-            finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
-            finalValue = this.applyCustomTransformations(
-              finalValue,
-              targetType as Function,
-              transformKey,
-              value,
-              this.transformationType
-            );
+            if (subValue === undefined && this.options.exposeDefaultValues) {
+              // Set default value if nothing provided
+              finalValue = newValue[newValueKey];
+            } else {
+              finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+              finalValue = this.applyCustomTransformations(
+                finalValue,
+                targetType as Function,
+                transformKey,
+                value,
+                this.transformationType
+              );
+            }
           }
 
           if (newValue instanceof Map) {
@@ -380,7 +373,7 @@ export class TransformOperationExecutor {
     }
 
     metadatas.forEach(metadata => {
-      value = metadata.transformFn(value, obj, transformationType);
+      value = metadata.transformFn({ value, key, obj, type: transformationType });
     });
 
     return value;
@@ -397,19 +390,24 @@ export class TransformOperationExecutor {
     return meta ? meta.reflectedType : undefined;
   }
 
-  private getKeys(target: Function, object: Record<string, any>): string[] {
+  private getKeys(target: Function, object: Record<string, any>, isMap: boolean): string[] {
     // determine exclusion strategy
     let strategy = defaultMetadataStorage.getStrategy(target);
     if (strategy === 'none') strategy = this.options.strategy || 'exposeAll'; // exposeAll is default strategy
 
     // get all keys that need to expose
     let keys: any[] = [];
-    if (strategy === 'exposeAll') {
+    if (strategy === 'exposeAll' || isMap) {
       if (object instanceof Map) {
         keys = Array.from(object.keys());
       } else {
         keys = Object.keys(object);
       }
+    }
+
+    if (isMap) {
+      // expose & exclude do not apply for map keys only to fields
+      return keys;
     }
 
     if (!this.options.ignoreDecorators && target) {
