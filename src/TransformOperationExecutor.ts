@@ -1,7 +1,7 @@
 import { defaultMetadataStorage } from './storage';
 import { TypeHelpOptions, TypeOptions, ClassTransformOptions, TypeMetadata } from './interfaces';
 import { TransformationType } from './enums';
-import { getGlobal } from './utils';
+import { getGlobal, isPromise } from './utils';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
   const array = new (arrayType as any)();
@@ -64,6 +64,7 @@ export class TransformOperationExecutor {
               if (!targetType.options.keepDiscriminatorProperty)
                 delete subValue[targetType.options.discriminator.property];
             }
+
             if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
               realTargetType = subValue.constructor;
             }
@@ -116,6 +117,17 @@ export class TransformOperationExecutor {
     } else if (!!getGlobal().Buffer && (targetType === Buffer || value instanceof Buffer) && !isMap) {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
+    } else if (isPromise(value) && !isMap) {
+      return new Promise((resolve, reject) => {
+        value.then(
+          (data: any) => resolve(this.transform(undefined, data, targetType, undefined, undefined, level + 1)),
+          reject
+        );
+      });
+    } else if (!isMap && value !== null && typeof value === 'object' && typeof value.then === 'function') {
+      // Note: We should not enter this, as promise has been handled above
+      // This option simply returns the Promise preventing a JS error from happening and should be an inaccessible path.
+      return value; // skip promise transformation
     } else if (typeof value === 'object' && value !== null) {
       // try to guess the type
       if (!targetType && value.constructor !== Object /* && TransformationType === TransformationType.CLASS_TO_PLAIN*/)
@@ -199,13 +211,13 @@ export class TransformOperationExecutor {
               if (!(value[valueKey] instanceof Array)) {
                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                   type = metadata.options.discriminator.subTypes.find(subType => {
-                    if (subValue && metadata.options.discriminator.property in subValue) {
+                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
                       return subType.name === subValue[metadata.options.discriminator.property];
                     }
                   });
                   type === undefined ? (type = newType) : (type = type.value);
                   if (!metadata.options.keepDiscriminatorProperty) {
-                    if (subValue && metadata.options.discriminator.property in subValue) {
+                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
                       delete subValue[metadata.options.discriminator.property];
                     }
                   }
@@ -373,7 +385,7 @@ export class TransformOperationExecutor {
     }
 
     metadatas.forEach(metadata => {
-      value = metadata.transformFn({ value, key, obj, type: transformationType });
+      value = metadata.transformFn({ value, key, obj, type: transformationType, options: this.options });
     });
 
     return value;

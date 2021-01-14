@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import 'reflect-metadata';
-import { classToClass, classToPlain, plainToClass, TransformFnParams } from '../../src/index';
+import { classToClass, classToPlain, ClassTransformOptions, plainToClass, TransformFnParams } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Expose, Transform, Type } from '../../src/decorators';
 import { TransformationType } from '../../src/enums';
-import dayjs from 'dayjs';
 
 describe('custom transformation decorator', () => {
   it('@Expose decorator with "name" option should work with @Transform decorator', () => {
@@ -32,7 +31,7 @@ describe('custom transformation decorator', () => {
       name: string;
 
       @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-      @Transform(({ value }) => dayjs(value), { toClassOnly: true })
+      @Transform(({ value }) => 'custom-transformed', { toClassOnly: true })
       date: Date;
     }
 
@@ -51,7 +50,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Johny Cage');
-    expect(dayjs.isDayjs(classedUser.date)).toBeTruthy();
+    expect(classedUser.date).toBe('custom-transformed');
 
     const plainedUser = classToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
@@ -70,7 +69,7 @@ describe('custom transformation decorator', () => {
       name: string;
 
       @Type(() => Date)
-      @Transform(({ value }) => dayjs(value), { since: 1, until: 2 })
+      @Transform(({ value }) => 'custom-transformed-version-check', { since: 1, until: 2 })
       date: Date;
 
       @Type(() => Date)
@@ -89,7 +88,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser1).toBeInstanceOf(User);
     expect(classedUser1.id).toEqual(1);
     expect(classedUser1.name).toEqual('Johny Cage');
-    expect(dayjs.isDayjs(classedUser1.date)).toBeTruthy();
+    expect(classedUser1.date).toBe('custom-transformed-version-check');
 
     const classedUser2 = plainToClass(User, plainUser, { version: 0.5 });
     expect(classedUser2).toBeInstanceOf(User);
@@ -101,7 +100,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser3).toBeInstanceOf(User);
     expect(classedUser3.id).toEqual(1);
     expect(classedUser3.name).toEqual('Johny Cage');
-    expect(dayjs.isDayjs(classedUser3.date)).toBeTruthy();
+    expect(classedUser3.date).toBe('custom-transformed-version-check');
 
     const classedUser4 = plainToClass(User, plainUser, { version: 2 });
     expect(classedUser4).toBeInstanceOf(User);
@@ -122,11 +121,13 @@ describe('custom transformation decorator', () => {
     let keyArg: string;
     let objArg: any;
     let typeArg: TransformationType;
+    let optionsArg: ClassTransformOptions;
 
-    function transformCallback({ value, key, obj, type }: TransformFnParams): any {
+    function transformCallback({ value, key, obj, type, options }: TransformFnParams): any {
       keyArg = key;
       objArg = obj;
       typeArg = type;
+      optionsArg = options;
       return value;
     }
 
@@ -139,19 +140,26 @@ describe('custom transformation decorator', () => {
     const plainUser = {
       name: 'Johny Cage',
     };
+    const options: ClassTransformOptions = {
+      groups: ['user', 'user.email'],
+      version: 2,
+    };
 
-    plainToClass(User, plainUser);
+    plainToClass(User, plainUser, options);
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(plainUser);
     expect(typeArg).toEqual(TransformationType.PLAIN_TO_CLASS);
+    expect(optionsArg).toBe(options);
 
     const user = new User();
     user.name = 'Johny Cage';
+    optionsArg = undefined;
 
-    classToPlain(user);
+    classToPlain(user, options);
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(user);
     expect(typeArg).toEqual(TransformationType.CLASS_TO_PLAIN);
+    expect(optionsArg).toBe(options);
   });
 
   let model: any;

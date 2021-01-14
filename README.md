@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/typestack/class-transformer/branch/develop/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
 
-Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more then ever.
+Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more than ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
 Also it allows to serialize / deserialize object based on criteria.
 This tool is super useful on both frontend and backend.
@@ -760,7 +760,7 @@ export class Photo {
   id: number;
 
   @Type(() => Date)
-  @Transform(value => moment(value), { toClassOnly: true })
+  @Transform(({ value }) => moment(value), { toClassOnly: true })
   date: Moment;
 }
 ```
@@ -773,15 +773,17 @@ it will convert a date value in your photo object to moment date.
 
 The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
 
-```
-@Transform((value, obj, type) => value)
+```ts
+@Transform(({ value, key, obj, type }) => value)
 ```
 
-| Argument | Description                                   |
-| -------- | --------------------------------------------- |
-| `value`  | The property value before the transformation. |
-| `obj`    | The transformation source object.             |
-| `type`   | The transformation type.                      |
+| Argument  | Description                                             |
+| --------- | ------------------------------------------------------- |
+| `value`   | The property value before the transformation.           |
+| `key`     | The name of the transformed property.                   |
+| `obj`     | The transformation source object.                       |
+| `type`    | The transformation type.                                |
+| `options` | The options object passed to the transformation method. |
 
 ## Other decorators[⬆](#table-of-contents)
 
@@ -829,8 +831,8 @@ const controller = new UserController();
 const user = controller.getUser();
 ```
 
-the `user` variable will contain only firstName,lastName, email properties becuase they are
-the exposed variables. email property is also exposed becuase we metioned the group "user.email".
+the `user` variable will contain only firstName,lastName, email properties because they are
+the exposed variables. email property is also exposed because we metioned the group "user.email".
 
 ## Working with generics[⬆](#table-of-contents)
 

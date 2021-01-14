@@ -2,6 +2,42 @@
 
 _This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
 
+### [0.3.2][v0.3.2] [BREAKING CHANGE] - 2021-01-14
+
+#### Breaking Changes
+
+**Signature change for `@Transform` decorator**
+From this version the `@Transform` decorator receives the transformation parameters in a a wrapper object. You need to
+destructure the values you are interested in.
+
+Old way:
+
+```ts
+@Transform((value, obj, type) => /* Do some stuff with value here. */)
+```
+
+New way with wrapper object:
+
+```ts
+@Transform(({ value, key, obj, type }) => /* Do some stuff with value here. */)
+```
+
+#### Added
+
+- `exposeDefaultValues` option has been added, when enabled properties will use their default values when no value is present for the property
+- the name of the currently transformed parameter is exposed in the `@Transform` decorator
+
+#### Fixed
+
+- fixed an issue with transforming `Map` (#319)
+- fixed an issue with sourcemap generation (#472)
+
+#### Changed
+
+- various internal refactors
+- various changes to the project tooling
+- various dev-dependencies has been updated
+
 ### [0.3.1][v0.3.1] - 2020-07-29
 
 #### Added
@@ -143,6 +179,7 @@ This version has introduced a breaking-change when this library is used with cla
 - Library has changed its name from `serializer.ts` to `constructor-utils`.
 - Added `constructor-utils` namespace.
 
+[v0.3.2]: https://github.com/typestack/class-transformer/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/typestack/class-transformer/compare/v0.2.3...v0.3.1
 [v0.2.3]: https://github.com/typestack/class-transformer/compare/v0.2.2...v0.2.3
 [v0.2.2]: https://github.com/typestack/class-transformer/compare/v0.2.1...v0.2.2
