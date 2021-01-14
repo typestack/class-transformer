@@ -116,6 +116,8 @@ export class TransformOperationExecutor {
     } else if (!!getGlobal().Buffer && (targetType === Buffer || value instanceof Buffer) && !isMap) {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
+    } else if (!isMap && value !== null && typeof value === 'object' && typeof value.then === 'function') {
+      return value; // skip promise transformation
     } else if (typeof value === 'object' && value !== null) {
       // try to guess the type
       if (!targetType && value.constructor !== Object /* && TransformationType === TransformationType.CLASS_TO_PLAIN*/)
