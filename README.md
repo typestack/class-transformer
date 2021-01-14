@@ -342,7 +342,7 @@ console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true })
 ## Working with nested objects[⬆](#table-of-contents)
 
 When you are trying to transform objects that have nested objects,
-its required to known what type of object you are trying to transform.
+it's required to know what type of object you are trying to transform.
 Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
 This is done using `@Type` decorator.
@@ -760,7 +760,7 @@ export class Photo {
   id: number;
 
   @Type(() => Date)
-  @Transform(value => moment(value), { toClassOnly: true })
+  @Transform(({ value }) => moment(value), { toClassOnly: true })
   date: Moment;
 }
 ```
@@ -773,13 +773,14 @@ it will convert a date value in your photo object to moment date.
 
 The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
 
-```
-@Transform((value, obj, type) => value)
+```ts
+@Transform(({ value, key, obj, type }) => value)
 ```
 
 | Argument | Description                                   |
 | -------- | --------------------------------------------- |
 | `value`  | The property value before the transformation. |
+| `key`    | The name of the transformed property.         |
 | `obj`    | The transformation source object.             |
 | `type`   | The transformation type.                      |
 
@@ -829,8 +830,8 @@ const controller = new UserController();
 const user = controller.getUser();
 ```
 
-the `user` variable will contain only firstName,lastName, email properties becuase they are
-the exposed variables. email property is also exposed becuase we metioned the group "user.email".
+the `user` variable will contain only firstName,lastName, email properties because they are
+the exposed variables. email property is also exposed because we metioned the group "user.email".
 
 ## Working with generics[⬆](#table-of-contents)
 
