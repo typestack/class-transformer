@@ -4,7 +4,6 @@ import { classToClass, classToPlain, ClassTransformOptions, plainToClass, Transf
 import { defaultMetadataStorage } from '../../src/storage';
 import { Expose, Transform, Type } from '../../src/decorators';
 import { TransformationType } from '../../src/enums';
-import dayjs from 'dayjs';
 
 describe('custom transformation decorator', () => {
   it('@Expose decorator with "name" option should work with @Transform decorator', () => {
@@ -32,7 +31,7 @@ describe('custom transformation decorator', () => {
       name: string;
 
       @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-      @Transform(({ value }) => dayjs(value), { toClassOnly: true })
+      @Transform(({ value }) => 'custom-transformed', { toClassOnly: true })
       date: Date;
     }
 
@@ -51,7 +50,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Johny Cage');
-    expect(dayjs.isDayjs(classedUser.date)).toBeTruthy();
+    expect(classedUser.date).toBe('custom-transformed');
 
     const plainedUser = classToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
@@ -70,7 +69,7 @@ describe('custom transformation decorator', () => {
       name: string;
 
       @Type(() => Date)
-      @Transform(({ value }) => dayjs(value), { since: 1, until: 2 })
+      @Transform(({ value }) => 'custom-transformed-version-check', { since: 1, until: 2 })
       date: Date;
 
       @Type(() => Date)
@@ -89,7 +88,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser1).toBeInstanceOf(User);
     expect(classedUser1.id).toEqual(1);
     expect(classedUser1.name).toEqual('Johny Cage');
-    expect(dayjs.isDayjs(classedUser1.date)).toBeTruthy();
+    expect(classedUser1.date).toBe('custom-transformed-version-check');
 
     const classedUser2 = plainToClass(User, plainUser, { version: 0.5 });
     expect(classedUser2).toBeInstanceOf(User);
@@ -101,7 +100,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser3).toBeInstanceOf(User);
     expect(classedUser3.id).toEqual(1);
     expect(classedUser3.name).toEqual('Johny Cage');
-    expect(dayjs.isDayjs(classedUser3.date)).toBeTruthy();
+    expect(classedUser3.date).toBe('custom-transformed-version-check');
 
     const classedUser4 = plainToClass(User, plainUser, { version: 2 });
     expect(classedUser4).toBeInstanceOf(User);
