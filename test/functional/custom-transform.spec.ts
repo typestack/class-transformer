@@ -149,7 +149,8 @@ describe('custom transformation decorator', () => {
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(plainUser);
     expect(typeArg).toEqual(TransformationType.PLAIN_TO_CLASS);
-    expect(optionsArg).toBe(options);
+    expect(optionsArg.groups).toBe(options.groups);
+    expect(optionsArg.version).toBe(options.version);
 
     const user = new User();
     user.name = 'Johny Cage';
@@ -159,7 +160,8 @@ describe('custom transformation decorator', () => {
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(user);
     expect(typeArg).toEqual(TransformationType.CLASS_TO_PLAIN);
-    expect(optionsArg).toBe(options);
+    expect(optionsArg.groups).toBe(options.groups);
+    expect(optionsArg.version).toBe(options.version);
   });
 
   let model: any;

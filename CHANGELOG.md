@@ -2,6 +2,26 @@
 
 _This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
 
+### [0.4.0][v0.4.0] [BREAKING CHANGE] - 2021-02-14
+
+#### Breaking Changes
+
+See the breaking changes from `0.3.2` release. It was accidentally released as patch version.
+
+#### Added
+
+- add option to ignore unset properties
+- `group` information is exposed in the `@Transform` handler
+- transformation options are exposed in the `@Transform` handler
+
+#### Fixed
+
+- fixed TypeError when `discriminator.subTypes` is not defined
+
+#### Changed
+
+- various dev-dependencies has been updated
+
 ### [0.3.2][v0.3.2] [BREAKING CHANGE] - 2021-01-14
 
 #### Breaking Changes
@@ -179,6 +199,7 @@ This version has introduced a breaking-change when this library is used with cla
 - Library has changed its name from `serializer.ts` to `constructor-utils`.
 - Added `constructor-utils` namespace.
 
+[v0.4.0]: https://github.com/typestack/class-transformer/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/typestack/class-transformer/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/typestack/class-transformer/compare/v0.2.3...v0.3.1
 [v0.2.3]: https://github.com/typestack/class-transformer/compare/v0.2.2...v0.2.3
