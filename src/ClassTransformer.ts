@@ -2,6 +2,7 @@ import { ClassTransformOptions } from './interfaces';
 import { TransformOperationExecutor } from './TransformOperationExecutor';
 import { TransformationType } from './enums';
 import { ClassConstructor } from './interfaces';
+import { defaultOptions } from './constants/default-options.constant';
 
 export class ClassTransformer {
   // -------------------------------------------------------------------------
@@ -17,7 +18,10 @@ export class ClassTransformer {
     object: T | T[],
     options?: ClassTransformOptions
   ): Record<string, any> | Record<string, any>[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
+    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, {
+      ...defaultOptions,
+      ...options,
+    });
     return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
   }
 
@@ -41,7 +45,10 @@ export class ClassTransformer {
     plainObject: P | P[],
     options?: ClassTransformOptions
   ): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, options || {});
+    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, {
+      ...defaultOptions,
+      ...options,
+    });
     return executor.transform(plainObject, object, undefined, undefined, undefined, undefined);
   }
 
@@ -63,7 +70,10 @@ export class ClassTransformer {
     plain: V | V[],
     options?: ClassTransformOptions
   ): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, options || {});
+    const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, {
+      ...defaultOptions,
+      ...options,
+    });
     return executor.transform(undefined, plain, cls, undefined, undefined, undefined);
   }
 
@@ -83,7 +93,10 @@ export class ClassTransformer {
     plain: V | V[],
     options?: ClassTransformOptions
   ): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, options || {});
+    const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, {
+      ...defaultOptions,
+      ...options,
+    });
     return executor.transform(clsObject, plain, undefined, undefined, undefined, undefined);
   }
 
@@ -93,7 +106,10 @@ export class ClassTransformer {
   classToClass<T>(object: T, options?: ClassTransformOptions): T;
   classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
   classToClass<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, options || {});
+    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, {
+      ...defaultOptions,
+      ...options,
+    });
     return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
   }
 
@@ -105,7 +121,10 @@ export class ClassTransformer {
   classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
   classToClassFromExist<T>(object: T, fromObjects: T[], options?: ClassTransformOptions): T[];
   classToClassFromExist<T>(object: T, fromObject: T | T[], options?: ClassTransformOptions): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, options || {});
+    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, {
+      ...defaultOptions,
+      ...options,
+    });
     return executor.transform(fromObject, object, undefined, undefined, undefined, undefined);
   }
 
