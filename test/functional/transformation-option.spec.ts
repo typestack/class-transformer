@@ -161,4 +161,30 @@ describe('filtering by transformation option', () => {
       lastName: 'Khudoiberdiev',
     });
   });
+
+  it('should ignore undefined properties when exposeUnsetFields is set to false during class to plain', () => {
+    defaultMetadataStorage.clear();
+
+    @Exclude()
+    class User {
+      @Expose()
+      firstName: string;
+
+      @Expose()
+      lastName: string;
+    }
+
+    expect(classToPlain(new User(), { exposeUnsetFields: false })).toEqual({});
+    expect(classToPlain(new User(), { exposeUnsetFields: true })).toEqual({
+      firstName: undefined,
+      lastName: undefined,
+    });
+
+    const classedUser = plainToClass(User, { exposeUnsetFields: false });
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: undefined,
+      lastName: undefined,
+    });
+  });
 });
