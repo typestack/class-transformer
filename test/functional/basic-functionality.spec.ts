@@ -118,6 +118,40 @@ describe('basic functionality', () => {
     expect(transformedUserWithoutExtra).not.toHaveProperty('age');
   });
 
+  it('should exclude extraneous values if both excludeExtraneousValues and ignoreDecorators option is set to true', () => {
+    // fixes https://github.com/typestack/class-transformer/issues/533
+    defaultMetadataStorage.clear();
+
+    class ExampleClass {
+      @Exclude()
+      public valueOne!: number;
+
+      @Expose()
+      public valueTwo!: number;
+    }
+
+    const transformationOptions = {
+      ignoreDecorators: true,
+      excludeExtraneousValues: true,
+    };
+
+    const instance = plainToClass(
+      ExampleClass,
+      { valueOne: 42, valueTwo: 42, extra: true, _otherExtra: true },
+      transformationOptions
+    );
+
+    expect(instance).toBeInstanceOf(ExampleClass);
+    expect(instance).toEqual({ valueOne: 42, valueTwo: 42 });
+
+    (instance as any).extraProp = 'not-needed';
+
+    expect(classToPlain(instance, transformationOptions)).toEqual({
+      valueOne: 42,
+      valueTwo: 42,
+    });
+  });
+
   it('should exclude all objects marked with @Exclude() decorator', () => {
     defaultMetadataStorage.clear();
 

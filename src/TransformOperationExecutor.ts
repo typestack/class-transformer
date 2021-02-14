@@ -426,6 +426,16 @@ export class TransformOperationExecutor {
       return keys;
     }
 
+    /**
+     * If decorators are ignored but we don't want the extraneous values, then we use the
+     * metadata to decide which property is needed, but doesn't apply the decorator effect.
+     */
+    if (this.options.ignoreDecorators && this.options.excludeExtraneousValues && target) {
+      const exposedProperties = defaultMetadataStorage.getExposedProperties(target, this.transformationType);
+      const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);
+      keys = [...exposedProperties, ...excludedProperties];
+    }
+
     if (!this.options.ignoreDecorators && target) {
       // add all exposed to list of keys
       let exposedProperties = defaultMetadataStorage.getExposedProperties(target, this.transformationType);
