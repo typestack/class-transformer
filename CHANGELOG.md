@@ -12,6 +12,11 @@ See the breaking changes from `0.3.2` release. It was accidentally released as p
 
 - add option to ignore unset properties
 - `group` information is exposed in the `@Transform` handler
+- transformation options are exposed in the `@Transform` handler
+
+#### Fixed
+
+- fixed TypeError when `discriminator.subTypes` is not defined
 
 #### Changed
 
