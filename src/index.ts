@@ -57,6 +57,8 @@ export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V | V[], opt
  * Converts plain (literal) object to class (constructor) object.
  * Uses given object as source object (it means fills given object with data from plain object).
  *  Also works with arrays.
+ *
+ * @deprecated This function is being removed. The current implementation is incorrect as it modifies the source object.
  */
 export function plainToClassFromExist<T, V>(clsObject: T[], plain: V[], options?: ClassTransformOptions): T[];
 export function plainToClassFromExist<T, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
@@ -77,6 +79,8 @@ export function classToClass<T>(object: T | T[], options?: ClassTransformOptions
  * Converts class (constructor) object to plain (literal) object.
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
+ *
+ * @deprecated This function is being removed. The current implementation is incorrect as it modifies the source object.
  */
 export function classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
 export function classToClassFromExist<T>(object: T, fromObjects: T[], options?: ClassTransformOptions): T[];
@@ -86,6 +90,11 @@ export function classToClassFromExist<T>(object: T, fromObject: T | T[], options
 
 /**
  * Serializes given object to a JSON string.
+ *
+ * @deprecated This function is being removed. Please use
+ * ```
+ * JSON.stringify(classToPlain(object, options))
+ * ```
  */
 export function serialize<T>(object: T, options?: ClassTransformOptions): string;
 export function serialize<T>(object: T[], options?: ClassTransformOptions): string;
@@ -95,6 +104,11 @@ export function serialize<T>(object: T | T[], options?: ClassTransformOptions): 
 
 /**
  * Deserializes given JSON string to a object of the given class.
+ *
+ * @deprecated This function is being removed. Please use the following instead:
+ * ```
+ * plainToClass(cls, JSON.parse(json), options)
+ * ```
  */
 export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
   return classTransformer.deserialize(cls, json, options);
@@ -102,6 +116,12 @@ export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?:
 
 /**
  * Deserializes given JSON string to an array of objects of the given class.
+ *
+ * @deprecated This function is being removed. Please use the following instead:
+ * ```
+ * JSON.parse(json).map(value => plainToClass(cls, value, options))
+ * ```
+ *
  */
 export function deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
   return classTransformer.deserializeArray(cls, json, options);
