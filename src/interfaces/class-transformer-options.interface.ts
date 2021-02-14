@@ -65,7 +65,8 @@ export interface ClassTransformOptions {
   exposeDefaultValues?: boolean;
 
   /**
-   * When set to true `undefined` fields will be ignored during class to plain transformation.
+   * When set to true, fields with `undefined` as value will be included in class to plain transformation. Otherwise
+   * those fields will be omitted from the result.
    *
    * DEFAULT: `true`
    */
