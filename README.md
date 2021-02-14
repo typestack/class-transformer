@@ -676,8 +676,6 @@ export class User {
 }
 ```
 
-Note, that dates will be converted to strings when you'll try to convert class object to plain object.
-
 Same technique can be used with `Number`, `String`, `Boolean`
 primitive types when you want to convert your values into these types.
 
