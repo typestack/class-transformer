@@ -1,0 +1,4 @@
+root: ./docs
+​structure:  
+  readme: pages/01-getting-started.md  
+  summary: SUMMARY.md​
