@@ -16,8 +16,9 @@ export function Exclude(options: ExcludeOptions = {}): PropertyDecorator & Class
    * decorator only receives one parameter.
    */
   return function (object: any, propertyName?: string | Symbol): void {
-    defaultMetadataStorage.addExcludeMetadata({
+    defaultMetadataStorage.setMetaData({
       target: object instanceof Function ? object : object.constructor,
+      type: 'exclude',
       propertyName: propertyName as string,
       options,
     });

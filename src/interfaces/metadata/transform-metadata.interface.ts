@@ -1,11 +1,13 @@
-import { TransformOptions } from '..';
 import { TransformFnParams } from './transform-fn-params.interface';
+import { TransformOptions, ClassConstructor } from '..';
 
 /**
  * This object represents metadata assigned to a property via the @Transform decorator.
  */
-export interface TransformMetadata {
-  target: Function;
+export interface TransformMetadata<T = unknown> {
+  target: ClassConstructor<T>;
+
+  type: 'transform';
 
   /**
    * The property name this metadata belongs to on the target (property only).

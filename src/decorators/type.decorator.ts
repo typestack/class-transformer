@@ -13,8 +13,9 @@ export function Type(
 ): PropertyDecorator {
   return function (target: any, propertyName: string | Symbol): void {
     const reflectedType = (Reflect as any).getMetadata('design:type', target, propertyName);
-    defaultMetadataStorage.addTypeMetadata({
+    defaultMetadataStorage.setMetaData({
       target: target.constructor,
+      type: 'type',
       propertyName: propertyName as string,
       reflectedType,
       typeFunction,
