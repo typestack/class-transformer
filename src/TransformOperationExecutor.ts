@@ -184,12 +184,22 @@ export class TransformOperationExecutor {
 
         // get a subvalue
         let subValue: any = undefined;
-        if (value instanceof Map) {
-          subValue = value.get(valueKey);
-        } else if (value[valueKey] instanceof Function) {
-          subValue = value[valueKey]();
-        } else {
+        if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+          /**
+           * This section is added for the following report:
+           * https://github.com/typestack/class-transformer/issues/596
+           *
+           * We should not call functions or constructors when transforming to class.
+           */
           subValue = value[valueKey];
+        } else {
+          if (value instanceof Map) {
+            subValue = value.get(valueKey);
+          } else if (value[valueKey] instanceof Function) {
+            subValue = value[valueKey]();
+          } else {
+            subValue = value[valueKey];
+          }
         }
 
         // determine a type
@@ -254,6 +264,7 @@ export class TransformOperationExecutor {
               propertyName
             );
 
+            console.log({ reflectedType });
             if (reflectedType) {
               type = reflectedType;
             }
