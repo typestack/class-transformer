@@ -3,9 +3,9 @@ import { defaultMetadataStorage } from '../../src/storage';
 import {
   Exclude,
   Expose,
-  TransformClassToClass,
-  TransformClassToPlain,
-  TransformPlainToClass,
+  TransformInstanceToInstance,
+  TransformInstanceToPlain,
+  TransformPlainToInstance,
 } from '../../src/decorators';
 
 describe('transformer methods decorator', () => {
@@ -26,7 +26,7 @@ describe('transformer methods decorator', () => {
     }
 
     class UserController {
-      @TransformClassToClass()
+      @TransformInstanceToInstance()
       getUser(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -68,7 +68,7 @@ describe('transformer methods decorator', () => {
     }
 
     class UserController {
-      @TransformPlainToClass(User)
+      @TransformPlainToInstance(User)
       getUser(): User {
         const user: any = {};
         user.firstName = 'Snir';
@@ -109,7 +109,7 @@ describe('transformer methods decorator', () => {
     }
 
     class UserController {
-      @TransformClassToPlain()
+      @TransformInstanceToPlain()
       getUser(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -153,7 +153,7 @@ describe('transformer methods decorator', () => {
     }
 
     class UserController {
-      @TransformClassToPlain({ groups: ['user.permissions'] })
+      @TransformInstanceToPlain({ groups: ['user.permissions'] })
       getUserWithRoles(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -202,7 +202,7 @@ describe('transformer methods decorator', () => {
     }
 
     class UserController {
-      @TransformClassToPlain({ version: 1 })
+      @TransformInstanceToPlain({ version: 1 })
       getUserVersion1(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -214,7 +214,7 @@ describe('transformer methods decorator', () => {
         return user;
       }
 
-      @TransformClassToPlain({ version: 2 })
+      @TransformInstanceToPlain({ version: 2 })
       getUserVersion2(): User {
         const user = new User();
         user.firstName = 'Snir';

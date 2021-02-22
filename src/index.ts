@@ -12,19 +12,21 @@ const classTransformer = new ClassTransformer();
 /**
  * Converts class (constructor) object to plain (literal) object. Also works with arrays.
  */
-export function classToPlain<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
-export function classToPlain<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
-export function classToPlain<T>(
+export function instanceToPlain<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
+export function instanceToPlain<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
+export function instanceToPlain<T>(
   object: T | T[],
   options?: ClassTransformOptions
 ): Record<string, any> | Record<string, any>[] {
-  return classTransformer.classToPlain(object, options);
+  return classTransformer.instanceToPlain(object, options);
 }
 
 /**
  * Converts class (constructor) object to plain (literal) object.
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
+ *
+ * @deprecated This function is being removed.
  */
 export function classToPlainFromExist<T>(
   object: T,
@@ -47,10 +49,14 @@ export function classToPlainFromExist<T>(
 /**
  * Converts plain (literal) object to class (constructor) object. Also works with arrays.
  */
-export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V[], options?: ClassTransformOptions): T[];
-export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
-export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V | V[], options?: ClassTransformOptions): T | T[] {
-  return classTransformer.plainToClass(cls, plain as any, options);
+export function plainToInstance<T, V>(cls: ClassConstructor<T>, plain: V[], options?: ClassTransformOptions): T[];
+export function plainToInstance<T, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
+export function plainToInstance<T, V>(
+  cls: ClassConstructor<T>,
+  plain: V | V[],
+  options?: ClassTransformOptions
+): T | T[] {
+  return classTransformer.plainToInstance(cls, plain as any, options);
 }
 
 /**
@@ -69,10 +75,10 @@ export function plainToClassFromExist<T, V>(clsObject: T, plain: V | V[], option
 /**
  * Converts class (constructor) object to new class (constructor) object. Also works with arrays.
  */
-export function classToClass<T>(object: T, options?: ClassTransformOptions): T;
-export function classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
-export function classToClass<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
-  return classTransformer.classToClass(object, options);
+export function instanceToInstance<T>(object: T, options?: ClassTransformOptions): T;
+export function instanceToInstance<T>(object: T[], options?: ClassTransformOptions): T[];
+export function instanceToInstance<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.instanceToInstance(object, options);
 }
 
 /**
@@ -93,7 +99,7 @@ export function classToClassFromExist<T>(object: T, fromObject: T | T[], options
  *
  * @deprecated This function is being removed. Please use
  * ```
- * JSON.stringify(classToPlain(object, options))
+ * JSON.stringify(instanceToPlain(object, options))
  * ```
  */
 export function serialize<T>(object: T, options?: ClassTransformOptions): string;
@@ -107,7 +113,7 @@ export function serialize<T>(object: T | T[], options?: ClassTransformOptions): 
  *
  * @deprecated This function is being removed. Please use the following instead:
  * ```
- * plainToClass(cls, JSON.parse(json), options)
+ * instanceToClass(cls, JSON.parse(json), options)
  * ```
  */
 export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
@@ -119,7 +125,7 @@ export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?:
  *
  * @deprecated This function is being removed. Please use the following instead:
  * ```
- * JSON.parse(json).map(value => plainToClass(cls, value, options))
+ * JSON.parse(json).map(value => instanceToClass(cls, value, options))
  * ```
  *
  */

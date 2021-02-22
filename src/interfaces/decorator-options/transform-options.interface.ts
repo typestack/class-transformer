@@ -7,7 +7,7 @@ export interface TransformOptions {
    *
    * Example:
    * ```ts
-   * classToPlain(payload, { version: 1.0 });
+   * instanceToPlain(payload, { version: 1.0 });
    * ```
    */
   since?: number;
@@ -17,7 +17,7 @@ export interface TransformOptions {
    *
    * Example:
    * ```ts
-   * classToPlain(payload, { version: 1.0 });
+   * instanceToPlain(payload, { version: 1.0 });
    * ```
    */
   until?: number;
@@ -29,7 +29,7 @@ export interface TransformOptions {
    *
    * Example:
    * ```ts
-   * classToPlain(payload, { groups: ['user'] });
+   * instanceToPlain(payload, { groups: ['user'] });
    * ```
    */
   groups?: string[];
