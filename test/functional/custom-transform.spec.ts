@@ -528,6 +528,60 @@ describe('custom transformation decorator', () => {
     }).not.toThrow();
   });
 
+  /**
+   * test-case for issue #520
+   */
+  it('should deserialize undefined union type to undefined', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      abstract class Hobby {
+        public name: string;
+      }
+
+      class Sports extends Hobby {
+        // Empty
+      }
+
+      class Relaxing extends Hobby {
+        // Empty
+      }
+
+      class Programming extends Hobby {
+        @Transform(({ value }) => value.toUpperCase())
+        specialAbility: string;
+      }
+
+      class Person {
+        public name: string;
+
+        @Type(() => Hobby, {
+          discriminator: {
+            property: '__type',
+            subTypes: [
+              { value: Sports, name: 'sports' },
+              { value: Relaxing, name: 'relax' },
+              { value: Programming, name: 'program' },
+            ],
+          },
+        })
+        public hobby: Hobby;
+      }
+
+      const model: Person = new Person();
+      const sport = new Sports();
+      sport.name = 'Football';
+      const program = new Programming();
+      program.name = 'typescript coding';
+      program.specialAbility = 'testing';
+      model.name = 'John Doe';
+      // NOTE: hobby remains undefined
+      model.hobby = undefined;
+      const json: any = classToPlain(model);
+      expect(json).not.toBeInstanceOf(Person);
+      expect(json.hobby).toBeUndefined();
+    }).not.toThrow();
+  });
+
   it('should transform class Person into class OtherPerson with different possibilities for type of one property (polymorphism)', () => {
     defaultMetadataStorage.clear();
     expect(() => {
