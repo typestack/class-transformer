@@ -266,7 +266,6 @@ export class TransformOperationExecutor {
               propertyName
             );
 
-            console.log({ reflectedType });
             if (reflectedType) {
               type = reflectedType;
             }
