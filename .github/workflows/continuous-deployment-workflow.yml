@@ -7,8 +7,8 @@ jobs:
     name: Publish to NPM
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           registry-url: https://registry.npmjs.org
       - run: npm ci --ignore-scripts
@@ -22,7 +22,7 @@ jobs:
       - run: npm run build:types
       - run: cp LICENSE build/LICENSE
       - run: cp README.md build/README.md
-      - run: jq 'del(.devDependencies) | del(.scripts)' package.json > build/package.json
+      - run: jq 'del(.devDependencies) | del(.scripts) | del(.husky) | del(.lint-staged)' package.json > build/package.json
       - run: npm publish ./build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
