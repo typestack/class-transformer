@@ -76,4 +76,12 @@ export interface ClassTransformOptions {
    * DEFAULT: `true`
    */
   exposeUnsetFields?: boolean;
+
+  /**
+   * When set to true, fields names will be replaced with aliases in class to plain transformation. Otherwise
+   * filed names will be unchanged.
+   *
+   * DEFAULT: `false`
+   */
+  useAliases?: boolean;
 }
