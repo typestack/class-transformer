@@ -1,6 +1,6 @@
 import { defaultMetadataStorage } from './storage';
 import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
-import { TransformationType } from './enums';
+import { IncludePolicy, TransformationType } from './enums';
 import { getGlobal, isPromise } from './utils';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
@@ -520,6 +520,9 @@ export class TransformOperationExecutor {
       return self.indexOf(key) === index;
     });
 
+    // apply include policy
+    keys = this.applyIncludePolicy(keys, object, this.options.includePolicy || IncludePolicy.DEFAULT);
+
     return keys;
   }
 
@@ -535,5 +538,21 @@ export class TransformOperationExecutor {
     if (!groups) return true;
 
     return this.options.groups.some(optionGroup => groups.includes(optionGroup));
+  }
+
+  private applyIncludePolicy(keys: string[], object: any, includePolicy: IncludePolicy): string[] {
+    if (includePolicy === IncludePolicy.DEFAULT) {
+      return keys;
+    }
+
+    if (includePolicy === IncludePolicy.NON_NULL) {
+      return keys.filter((it: string) => object[it] !== null);
+    }
+
+    this.throwIfUnsupportedIncludePolicy(includePolicy);
+  }
+
+  private throwIfUnsupportedIncludePolicy(includePolicy: never) {
+    throw new Error(`Unsupported include policy ${includePolicy as string}`);
   }
 }
