@@ -298,7 +298,7 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
+  unknownProp: 'hello there',
   firstName: 'Umed',
   lastName: 'Khudoiberdiev',
 };
@@ -306,7 +306,7 @@ const fromPlainUser = {
 console.log(plainToClass(User, fromPlainUser));
 
 // User {
-//   unkownProp: 'hello there',
+//   unknownProp: 'hello there',
 //   firstName: 'Umed',
 //   lastName: 'Khudoiberdiev',
 // }
@@ -325,7 +325,7 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
+  unknownProp: 'hello there',
   firstName: 'Umed',
   lastName: 'Khudoiberdiev',
 };
