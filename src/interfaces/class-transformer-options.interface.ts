@@ -1,4 +1,5 @@
 import { TargetMap } from './target-map.interface';
+import { IncludePolicy } from '../enums';
 
 /**
  * Options to be passed during transformation.
@@ -76,4 +77,9 @@ export interface ClassTransformOptions {
    * DEFAULT: `true`
    */
   exposeUnsetFields?: boolean;
+
+  /**
+   * Sets the global policy for which fields will be included. The default is any defined field.
+   */
+  includePolicy?: IncludePolicy;
 }
