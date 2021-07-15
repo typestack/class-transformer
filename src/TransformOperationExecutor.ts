@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from './storage';
-import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
+import { ClassTransformOptions, TypeHelpOptions, TypeMetadata } from './interfaces';
 import { TransformationType } from './enums';
 import { getGlobal, isPromise } from './utils';
 
@@ -50,26 +50,35 @@ export class TransformOperationExecutor {
             targetType &&
             targetType.options &&
             targetType.options.discriminator &&
+            typeof targetType.options.discriminator === 'function'
+          ) {
+            targetType.options.discriminator = targetType.options.discriminator();
+          }
+          if (
+            typeof targetType !== 'function' &&
+            targetType &&
+            targetType.options &&
+            targetType.options.discriminator &&
+            typeof targetType.options.discriminator !== 'function' &&
             targetType.options.discriminator.property &&
             targetType.options.discriminator.subTypes
           ) {
+            const discriminator = targetType.options.discriminator;
             if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
-              realTargetType = targetType.options.discriminator.subTypes.find(
-                subType =>
-                  subType.name === subValue[(targetType as { options: TypeOptions }).options.discriminator.property]
+              realTargetType = discriminator.subTypes.find(
+                subType => subType.name === subValue[discriminator.property]
               );
               const options: TypeHelpOptions = { newObject: newValue, object: subValue, property: undefined };
               const newType = targetType.typeFunction(options);
               realTargetType === undefined ? (realTargetType = newType) : (realTargetType = realTargetType.value);
-              if (!targetType.options.keepDiscriminatorProperty)
-                delete subValue[targetType.options.discriminator.property];
+              if (!targetType.options.keepDiscriminatorProperty) delete subValue[discriminator.property];
             }
 
             if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
               realTargetType = subValue.constructor;
             }
             if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
-              subValue[targetType.options.discriminator.property] = targetType.options.discriminator.subTypes.find(
+              subValue[discriminator.property] = discriminator.subTypes.find(
                 subType => subType.value === subValue.constructor
               ).name;
             }
@@ -213,22 +222,33 @@ export class TransformOperationExecutor {
             const options: TypeHelpOptions = { newObject: newValue, object: value, property: propertyName };
             const newType = metadata.typeFunction ? metadata.typeFunction(options) : metadata.reflectedType;
             if (
+              typeof metadata !== 'function' &&
+              metadata &&
               metadata.options &&
               metadata.options.discriminator &&
+              typeof metadata.options.discriminator === 'function'
+            ) {
+              metadata.options.discriminator = metadata.options.discriminator();
+            }
+            if (
+              metadata.options &&
+              metadata.options.discriminator &&
+              typeof metadata.options.discriminator !== 'function' &&
               metadata.options.discriminator.property &&
               metadata.options.discriminator.subTypes
             ) {
+              const discriminator = metadata.options.discriminator;
               if (!(value[valueKey] instanceof Array)) {
                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                   type = metadata.options.discriminator.subTypes.find(subType => {
-                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
-                      return subType.name === subValue[metadata.options.discriminator.property];
+                    if (subValue && subValue instanceof Object && discriminator.property in subValue) {
+                      return subType.name === subValue[discriminator.property];
                     }
                   });
                   type === undefined ? (type = newType) : (type = type.value);
                   if (!metadata.options.keepDiscriminatorProperty) {
-                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
-                      delete subValue[metadata.options.discriminator.property];
+                    if (subValue && subValue instanceof Object && discriminator.property in subValue) {
+                      delete subValue[discriminator.property];
                     }
                   }
                 }
@@ -237,7 +257,7 @@ export class TransformOperationExecutor {
                 }
                 if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
                   if (subValue) {
-                    subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find(
+                    subValue[discriminator.property] = discriminator.subTypes.find(
                       subType => subType.value === subValue.constructor
                     ).name;
                   }

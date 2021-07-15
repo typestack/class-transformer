@@ -8,7 +8,7 @@ export interface TypeOptions {
    * Optional discriminator object, when provided the property value will be
    * initialized according to the specified object.
    */
-  discriminator?: DiscriminatorDescriptor;
+  discriminator?: DiscriminatorDescriptor | (() => DiscriminatorDescriptor);
 
   /**
    * Indicates whether to keep the discriminator property on the
