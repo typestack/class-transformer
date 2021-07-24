@@ -28,7 +28,7 @@ The [example source code](https://github.com/pleerock/class-transformer-demo) is
 - [Enforcing type-safe instance](#enforcing-type-safe-instance)
 - [Working with nested objects](#working-with-nested-objects)
   - [Providing more than one type option](#providing-more-than-one-type-option)
-- [Exposing getters and function return values](#exposing-getters-and-function-return-values)
+- [Exposing getters and method return values](#exposing-getters-and-method-return-values)
 - [Exposing properties with different names](#exposing-properties-with-different-names)
 - [Skipping specific properties](#skipping-specific-properties)
 - [Skipping depend of operation](#skipping-depend-of-operation)
@@ -58,7 +58,7 @@ In JavaScript, there are two types of objects:
 
 Plain objects are objects that are instances of the `Object` class.
 Sometimes they are called **literal** objects, when created via the `{}` notation.
-Class objects are instances of classes with their own defined constructor, properties and functions.
+Class objects are instances of classes with their own defined constructor, properties and methods.
 Usually, you define them with the `class` notation. So, what is the problem?
 
 Sometimes, you want to transform plain javascript object to the ES6 **classes** you have.
@@ -116,12 +116,12 @@ the following code:
 fetch('users.json').then((users: User[]) => {
   // you can use users here, and type hinting also will be available to you,
   // but users are not actually instances of the User class.
-  // This means that you can't use functions of the User class.
+  // This means that you can't use methods of the User class.
 });
 ```
 
 In this code, you can use properties `users[0].id`, `users[0].firstName` and `users[0].lastName`.
-But you cannot use the functions `users[0].getName()` or `users[0].isAdult()`, because `users` actually is
+But you cannot use the methods `users[0].getName()` or `users[0].isAdult()`, because `users` actually is
 an array of plain JavaScript objects, not instances of the `User` class.
 
 So what to do? How do we create a `users` as an array of `User` objects, instead of plain JavaScript objects?
@@ -141,7 +141,7 @@ fetch('users.json').then((users: Object[]) => {
 });
 ```
 
-Now you can use the functions `users[0].getName()` and `users[0].isAdult()`.
+Now you can use the methods `users[0].getName()` and `users[0].isAdult()`.
 
 ## Installation[⬆](#table-of-contents)
 
@@ -438,9 +438,9 @@ let album = plainToClass(Album, albumJson);
 Hint: The same applies for arrays with different sub types. Moreover you can specify `keepDiscriminatorProperty: true`
 in the options to keep the discriminator property also inside your resulting class.
 
-## Exposing getters and function return values[⬆](#table-of-contents)
+## Exposing getters and method return values[⬆](#table-of-contents)
 
-You can expose what your getter or function return by setting an `@Expose()` decorator to those getters or functions:
+You can expose what your getter or method return by setting an `@Expose()` decorator to those getters or methods:
 
 ```typescript
 import { Expose } from 'class-transformer';
@@ -699,7 +699,7 @@ You can also use custom array types:
 import { Type } from 'class-transformer';
 
 export class AlbumCollection extends Array<Album> {
-  // custom array functions ...
+  // custom array methods ...
 }
 
 export class Photo {
@@ -877,12 +877,12 @@ this.http
   .map(res => res.json())
   .map(res => plainToClass(User, res as Object[]))
   .subscribe(users => {
-    // now "users" is type of User[] and each user has getName() and isAdult() functions available
+    // now "users" is type of User[] and each user has getName() and isAdult() methods available
     console.log(users);
   });
 ```
 
-You can also inject a class `ClassTransformer` as a service in `providers`, and use its functions.
+You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
 
 Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is [here](https://github.com/pleerock/class-transformer-demo).
