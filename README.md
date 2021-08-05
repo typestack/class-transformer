@@ -375,9 +375,13 @@ let album = plainToClass(Album, albumJson);
 
 In case the nested object can be of different types, you can provide an additional options object,
 that specifies a discriminator. The discriminator option must define a `property` that holds the subtype
-name for the object and the possible `subTypes` that the nested object can converted to. A sub type
+name for the object and the possible `subTypes` that the nested object can be converted to. A sub type
 has a `value`, that holds the constructor of the Type and the `name`, that can match with the `property`
 of the discriminator.
+
+The discriminator lookup can be done on the target object level (default) or at the parent level by setting `parentProperty: true`.
+
+The `property` can be a string containing nested properties names separated by `.` or a string array (eg: `photo.type`, ["photo", "type"]).
 
 Lets say we have an album that has a top photo. But this photo can be of certain different types.
 And we are trying to convert album plain object to class object. The plain object input has to define
