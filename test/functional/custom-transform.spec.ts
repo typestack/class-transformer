@@ -435,6 +435,116 @@ describe('custom transformation decorator', () => {
     }).not.toThrow();
   });
 
+  it('should serialize json into model instance of class SignTransaction with different possibilities for type of one parent property AND keeps discriminator property (polymorphism)', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      const json = {
+        coinType: 148,
+        transaction: { metadata: 'metadata', operation: 'Payment' },
+      };
+
+      abstract class Transaction {
+        public metadata: string;
+      }
+
+      class EthereumTransaction extends Transaction {
+        // Empty
+      }
+
+      class BitcoinTransaction extends Transaction {
+        // Empty
+      }
+
+      class StellarTransaction extends Transaction {
+        @Transform(({ value }) => value.toUpperCase())
+        operation: string;
+      }
+
+      class SignTransaction {
+        public coinType: number;
+
+        @Type(() => Transaction, {
+          discriminator: {
+            property: 'coinType',
+            parentProperty: true,
+            subTypes: [
+              { value: EthereumTransaction, name: 60 },
+              { value: BitcoinTransaction, name: 0 },
+              { value: StellarTransaction, name: 148 },
+            ],
+          },
+          keepDiscriminatorProperty: true,
+        })
+        public transaction: any;
+      }
+
+      const model: SignTransaction = plainToInstance(SignTransaction, json);
+      expect(model).toBeInstanceOf(SignTransaction);
+      expect(model.transaction).toBeInstanceOf(StellarTransaction);
+      expect(model).toHaveProperty('coinType');
+      expect(model.transaction).toHaveProperty('operation', 'PAYMENT');
+    }).not.toThrow();
+  });
+
+  it('should serialize json into model instance of class SignTransaction with different possibilities for type of one nested property AND keeps discriminator property (polymorphism)', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      const json = {
+        identity: {
+          coinType: 148,
+        },
+        transaction: { metadata: 'metadata', operation: 'Payment' },
+      };
+
+      class Identity {
+        public coinType: number;
+      }
+
+      abstract class Transaction {
+        public metadata: string;
+      }
+
+      class EthereumTransaction extends Transaction {
+        // Empty
+      }
+
+      class BitcoinTransaction extends Transaction {
+        // Empty
+      }
+
+      class StellarTransaction extends Transaction {
+        @Transform(({ value }) => value.toUpperCase())
+        operation: string;
+      }
+
+      class SignTransaction {
+        @Type(() => Identity)
+        public identity: Identity;
+
+        @Type(() => Transaction, {
+          discriminator: {
+            property: 'identity.coinType',
+            parentProperty: true,
+            subTypes: [
+              { value: EthereumTransaction, name: 60 },
+              { value: BitcoinTransaction, name: 0 },
+              { value: StellarTransaction, name: 148 },
+            ],
+          },
+          keepDiscriminatorProperty: true,
+        })
+        public transaction: any;
+      }
+
+      const model: SignTransaction = plainToInstance(SignTransaction, json);
+      expect(model).toBeInstanceOf(SignTransaction);
+      expect(model.identity).toBeInstanceOf(Identity);
+      expect(model.transaction).toBeInstanceOf(StellarTransaction);
+      expect(model.identity).toHaveProperty('coinType');
+      expect(model.transaction).toHaveProperty('operation', 'PAYMENT');
+    }).not.toThrow();
+  });
+
   it('should deserialize class Person into json with different possibilities for type of one property (polymorphism)', () => {
     defaultMetadataStorage.clear();
     expect(() => {
