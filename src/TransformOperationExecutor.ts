@@ -54,24 +54,25 @@ export class TransformOperationExecutor {
             targetType.options.discriminator.subTypes
           ) {
             if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+              const discriminator = this.getDiscriminator(subValue, targetType.options.discriminator.property);
               realTargetType = targetType.options.discriminator.subTypes.find(
-                subType =>
-                  subType.name === subValue[(targetType as { options: TypeOptions }).options.discriminator.property]
+                subType => subType.name === discriminator
               );
               const options: TypeHelpOptions = { newObject: newValue, object: subValue, property: undefined };
               const newType = targetType.typeFunction(options);
               realTargetType === undefined ? (realTargetType = newType) : (realTargetType = realTargetType.value);
               if (!targetType.options.keepDiscriminatorProperty)
-                delete subValue[targetType.options.discriminator.property];
+                this.removeDiscriminator(subValue, targetType.options.discriminator.property);
             }
 
             if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
               realTargetType = subValue.constructor;
             }
             if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
-              subValue[targetType.options.discriminator.property] = targetType.options.discriminator.subTypes.find(
+              const value = targetType.options.discriminator.subTypes.find(
                 subType => subType.value === subValue.constructor
-              ).name;
+              )?.name;
+              this.setFromDiscriminator(subValue, targetType.options.discriminator.property, value);
             }
           } else {
             realTargetType = targetType;
@@ -220,15 +221,22 @@ export class TransformOperationExecutor {
             ) {
               if (!(value[valueKey] instanceof Array)) {
                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+                  const discriminator = this.getDiscriminator(
+                    metadata.options.discriminator.parentProperty ? value : subValue,
+                    metadata.options.discriminator.property
+                  );
                   type = metadata.options.discriminator.subTypes.find(subType => {
-                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
-                      return subType.name === subValue[metadata.options.discriminator.property];
+                    if (subValue && subValue instanceof Object && discriminator) {
+                      return subType.name === discriminator;
                     }
                   });
                   type === undefined ? (type = newType) : (type = type.value);
                   if (!metadata.options.keepDiscriminatorProperty) {
-                    if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
-                      delete subValue[metadata.options.discriminator.property];
+                    if (subValue && subValue instanceof Object && discriminator) {
+                      this.removeDiscriminator(
+                        metadata.options.discriminator.parentProperty ? value : subValue,
+                        metadata.options.discriminator.property
+                      );
                     }
                   }
                 }
@@ -237,9 +245,10 @@ export class TransformOperationExecutor {
                 }
                 if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
                   if (subValue) {
-                    subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find(
+                    const value = metadata.options.discriminator.subTypes.find(
                       subType => subType.value === subValue.constructor
-                    ).name;
+                    )?.name;
+                    this.setFromDiscriminator(subValue, metadata.options.discriminator.property, value);
                   }
                 }
               } else {
@@ -535,5 +544,69 @@ export class TransformOperationExecutor {
     if (!groups) return true;
 
     return this.options.groups.some(optionGroup => groups.includes(optionGroup));
+  }
+
+  private getDiscriminator(object: Record<string, any>, path: string | string[]): number | string | undefined {
+    if (!object || !path) {
+      return undefined;
+    }
+    if (typeof path === 'string') {
+      path = path.split('.');
+    }
+    let index = 0;
+    const length = path.length;
+    while (object != null && index < length) {
+      object = object[path[index++]];
+    }
+    const result = typeof object === 'string' || typeof object === 'number' ? object : undefined;
+    return index && index == length ? result : undefined;
+  }
+
+  private setFromDiscriminator(object: Record<string, any>, path: string | string[], value: any) {
+    if (typeof object !== 'object') {
+      return object;
+    }
+    if (typeof path === 'string') {
+      path = path.split('.');
+    }
+    const length = path.length;
+    const lastIndex = length - 1;
+    let index = -1;
+    let nested = object;
+    while (nested !== null && ++index < length) {
+      const key = path[index];
+      let newValue = value;
+      if (index !== lastIndex) {
+        const objValue = nested[key];
+        if (typeof objValue === 'object') {
+          newValue = objValue;
+        } else if (typeof path[index + 1] === 'number') {
+          newValue = [];
+        } else {
+          newValue = {};
+        }
+      }
+      nested[key] = newValue;
+      nested = nested[key];
+    }
+    return object;
+  }
+
+  private removeDiscriminator(object: Record<string, any>, path: string | string[]): void {
+    if (!object || !path) {
+      return;
+    }
+    let currentObject = object;
+    const parts = typeof path === 'string' ? path.split('.') : path;
+    const last = parts.pop();
+    for (const part of parts) {
+      currentObject = currentObject[part];
+      if (!currentObject) {
+        return;
+      }
+    }
+    if (last) {
+      delete currentObject[last];
+    }
   }
 }
