@@ -6,6 +6,37 @@ import { defaultOptions } from './constants/default-options.constant';
 
 export class ClassTransformer {
   // -------------------------------------------------------------------------
+  // Static Methods
+  // -------------------------------------------------------------------------
+
+  /**
+   * Parses json with extended treatment of bigint numbers
+   */
+  static JsonParseWithBigInt(text: string): any {
+    const resObj = JSON.parse(text, (_, value) => {
+      if (typeof value === 'string') {
+        //todo use something cheaper than regex
+        const m = /(-?\d+)n?/.exec(value);
+        //! convert strings like '1234566' or '123456n' to numbers
+        //! important! we use 'number' type to represent postgres's bigint:
+        //!     Javascript number:    ± 9,007,199,254,740,991
+        //!     Postgresql bigint: -9,223,372,036,854,775,808 – 9,223,372,036,854,775,807
+        //! later we'll switch to Javascript's BigInt
+        if (m && m[0] === value) {
+          /// Number for now
+          value = Number.parseInt(m[1]);
+          /// BigInt for later
+          //* value = BigInt(m[1]);
+        } else if (value.length > 0) {
+          const floatValue = (value as any) / 1.0;
+          if (!isNaN(floatValue)) value = floatValue;
+        } else value = null;
+      }
+      return value;
+    });
+    return resObj;
+  }
+  // -------------------------------------------------------------------------
   // Public Methods
   // -------------------------------------------------------------------------
 
@@ -141,7 +172,7 @@ export class ClassTransformer {
    * Deserializes given JSON string to a object of the given class.
    */
   deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
-    const jsonObject: T = JSON.parse(json);
+    const jsonObject: T = options?.distinguishBigInts ? ClassTransformer.JsonParseWithBigInt(json) : JSON.parse(json);
     return this.plainToInstance(cls, jsonObject, options);
   }
 
@@ -149,7 +180,9 @@ export class ClassTransformer {
    * Deserializes given JSON string to an array of objects of the given class.
    */
   deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
-    const jsonObject: any[] = JSON.parse(json);
+    const jsonObject: any[] = options?.distinguishBigInts
+      ? ClassTransformer.JsonParseWithBigInt(json)
+      : JSON.parse(json);
     return this.plainToInstance(cls, jsonObject, options);
   }
 }

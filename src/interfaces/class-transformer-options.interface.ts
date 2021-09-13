@@ -76,4 +76,12 @@ export interface ClassTransformOptions {
    * DEFAULT: `true`
    */
   exposeUnsetFields?: boolean;
+
+  /**
+   * When set to true, fields like `12345n` are treated as Numnbers. Otherwise
+   * those fields are strings.
+   *
+   * DEFAULT: `false`
+   */
+  distinguishBigInts?: boolean;
 }
