@@ -841,7 +841,7 @@ There are some tweaks however you can use, that maybe can solve your problem.
 
 ## Implicit type conversion[⬆](#table-of-contents)
 
-> **NOTE** If you use class-validator together with class-transformer you propably DON'T want to enable this function.
+> **NOTE** If you use class-validator together with class-transformer you probably DON'T want to enable this function.
 
 Enables automatic conversion between built-in types based on type information provided by Typescript. Disabled by default.
 
