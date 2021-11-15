@@ -8,7 +8,13 @@ export interface DiscriminatorDescriptor {
   /**
    * The name of the property which holds the type information in the received object.
    */
-  property: string;
+  property: string | string[];
+
+  /**
+   * Wether the property should be lookedup in the parent object.
+   */
+  parentProperty?: boolean;
+
   /**
    * List of the available types. The transformer will try to lookup the object
    * with the same key as the value received in the defined discriminator property
@@ -18,7 +24,7 @@ export interface DiscriminatorDescriptor {
     /**
      * Name of the type.
      */
-    name: string;
+    name: string | number;
 
     /**
      * A class constructor which can be used to create the object.
