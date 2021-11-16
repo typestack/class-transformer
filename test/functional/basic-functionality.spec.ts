@@ -4,6 +4,7 @@ import {
   classToClassFromExist,
   instanceToPlain,
   classToPlainFromExist,
+  IncludePolicy,
   plainToInstance,
   plainToClassFromExist,
 } from '../../src/index';
@@ -1852,5 +1853,42 @@ describe('basic functionality', () => {
     expect(transformedClass.usersDefined[0].name).toEqual('a-name');
 
     expect(transformedClass.usersUndefined).toBeUndefined();
+  });
+
+  it('should not expose null if include policy is NON_NULL', () => {
+    defaultMetadataStorage.clear();
+
+    class Photo {
+      id: number;
+      filename: string;
+      status: number;
+    }
+
+    class User {
+      firstName: string;
+      lastName: string;
+      password: string;
+
+      @Type(type => Photo)
+      photos: Photo[];
+    }
+
+    const user = new User();
+    user.firstName = 'Umed';
+    user.lastName = 'Khudoiberdiev';
+    user.password = null;
+    const photo = new Photo();
+    photo.id = 1;
+    photo.filename = 'myphoto.jpg';
+    photo.status = 1;
+    user.photos = [photo];
+
+    const plainUser1: any = classToPlain(user, {
+      includePolicy: IncludePolicy.NON_NULL,
+    });
+    expect(plainUser1).not.toBeInstanceOf(User);
+    expect(plainUser1.firstName).toEqual('Umed');
+    expect(plainUser1.lastName).toEqual('Khudoiberdiev');
+    expect(plainUser1.password).toBeUndefined();
   });
 });
