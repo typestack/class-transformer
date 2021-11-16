@@ -329,6 +329,61 @@ describe('custom transformation decorator', () => {
     }).not.toThrow();
   });
 
+  it('should be able to lazily provide disciminator value for polymorphism', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      const json = {
+        name: 'John Doe',
+        hobbies: [
+          { __type: 'program', name: 'typescript coding', specialAbility: 'testing' },
+          { __type: 'relax', name: 'sun' },
+        ],
+      };
+
+      abstract class Hobby {
+        public name: string;
+      }
+
+      class Sports extends Hobby {
+        // Empty
+      }
+
+      class Relaxing extends Hobby {
+        // Empty
+      }
+
+      class Programming extends Hobby {
+        @Transform(({ value }) => value.toUpperCase())
+        specialAbility: string;
+      }
+
+      class Person {
+        public name: string;
+
+        @Type(() => Hobby, {
+          discriminator: () => ({
+            property: '__type',
+            subTypes: [
+              { value: Sports, name: 'sports' },
+              { value: Relaxing, name: 'relax' },
+              { value: Programming, name: 'program' },
+            ],
+          }),
+        })
+        public hobbies: any[];
+      }
+
+      const model: Person = plainToInstance(Person, json);
+      expect(model).toBeInstanceOf(Person);
+      expect(model.hobbies[0]).toBeInstanceOf(Programming);
+      expect(model.hobbies[1]).toBeInstanceOf(Relaxing);
+      expect(model.hobbies[0]).not.toHaveProperty('__type');
+      expect(model.hobbies[1]).not.toHaveProperty('__type');
+      expect(model.hobbies[1]).toHaveProperty('name', 'sun');
+      expect(model.hobbies[0]).toHaveProperty('specialAbility', 'TESTING');
+    }).not.toThrow();
+  });
+
   it('should serialize json into model instance of class Person with different possibilities for type of one property AND keeps discriminator property (polymorphism)', () => {
     defaultMetadataStorage.clear();
     expect(() => {
