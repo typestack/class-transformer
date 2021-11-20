@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import 'reflect-metadata';
-import { classToClass, classToPlain, ClassTransformOptions, plainToClass, TransformFnParams } from '../../src/index';
+import {
+  instanceToInstance,
+  instanceToPlain,
+  ClassTransformOptions,
+  plainToInstance,
+  TransformFnParams,
+} from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Expose, Transform, Type } from '../../src/decorators';
 import { TransformationType } from '../../src/enums';
@@ -19,7 +25,7 @@ describe('custom transformation decorator', () => {
       user_name: 'Johny Cage',
     };
 
-    const classedUser = plainToClass(User, plainUser);
+    const classedUser = plainToInstance(User, plainUser);
     expect(classedUser.name).toEqual('JOHNY CAGE');
   });
 
@@ -46,13 +52,13 @@ describe('custom transformation decorator', () => {
     user.name = 'Johny Cage';
     user.date = new Date();
 
-    const classedUser = plainToClass(User, plainUser);
+    const classedUser = plainToInstance(User, plainUser);
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Johny Cage');
     expect(classedUser.date).toBe('custom-transformed');
 
-    const plainedUser = classToPlain(user);
+    const plainedUser = instanceToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
     expect(plainedUser).toEqual({
       id: 1,
@@ -84,31 +90,31 @@ describe('custom transformation decorator', () => {
       lastVisitDate: new Date().valueOf(),
     };
 
-    const classedUser1 = plainToClass(User, plainUser);
+    const classedUser1 = plainToInstance(User, plainUser);
     expect(classedUser1).toBeInstanceOf(User);
     expect(classedUser1.id).toEqual(1);
     expect(classedUser1.name).toEqual('Johny Cage');
     expect(classedUser1.date).toBe('custom-transformed-version-check');
 
-    const classedUser2 = plainToClass(User, plainUser, { version: 0.5 });
+    const classedUser2 = plainToInstance(User, plainUser, { version: 0.5 });
     expect(classedUser2).toBeInstanceOf(User);
     expect(classedUser2.id).toEqual(1);
     expect(classedUser2.name).toEqual('Johny Cage');
     expect(classedUser2.date).toBeInstanceOf(Date);
 
-    const classedUser3 = plainToClass(User, plainUser, { version: 1 });
+    const classedUser3 = plainToInstance(User, plainUser, { version: 1 });
     expect(classedUser3).toBeInstanceOf(User);
     expect(classedUser3.id).toEqual(1);
     expect(classedUser3.name).toEqual('Johny Cage');
     expect(classedUser3.date).toBe('custom-transformed-version-check');
 
-    const classedUser4 = plainToClass(User, plainUser, { version: 2 });
+    const classedUser4 = plainToInstance(User, plainUser, { version: 2 });
     expect(classedUser4).toBeInstanceOf(User);
     expect(classedUser4.id).toEqual(1);
     expect(classedUser4.name).toEqual('Johny Cage');
     expect(classedUser4.date).toBeInstanceOf(Date);
 
-    const classedUser5 = plainToClass(User, plainUser, { groups: ['user'] });
+    const classedUser5 = plainToInstance(User, plainUser, { groups: ['user'] });
     expect(classedUser5).toBeInstanceOf(User);
     expect(classedUser5.id).toEqual(1);
     expect(classedUser5.name).toEqual('Johny Cage');
@@ -145,7 +151,7 @@ describe('custom transformation decorator', () => {
       version: 2,
     };
 
-    plainToClass(User, plainUser, options);
+    plainToInstance(User, plainUser, options);
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(plainUser);
     expect(typeArg).toEqual(TransformationType.PLAIN_TO_CLASS);
@@ -156,7 +162,7 @@ describe('custom transformation decorator', () => {
     user.name = 'Johny Cage';
     optionsArg = undefined;
 
-    classToPlain(user, options);
+    instanceToPlain(user, options);
     expect(keyArg).toBe('name');
     expect(objArg).toEqual(user);
     expect(typeArg).toEqual(TransformationType.CLASS_TO_PLAIN);
@@ -210,7 +216,7 @@ describe('custom transformation decorator', () => {
 
         public age: number;
       }
-      model = plainToClass(Person, json);
+      model = plainToInstance(Person, json);
       expect(model instanceof Person);
       expect(model.address instanceof Address);
       model.hobbies.forEach((hobby: Hobby) => expect(hobby instanceof Hobby && hobby.type === 'sport'));
@@ -260,7 +266,7 @@ describe('custom transformation decorator', () => {
 
       const expectedHobby = { name: 'typescript coding', specialAbility: 'TESTING' };
 
-      const model: Person = plainToClass(Person, json);
+      const model: Person = plainToInstance(Person, json);
       expect(model).toBeInstanceOf(Person);
       expect(model.hobby).toBeInstanceOf(Programming);
       expect(model.hobby).not.toHaveProperty('__type');
@@ -312,7 +318,7 @@ describe('custom transformation decorator', () => {
         public hobbies: any[];
       }
 
-      const model: Person = plainToClass(Person, json);
+      const model: Person = plainToInstance(Person, json);
       expect(model).toBeInstanceOf(Person);
       expect(model.hobbies[0]).toBeInstanceOf(Programming);
       expect(model.hobbies[1]).toBeInstanceOf(Relaxing);
@@ -365,7 +371,7 @@ describe('custom transformation decorator', () => {
         public hobby: any;
       }
 
-      const model: Person = plainToClass(Person, json);
+      const model: Person = plainToInstance(Person, json);
       expect(model).toBeInstanceOf(Person);
       expect(model.hobby).toBeInstanceOf(Programming);
       expect(model.hobby).toHaveProperty('__type');
@@ -418,7 +424,7 @@ describe('custom transformation decorator', () => {
         public hobbies: any[];
       }
 
-      const model: Person = plainToClass(Person, json);
+      const model: Person = plainToInstance(Person, json);
       expect(model).toBeInstanceOf(Person);
       expect(model.hobbies[0]).toBeInstanceOf(Programming);
       expect(model.hobbies[1]).toBeInstanceOf(Relaxing);
@@ -471,7 +477,7 @@ describe('custom transformation decorator', () => {
       program.specialAbility = 'testing';
       model.name = 'John Doe';
       model.hobby = program;
-      const json: any = classToPlain(model);
+      const json: any = instanceToPlain(model);
       expect(json).not.toBeInstanceOf(Person);
       expect(json.hobby).toHaveProperty('__type', 'program');
     }).not.toThrow();
@@ -521,10 +527,64 @@ describe('custom transformation decorator', () => {
       program.specialAbility = 'testing';
       model.name = 'John Doe';
       model.hobbies = [sport, program];
-      const json: any = classToPlain(model);
+      const json: any = instanceToPlain(model);
       expect(json).not.toBeInstanceOf(Person);
       expect(json.hobbies[0]).toHaveProperty('__type', 'sports');
       expect(json.hobbies[1]).toHaveProperty('__type', 'program');
+    }).not.toThrow();
+  });
+
+  /**
+   * test-case for issue #520
+   */
+  it('should deserialize undefined union type to undefined', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      abstract class Hobby {
+        public name: string;
+      }
+
+      class Sports extends Hobby {
+        // Empty
+      }
+
+      class Relaxing extends Hobby {
+        // Empty
+      }
+
+      class Programming extends Hobby {
+        @Transform(({ value }) => value.toUpperCase())
+        specialAbility: string;
+      }
+
+      class Person {
+        public name: string;
+
+        @Type(() => Hobby, {
+          discriminator: {
+            property: '__type',
+            subTypes: [
+              { value: Sports, name: 'sports' },
+              { value: Relaxing, name: 'relax' },
+              { value: Programming, name: 'program' },
+            ],
+          },
+        })
+        public hobby: Hobby;
+      }
+
+      const model: Person = new Person();
+      const sport = new Sports();
+      sport.name = 'Football';
+      const program = new Programming();
+      program.name = 'typescript coding';
+      program.specialAbility = 'testing';
+      model.name = 'John Doe';
+      // NOTE: hobby remains undefined
+      model.hobby = undefined;
+      const json: any = instanceToPlain(model);
+      expect(json).not.toBeInstanceOf(Person);
+      expect(json.hobby).toBeUndefined();
     }).not.toThrow();
   });
 
@@ -570,7 +630,7 @@ describe('custom transformation decorator', () => {
       program.specialAbility = 'testing';
       model.name = 'John Doe';
       model.hobby = program;
-      const person: Person = classToClass(model);
+      const person: Person = instanceToInstance(model);
       expect(person).toBeInstanceOf(Person);
       expect(person.hobby).not.toHaveProperty('__type');
     }).not.toThrow();
@@ -620,7 +680,7 @@ describe('custom transformation decorator', () => {
       program.specialAbility = 'testing';
       model.name = 'John Doe';
       model.hobbies = [sport, program];
-      const person: Person = classToClass(model);
+      const person: Person = instanceToInstance(model);
       expect(person).toBeInstanceOf(Person);
       expect(person.hobbies[0]).not.toHaveProperty('__type');
       expect(person.hobbies[1]).not.toHaveProperty('__type');
@@ -664,7 +724,7 @@ describe('custom transformation decorator', () => {
         public hobby: any;
       }
 
-      const model: Person = plainToClass(Person, json);
+      const model: Person = plainToInstance(Person, json);
       expect(model).toBeInstanceOf(Person);
       expect(model.hobby).toBeInstanceOf(Hobby);
       expect(model.hobby).not.toHaveProperty('__type');
@@ -712,7 +772,7 @@ describe('custom transformation decorator', () => {
         public hobbies: any[];
       }
 
-      const model: Person = plainToClass(Person, json);
+      const model: Person = plainToInstance(Person, json);
       expect(model).toBeInstanceOf(Person);
       expect(model.hobbies[0]).toBeInstanceOf(Hobby);
       expect(model.hobbies[1]).toBeInstanceOf(Hobby);
@@ -725,7 +785,7 @@ describe('custom transformation decorator', () => {
 
   it('should serialize a model into json', () => {
     expect(() => {
-      classToPlain(model);
+      instanceToPlain(model);
     }).not.toThrow();
   });
 });
