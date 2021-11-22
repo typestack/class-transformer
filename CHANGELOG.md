@@ -2,6 +2,12 @@
 
 _This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
 
+### [0.5.1][v0.5.1] [BREAKING CHANGE] - 2021-11-22
+
+#### Changed
+
+- re-added accidentally removed deprecated function names `classToPlain` and `plainToClass`
+
 ### [0.5.0][v0.5.0] [BREAKING CHANGE] - 2021-11-20
 
 > **NOTE:** This version fixes a security vulnerability allowing denial of service attacks with a specially crafted request payload. Please update as soon as possible.
@@ -229,6 +235,7 @@ This version has introduced a breaking-change when this library is used with cla
 - Library has changed its name from `serializer.ts` to `constructor-utils`.
 - Added `constructor-utils` namespace.
 
+[v0.5.0]: https://github.com/typestack/class-transformer/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/typestack/class-transformer/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/typestack/class-transformer/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/typestack/class-transformer/compare/v0.3.2...v0.4.0
