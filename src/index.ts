@@ -11,6 +11,20 @@ const classTransformer = new ClassTransformer();
 
 /**
  * Converts class (constructor) object to plain (literal) object. Also works with arrays.
+ *
+ * @deprecated Function name changed, use the `instanceToPlain` method instead.
+ */
+export function classToPlain<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
+export function classToPlain<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
+export function classToPlain<T>(
+  object: T | T[],
+  options?: ClassTransformOptions
+): Record<string, any> | Record<string, any>[] {
+  return classTransformer.instanceToPlain(object, options);
+}
+
+/**
+ * Converts class (constructor) object to plain (literal) object. Also works with arrays.
  */
 export function instanceToPlain<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
 export function instanceToPlain<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
@@ -44,6 +58,17 @@ export function classToPlainFromExist<T>(
   options?: ClassTransformOptions
 ): Record<string, any> | Record<string, any>[] {
   return classTransformer.classToPlainFromExist(object, plainObject, options);
+}
+
+/**
+ * Converts plain (literal) object to class (constructor) object. Also works with arrays.
+ *
+ * @deprecated Function name changed, use the `plainToInstance` method instead.
+ */
+export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V[], options?: ClassTransformOptions): T[];
+export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
+export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V | V[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.plainToInstance(cls, plain as any, options);
 }
 
 /**
