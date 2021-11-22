@@ -235,7 +235,7 @@ This version has introduced a breaking-change when this library is used with cla
 - Library has changed its name from `serializer.ts` to `constructor-utils`.
 - Added `constructor-utils` namespace.
 
-[v0.5.0]: https://github.com/typestack/class-transformer/compare/v0.5.0...v0.5.1
+[v0.5.1]: https://github.com/typestack/class-transformer/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/typestack/class-transformer/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/typestack/class-transformer/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/typestack/class-transformer/compare/v0.3.2...v0.4.0
