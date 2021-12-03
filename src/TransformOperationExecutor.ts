@@ -131,7 +131,15 @@ export class TransformOperationExecutor {
     } else if (typeof value === 'object' && value !== null) {
       // try to guess the type
       if (!targetType && value.constructor !== Object /* && TransformationType === TransformationType.CLASS_TO_PLAIN*/)
-        targetType = value.constructor;
+        if (!Array.isArray(value) && value.constructor === Array) {
+          // Somebody attempts to convert special Array like object to Array, eg:
+          // const evilObject = { '100000000': '100000000', __proto__: [] };
+          // This could be used to cause Denial-of-service attack so we don't allow it.
+          // See prevent-array-bomb.spec.ts for more details.
+        } else {
+          // We are good we can use the built-in constructor
+          targetType = value.constructor;
+        }
       if (!targetType && source) targetType = source.constructor;
 
       if (this.options.enableCircularCheck) {
