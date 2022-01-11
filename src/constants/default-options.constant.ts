@@ -7,6 +7,7 @@ export const defaultOptions: Partial<ClassTransformOptions> = {
   enableCircularCheck: false,
   enableImplicitConversion: false,
   excludeExtraneousValues: false,
+  throwErrorExtraneousValues: false,
   excludePrefixes: undefined,
   exposeDefaultValues: false,
   exposeUnsetFields: true,
