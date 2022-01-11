@@ -26,6 +26,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
   - [serialize](#serialize)
   - [deserialize and deserializeArray](#deserialize-and-deserializearray)
 - [Enforcing type-safe instance](#enforcing-type-safe-instance)
+- [Throw an error for unknown properties](#throw-error-unknown-properties)
 - [Working with nested objects](#working-with-nested-objects)
   - [Providing more than one type option](#providing-more-than-one-type-option)
 - [Exposing getters and method return values](#exposing-getters-and-method-return-values)
@@ -310,6 +311,59 @@ console.log(plainToClass(User, fromPlainUser));
 //   firstName: 'Umed',
 //   lastName: 'Khudoiberdiev',
 // }
+```
+
+If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option
+in the `plainToClass` method while _exposing all your class properties_ as a requirement.
+
+```typescript
+import { Expose, plainToClass } from 'class-transformer';
+
+class User {
+  @Expose() id: number;
+  @Expose() firstName: string;
+  @Expose() lastName: string;
+}
+
+const fromPlainUser = {
+  unkownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+};
+
+console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true }));
+
+// User {
+//   id: undefined,
+//   firstName: 'Umed',
+//   lastName: 'Khudoiberdiev'
+// }
+```
+
+## Throw an error for unknown properties[⬆](#throw-error-unknown-properties)
+
+The default behaviour of the `plainToClass` method is to set _all_ properties from the plain object,
+even those which are not specified in the class.
+If throwErrorExtraneousValues is true, it will throw an error when unknown properties are found.
+
+```typescript
+import { plainToClass } from 'class-transformer';
+
+class User {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+const fromPlainUser = {
+  unknownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+};
+
+console.log(plainToClass(User, fromPlainUser, { throwErrorExtraneousValues: true }));
+
+// An error object will be thrown, because the 'unknownProp' is not defined in the User class.
 ```
 
 If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option
