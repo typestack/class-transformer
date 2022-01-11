@@ -361,7 +361,7 @@ const fromPlainUser = {
   lastName: 'Khudoiberdiev',
 };
 
-console.log(plainToClass(User, fromPlainUser, { throwErrorExtraneousValues: true }));
+plainToClass(User, fromPlainUser, { throwErrorExtraneousValues: true });
 
 // An error object will be thrown, because the 'unknownProp' is not defined in the User class.
 ```
