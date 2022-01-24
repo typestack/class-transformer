@@ -11,6 +11,12 @@ export interface ClassTransformOptions {
   strategy?: 'excludeAll' | 'exposeAll';
 
   /**
+   * Exclusion strategy for subobjects. By default, it inherits strategy.
+   * If required, it allows one to enforce exposing of main object properties, but allows to use plain / unexposed subobjects.
+   */
+  nestedStrategy?: 'exposeAll';
+
+  /**
    * Indicates if extraneous properties should be excluded from the value when converting a plain value to a class.
    */
   excludeExtraneousValues?: boolean;
