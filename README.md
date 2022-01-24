@@ -1,12 +1,17 @@
-# class-transformer-global-storage
+# @yoolabs/class-transformer
 
-![Build Status](https://github.com/petrzjunior/class-transformer-global-storage/workflows/CI/badge.svg)
-[![npm version](https://badge.fury.io/js/class-transformer-global-storage.svg)](https://badge.fury.io/js/class-transformer-global-storage)
+## class-transformer-global-storage
 
-_Note: This fork uses `global` scope for caching metadata information. This allows importing this package
+This fork uses `global` scope for caching metadata information. This allows importing this package
 from multiple locations, but might cause problems if multiple versions are installed at the same time._
 
-Upstream package: [class-transformer](https://github.com/typestack/class-transformer)
+## yoolabs class-transformer
+
+This fork adds custom functionality to class transformer.
+
+* [Exposing/Excluding properties of subobjects](#exposingexcluding-properties-of-subobjects)
+
+## Main Introduction
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more than ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
@@ -15,6 +20,8 @@ This tool is super useful on both frontend and backend.
 
 Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is available [here](https://github.com/pleerock/class-transformer-demo).
+
+
 
 ## Table of contents
 

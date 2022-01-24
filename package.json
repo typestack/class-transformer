@@ -1,8 +1,11 @@
 {
-  "name": "class-transformer",
-  "version": "0.4.0",
+  "name": "@yoolabs/class-transformer",
+  "version": "0.4.1",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors with global storage fix",
-  "author": "TypeStack contributors, Petr Zahradnik",
+  "author": {
+    "name": "Jannik Mewes / Umed Khudoiberdiev / Petr Zahradnik",
+    "email": "jannik.mewes@yoolabs.com"
+  },
   "license": "MIT",
   "readmeFilename": "README.md",
   "sideEffects": false,
@@ -12,7 +15,7 @@
   "typings": "./types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/petrzjunior/class-transformer.git"
+    "url": "https://github.com/yoolabs/class-transformer.git"
   },
   "tags": [
     "serialization",
