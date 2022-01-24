@@ -1,12 +1,17 @@
-# class-transformer-global-storage
+# @yoolabs/class-transformer
 
-![Build Status](https://github.com/petrzjunior/class-transformer-global-storage/workflows/CI/badge.svg)
-[![npm version](https://badge.fury.io/js/class-transformer-global-storage.svg)](https://badge.fury.io/js/class-transformer-global-storage)
+## class-transformer-global-storage
 
-_Note: This fork uses `global` scope for caching metadata information. This allows importing this package
-from multiple locations, but might cause problems if multiple versions are installed at the same time._
+This fork uses `global` scope for caching metadata information. This allows importing this package
+from multiple locations, but might cause problems if multiple versions are installed at the same time.\_
 
-Upstream package: [class-transformer](https://github.com/typestack/class-transformer)
+## yoolabs class-transformer
+
+This fork adds custom functionality to class transformer.
+
+- [Exposing/Excluding properties of subobjects](#exposingexcluding-properties-of-subobjects)
+
+## Main Introduction
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more than ever.
 Class-transformer allows you to transform plain object to some instance of class and versa.
@@ -37,6 +42,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
 - [Skipping specific properties](#skipping-specific-properties)
 - [Skipping depend of operation](#skipping-depend-of-operation)
 - [Skipping all properties of the class](#skipping-all-properties-of-the-class)
+- [Exposing/Excluding properties of subobjects](#exposingexcluding-properties-of-subobjects)
 - [Skipping private properties, or some prefixed properties](#skipping-private-properties-or-some-prefixed-properties)
 - [Using groups to control excluded properties](#using-groups-to-control-excluded-properties)
 - [Using versioning to control exposed and excluded properties](#using-versioning-to-control-exposed-and-excluded-properties)
@@ -564,6 +570,38 @@ let photo = classToPlain(photo, { strategy: 'excludeAll' });
 ```
 
 In this case you don't need to `@Exclude()` a whole class.
+
+## Exposing/Excluding properties of subobjects
+
+By default, setting a strategy or using Exclude/Expose decorators will set the strategy deeply,
+so subobjects need to specifically expose properties too.
+If you use plain subobjects which shall not be stripped, use the nestedStrategy configuration property.
+
+```typescript
+import { Exclude, Expose, classToPlain } from 'class-transformer';
+
+interface DataInterface {
+  prop: string;
+  otherProp: number;
+}
+
+export class User {
+  @Expose()
+  id: number;
+  @Expose()
+  data: DataInterface;
+}
+
+const user = new User();
+user.id = 3;
+user.data = { prop: 'test', otherProp: 23 };
+
+// plain1.data will be an empty object
+let plain1 = classToPlain(user, { strategy: 'excludeAll' });
+
+// plain2.data will be {prop:'test',otherProp:23}
+let plain2 = classToPlain(user, { strategy: 'excludeAll', nestedStrategy: 'exposeAll' });
+```
 
 ## Skipping private properties, or some prefixed properties[⬆](#table-of-contents)
 

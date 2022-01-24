@@ -139,7 +139,8 @@ export class TransformOperationExecutor {
         this.recursionStack.add(value);
       }
 
-      const keys = this.getKeys(targetType as Function, value, isMap);
+      // @yoolabs/class-transformer modification: Pass level int to getKeys
+      const keys = this.getKeys(targetType as Function, value, isMap, level);
       let newValue: any = source ? source : {};
       if (
         !source &&
@@ -406,10 +407,15 @@ export class TransformOperationExecutor {
     return meta ? meta.reflectedType : undefined;
   }
 
-  private getKeys(target: Function, object: Record<string, any>, isMap: boolean): string[] {
+  private getKeys(target: Function, object: Record<string, any>, isMap: boolean, level = 0): string[] {
     // determine exclusion strategy
     let strategy = defaultMetadataStorage.getStrategy(target);
-    if (strategy === 'none') strategy = this.options.strategy || 'exposeAll'; // exposeAll is default strategy
+    if (strategy === 'none') {
+      // @yoolabs/class-transformer modification: If we are at level>1, check for given nestedStrategy option
+      if (level > 0) strategy = this.options.nestedStrategy || this.options.strategy || 'exposeAll';
+      // exposeAll is default strategy
+      else strategy = this.options.strategy || 'exposeAll'; // exposeAll is default strategy
+    }
 
     // get all keys that need to expose
     let keys: any[] = [];
