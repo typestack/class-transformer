@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { instanceToPlain, plainToInstance } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose } from '../../src/decorators';
+import { Alias, Exclude, Expose } from '../../src/decorators';
 
 describe('filtering by transformation option', () => {
   it('@Exclude with toPlainOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
@@ -173,7 +173,7 @@ describe('filtering by transformation option', () => {
       @Expose()
       lastName: string;
 
-      @Expose({ name: 'toPlainPassword', toPlainOnly: true })
+      @Expose({ toPlainOnly: true })
       @Expose({ name: 'toClassPassword', toClassOnly: true })
       password: string;
     }
@@ -193,7 +193,7 @@ describe('filtering by transformation option', () => {
     expect(plainedUser).toEqual({
       firstName: 'Umed',
       lastName: 'Khudoiberdiev',
-      toPlainPassword: 'imnosuperman',
+      password: 'imnosuperman',
     });
 
     const classedUser = plainToInstance(User, plainUser);
@@ -202,6 +202,94 @@ describe('filtering by transformation option', () => {
       firstName: 'Umed',
       lastName: 'Khudoiberdiev',
       password: 'imnosuperman',
+    });
+  });
+
+  it('@Alias with className only should only rename property when converted to plain', () => {
+    defaultMetadataStorage.clear();
+
+    @Exclude()
+    class User {
+      @Alias({ to: 'first_name' })
+      firstName: string;
+    }
+
+    const user = new User();
+    user.firstName = 'Umed';
+
+    const plainUser = {
+      firstName: 'Umed',
+      first_name: 'WRONG',
+    };
+
+    const plainedUser = instanceToPlain(user);
+    expect(plainedUser).toEqual({
+      first_name: 'Umed',
+    });
+
+    const classedUser = plainToInstance(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+    });
+  });
+
+  it('@Alias with className only should only rename property when converted to plain', () => {
+    defaultMetadataStorage.clear();
+
+    @Exclude()
+    class User {
+      @Alias({ from: 'first_name' })
+      firstName: string;
+    }
+
+    const user = new User();
+    user.firstName = 'Umed';
+
+    const plainUser = {
+      first_name: 'Umed',
+      firstName: 'WRONG',
+    };
+
+    const plainedUser = instanceToPlain(user);
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+    });
+
+    const classedUser = plainToInstance(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+    });
+  });
+
+  it('@Alias with both className and plainName should rename property on transform', () => {
+    defaultMetadataStorage.clear();
+
+    @Exclude()
+    class User {
+      @Alias({ from: 'user_reference', to: 'userReference' })
+      reference: string;
+    }
+
+    const user = new User();
+    user.reference = 'userRef';
+
+    const plainUser = {
+      user_reference: 'userRef',
+      userReference: 'WRONG',
+      reference: 'WRONG',
+    };
+
+    const plainedUser = instanceToPlain(user);
+    expect(plainedUser).toEqual({
+      userReference: 'userRef',
+    });
+
+    const classedUser = plainToInstance(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      reference: 'userRef',
     });
   });
 
