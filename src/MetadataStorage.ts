@@ -20,39 +20,49 @@ export class MetadataStorage {
   // -------------------------------------------------------------------------
 
   addTypeMetadata(metadata: TypeMetadata): void {
-    if (!this._typeMetadatas.has(metadata.target)) {
-      this._typeMetadatas.set(metadata.target, new Map<string, TypeMetadata>());
+    let properties = this._typeMetadatas.get(metadata.target);
+    if (!properties) {
+      properties = new Map<string, TypeMetadata>();
+      this._typeMetadatas.set(metadata.target, properties);
     }
-    this._typeMetadatas.get(metadata.target)!.set(metadata.propertyName, metadata);
+    properties.set(metadata.propertyName, metadata);
   }
 
   addTransformMetadata(metadata: TransformMetadata): void {
-    if (!this._transformMetadatas.has(metadata.target)) {
-      this._transformMetadatas.set(metadata.target, new Map<string, TransformMetadata[]>());
+    let properties = this._transformMetadatas.get(metadata.target);
+    if (!properties) {
+      properties = new Map<string, TransformMetadata[]>();
+      this._transformMetadatas.set(metadata.target, properties);
     }
-    const properties = this._transformMetadatas.get(metadata.target)!;
-    if (!properties.has(metadata.propertyName)) {
-      properties.set(metadata.propertyName, []);
+    let metadatas = properties.get(metadata.propertyName);
+    if (!metadatas) {
+      metadatas = [];
+      properties.set(metadata.propertyName, metadatas);
     }
-    properties.get(metadata.propertyName)!.push(metadata);
+    metadatas.push(metadata);
   }
 
   addExposeMetadata(metadata: ExposeMetadata): void {
-    if (!this._exposeMetadatas.has(metadata.target)) {
-      this._exposeMetadatas.set(metadata.target, new Map<string, ExposeMetadata[]>());
+    let properties = this._exposeMetadatas.get(metadata.target);
+    if (!properties) {
+      properties = new Map<string, ExposeMetadata[]>();
+      this._exposeMetadatas.set(metadata.target, properties);
     }
-    const properties = this._exposeMetadatas.get(metadata.target)!;
-    if (!properties.has(metadata.propertyName)) {
-      properties.set(metadata.propertyName, []);
+    let values = properties.get(metadata.propertyName);
+    if (!values) {
+      values = [];
+      properties.set(metadata.propertyName, values);
     }
-    properties.get(metadata.propertyName)!.push(metadata);
+    values.push(metadata);
   }
 
   addExcludeMetadata(metadata: ExcludeMetadata): void {
-    if (!this._excludeMetadatas.has(metadata.target)) {
-      this._excludeMetadatas.set(metadata.target, new Map<string, ExcludeMetadata>());
+    let properties = this._excludeMetadatas.get(metadata.target);
+    if (!properties) {
+      properties = new Map<string, ExcludeMetadata>();
+      this._excludeMetadatas.set(metadata.target, properties);
     }
-    this._excludeMetadatas.get(metadata.target)!.set(metadata.propertyName, metadata);
+    properties.set(metadata.propertyName, metadata);
   }
 
   // -------------------------------------------------------------------------
@@ -159,7 +169,7 @@ export class MetadataStorage {
 
         return true;
       })
-      .map(metadata => metadata.propertyName!);
+      .map(metadata => metadata.propertyName as string);
   }
 
   getExcludedProperties(target: Function, transformationType: TransformationType): string[] {
@@ -181,7 +191,7 @@ export class MetadataStorage {
 
         return true;
       })
-      .map(metadata => metadata.propertyName!);
+      .map(metadata => metadata.propertyName as string);
   }
 
   clear(): void {
@@ -282,7 +292,7 @@ export class MetadataStorage {
       const ancestorMetadataMap = metadatas.get(ancestor);
       if (ancestorMetadataMap) {
         if (ancestorMetadataMap.has(propertyName)) {
-          metadataFromAncestorsTarget.push(...ancestorMetadataMap.get(propertyName)!);
+          metadataFromAncestorsTarget.push(...(ancestorMetadataMap.get(propertyName) as T[]));
         }
       }
     }
