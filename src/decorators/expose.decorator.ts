@@ -16,10 +16,12 @@ export function Expose(options: ExposeOptions = {}): PropertyDecorator & ClassDe
    * decorator only receives one parameter.
    */
   return function (object: any, propertyName?: string | Symbol): void {
-    defaultMetadataStorage.addExposeMetadata({
+    const metadata = {
       target: object instanceof Function ? object : object.constructor,
       propertyName: propertyName as string,
       options,
-    });
+    };
+
+    defaultMetadataStorage.addExposeMetadata(metadata);
   };
 }

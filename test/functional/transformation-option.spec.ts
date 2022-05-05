@@ -80,7 +80,7 @@ describe('filtering by transformation option', () => {
     });
   });
 
-  it('@Expose with toClassOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
+  it('@Expose with toClassOnly set to true and a name then it should be exposed renamed when transformed to instance', () => {
     defaultMetadataStorage.clear();
 
     @Exclude()
@@ -91,7 +91,7 @@ describe('filtering by transformation option', () => {
       @Expose()
       lastName: string;
 
-      @Expose({ toClassOnly: true })
+      @Expose({ name: 'pwd', toClassOnly: true })
       password: string;
     }
 
@@ -103,7 +103,7 @@ describe('filtering by transformation option', () => {
     const plainUser = {
       firstName: 'Umed',
       lastName: 'Khudoiberdiev',
-      password: 'imnosuperman',
+      pwd: 'imnosuperman',
     };
 
     const plainedUser = instanceToPlain(user);
@@ -121,7 +121,7 @@ describe('filtering by transformation option', () => {
     });
   });
 
-  it('@Expose with toPlainOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
+  it('@Expose with toPlainOnly set to true and a name then it should be exposed renamed when transformed to plain', () => {
     defaultMetadataStorage.clear();
 
     @Exclude()
@@ -132,7 +132,7 @@ describe('filtering by transformation option', () => {
       @Expose()
       lastName: string;
 
-      @Expose({ toPlainOnly: true })
+      @Expose({ name: 'pwd', toPlainOnly: true })
       password: string;
     }
 
@@ -151,7 +151,7 @@ describe('filtering by transformation option', () => {
     expect(plainedUser).toEqual({
       firstName: 'Umed',
       lastName: 'Khudoiberdiev',
-      password: 'imnosuperman',
+      pwd: 'imnosuperman',
     });
 
     const classedUser = plainToInstance(User, plainUser);
@@ -159,6 +159,49 @@ describe('filtering by transformation option', () => {
     expect(classedUser).toEqual({
       firstName: 'Umed',
       lastName: 'Khudoiberdiev',
+    });
+  });
+
+  it('@Expose with toPlainOnly set to true and a name plus another @Expose with toClassOnly set to true and a name then it should be renamed appropriatly based on operation type', () => {
+    defaultMetadataStorage.clear();
+
+    @Exclude()
+    class User {
+      @Expose()
+      firstName: string;
+
+      @Expose()
+      lastName: string;
+
+      @Expose({ name: 'toPlainPassword', toPlainOnly: true })
+      @Expose({ name: 'toClassPassword', toClassOnly: true })
+      password: string;
+    }
+
+    const user = new User();
+    user.firstName = 'Umed';
+    user.lastName = 'Khudoiberdiev';
+    user.password = 'imnosuperman';
+
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      toClassPassword: 'imnosuperman',
+    };
+
+    const plainedUser = instanceToPlain(user);
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      toPlainPassword: 'imnosuperman',
+    });
+
+    const classedUser = plainToInstance(User, plainUser);
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
     });
   });
 
