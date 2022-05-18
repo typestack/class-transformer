@@ -438,6 +438,10 @@ export class TransformOperationExecutor {
         keys = Array.from(object.keys());
       } else {
         keys = Object.keys(object);
+        // Object.getOwnPropertySymbols is not supported in Internet Explorer
+        if (typeof Object.getOwnPropertySymbols !== 'undefined') {
+          keys = [...keys, ...Object.getOwnPropertySymbols(object)];
+        }
       }
     }
 
