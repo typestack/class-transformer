@@ -295,7 +295,7 @@ export class TransformOperationExecutor {
 
         // if newValue is a source object that has method that match newKeyName then skip it
         if (newValue.constructor.prototype) {
-          const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
+          const descriptor = this.getPropertyDescriptor(newValue.constructor.prototype, newValueKey);
           if (
             (this.transformationType === TransformationType.PLAIN_TO_CLASS ||
               this.transformationType === TransformationType.CLASS_TO_CLASS) &&
@@ -543,5 +543,12 @@ export class TransformOperationExecutor {
     if (!groups) return true;
 
     return this.options.groups.some(optionGroup => groups.includes(optionGroup));
+  }
+
+  private getPropertyDescriptor(obj: any, key: PropertyKey): PropertyDescriptor | undefined {
+    const prototype = Object.getPrototypeOf(obj);
+    return prototype
+      ? Object.getOwnPropertyDescriptor(obj, key) || this.getPropertyDescriptor(prototype, key)
+      : undefined;
   }
 }
