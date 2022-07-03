@@ -546,9 +546,10 @@ export class TransformOperationExecutor {
   }
 
   private getPropertyDescriptor(obj: any, key: PropertyKey): PropertyDescriptor | undefined {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    if (descriptor) return descriptor;
+
     const prototype = Object.getPrototypeOf(obj);
-    return prototype
-      ? Object.getOwnPropertyDescriptor(obj, key) || this.getPropertyDescriptor(prototype, key)
-      : undefined;
+    return prototype ? this.getPropertyDescriptor(prototype, key) : undefined;
   }
 }
