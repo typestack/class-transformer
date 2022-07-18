@@ -221,7 +221,7 @@ This method transforms a plain javascript object to instance of specific class.
 ```typescript
 import { plainToClass } from 'class-transformer';
 
-let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
+let user = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
 ### plainToClassFromExist[⬆](#table-of-contents)
