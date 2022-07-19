@@ -4,9 +4,9 @@
 [![codecov](https://codecov.io/gh/typestack/class-transformer/branch/develop/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
 
-Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more than ever.
-Class-transformer allows you to transform plain object to some instance of class and versa.
-Also it allows to serialize / deserialize object based on criteria.
+It's ES6 and Typescript era. Nowadays, you are working with classes and constructor objects more than ever.
+Class-transformer allows you to transform a plain object to some instance of a class and vice versa.
+Also, it allows you to serialize / deserialize object based on criteria.
 This tool is super useful on both frontend and backend.
 
 Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
@@ -27,7 +27,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
   - [deserialize and deserializeArray](#deserialize-and-deserializearray)
 - [Enforcing type-safe instance](#enforcing-type-safe-instance)
 - [Working with nested objects](#working-with-nested-objects)
-  - [Providing more than one type option](#providing-more-than-one-type-option)
+  - [Providing more than one type of option](#providing-more-than-one-type-option)
 - [Exposing getters and method return values](#exposing-getters-and-method-return-values)
 - [Exposing properties with different names](#exposing-properties-with-different-names)
 - [Skipping specific properties](#skipping-specific-properties)
@@ -36,7 +36,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
 - [Skipping private properties, or some prefixed properties](#skipping-private-properties-or-some-prefixed-properties)
 - [Using groups to control excluded properties](#using-groups-to-control-excluded-properties)
 - [Using versioning to control exposed and excluded properties](#using-versioning-to-control-exposed-and-excluded-properties)
-- [Сonverting date strings into Date objects](#сonverting-date-strings-into-date-objects)
+- [Converting date strings into Date objects](#сonverting-date-strings-into-date-objects)
 - [Working with arrays](#working-with-arrays)
 - [Additional data transformation](#additional-data-transformation)
   - [Basic usage](#basic-usage)
@@ -51,7 +51,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
 
 ## What is class-transformer[⬆](#table-of-contents)
 
-In JavaScript there are two types of objects:
+In JavaScript, there are two types of objects:
 
 - plain (literal) objects
 - class (constructor) objects
@@ -59,15 +59,15 @@ In JavaScript there are two types of objects:
 Plain objects are objects that are instances of `Object` class.
 Sometimes they are called **literal** objects, when created via `{}` notation.
 Class objects are instances of classes with own defined constructor, properties and methods.
-Usually you define them via `class` notation.
+Usually, you define them via `class` notation.
 
 So, what is the problem?
 
-Sometimes you want to transform plain javascript object to the ES6 **classes** you have.
+Sometimes you want to transform plain javascript objects to the ES6 **classes** you have.
 For example, if you are loading a json from your backend, some api or from a json file,
-and after you `JSON.parse` it you have a plain javascript object, not instance of class you have.
+and after you `JSON.parse` it you have a plain javascript object, not instance of the class you have.
 
-For example you have a list of users in your `users.json` that you are loading:
+For example, you have a list of users in your `users.json` that you are loading:
 
 ```json
 [
@@ -123,12 +123,12 @@ fetch('users.json').then((users: User[]) => {
 ```
 
 In this code you can use `users[0].id`, you can also use `users[0].firstName` and `users[0].lastName`.
-However you cannot use `users[0].getName()` or `users[0].isAdult()` because "users" actually is
+However, you cannot use `users[0].getName()` or `users[0].isAdult()` because "users" actually is
 array of plain javascript objects, not instances of User object.
 You actually lied to compiler when you said that its `users: User[]`.
 
-So what to do? How to make a `users` array of instances of `User` objects instead of plain javascript objects?
-Solution is to create new instances of User object and manually copy all properties to new objects.
+So, what to do? How to make a `users` array of instances of `User` objects instead of plain javascript objects?
+The solution is to create new instances of User object and manually copy all properties to new objects.
 But things may go wrong very fast once you have a more complex object hierarchy.
 
 Alternatives? Yes, you can use class-transformer. Purpose of this library is to help you to map your plain javascript
@@ -216,7 +216,7 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 
 ### plainToClass[⬆](#table-of-contents)
 
-This method transforms a plain javascript object to instance of specific class.
+This method transforms a plain javascript object to an instance of a specific class.
 
 ```typescript
 import { plainToClass } from 'class-transformer';
@@ -254,7 +254,7 @@ import { classToClass } from 'class-transformer';
 let photo = classToClass(photo);
 ```
 
-You can also use an `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
+You can also use an `ignoreDecorators` option in transformation options to ignore all decorators your classes are using.
 
 ### serialize[⬆](#table-of-contents)
 
@@ -347,7 +347,7 @@ Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
 This is done using `@Type` decorator.
 
-Lets say we have an album with photos.
+Let's say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
@@ -375,11 +375,11 @@ let album = plainToClass(Album, albumJson);
 
 In case the nested object can be of different types, you can provide an additional options object,
 that specifies a discriminator. The discriminator option must define a `property` that holds the subtype
-name for the object and the possible `subTypes` that the nested object can converted to. A sub type
+name for the object and the possible `subTypes` that the nested object can be converted to. A sub type
 has a `value`, that holds the constructor of the Type and the `name`, that can match with the `property`
 of the discriminator.
 
-Lets say we have an album that has a top photo. But this photo can be of certain different types.
+Let's say we have an album that has a top photo. But this photo can be of certain different types.
 And we are trying to convert album plain object to class object. The plain object input has to define
 the additional property `__type`. This property is removed during transformation by default:
 
@@ -439,7 +439,7 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with a UnderWater object without `__type` property.
 ```
 
-Hint: The same applies for arrays with different sub types. Moreover you can specify `keepDiscriminatorProperty: true`
+Hint: The same applies for arrays with different subtypes. Moreover, you can specify `keepDiscriminatorProperty: true`
 in the options to keep the discriminator property also inside your resulting class.
 
 ## Exposing getters and method return values[⬆](#table-of-contents)
@@ -511,7 +511,7 @@ export class User {
 }
 ```
 
-Now when you transform a User, the `password` property will be skipped and not be included in the transformed result.
+Now, when you transform a User, the `password` property will be skipped and not be included in the transformed result.
 
 ## Skipping depend of operation[⬆](#table-of-contents)
 
@@ -530,7 +530,7 @@ export class User {
 }
 ```
 
-Now `password` property will be excluded only during `classToPlain` operation. Vice versa, use the `toClassOnly` option.
+Now, `password` property will be excluded only during `classToPlain` operation. Vice versa, use the `toClassOnly` option.
 
 ## Skipping all properties of the class[⬆](#table-of-contents)
 
@@ -559,11 +559,11 @@ import { classToPlain } from 'class-transformer';
 let photo = classToPlain(photo, { strategy: 'excludeAll' });
 ```
 
-In this case you don't need to `@Exclude()` a whole class.
+In this case, you don't need to `@Exclude()` a whole class.
 
 ## Skipping private properties, or some prefixed properties[⬆](#table-of-contents)
 
-If you name your private properties with a prefix, lets say with `_`,
+If you name your private properties with a prefix, let's say with `_`,
 then you can exclude such properties from transformation too:
 
 ```typescript
@@ -572,7 +572,7 @@ let photo = classToPlain(photo, { excludePrefixes: ['_'] });
 ```
 
 This will skip all properties that start with `_` prefix.
-You can pass any number of prefixes and all properties that begin with these prefixes will be ignored.
+You can pass any number of prefixes, and all properties that begin with these prefixes will be ignored.
 For example:
 
 ```typescript
@@ -655,7 +655,7 @@ let user4 = classToPlain(user, { version: 2 }); // will contain id and name
 let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and password
 ```
 
-## Сonverting date strings into Date objects[⬆](#table-of-contents)
+## Converting date strings into Date objects[⬆](#table-of-contents)
 
 Sometimes you have a Date in your plain javascript object received in a string format.
 And you want to create a real javascript Date object from it.
@@ -681,7 +681,7 @@ primitive types when you want to convert your values into these types.
 
 ## Working with arrays[⬆](#table-of-contents)
 
-When you are using arrays you must provide a type of the object that array contains.
+When you are using arrays, you must provide a type of the object that the array contains.
 This type, you specify in a `@Type()` decorator:
 
 ```typescript
@@ -829,8 +829,8 @@ const controller = new UserController();
 const user = controller.getUser();
 ```
 
-the `user` variable will contain only firstName,lastName, email properties because they are
-the exposed variables. email property is also exposed because we metioned the group "user.email".
+the `user` variable will contain only firstName, lastName, email properties because they are
+the exposed variables. email property is also exposed because we mentioned the group "user.email".
 
 ## Working with generics[⬆](#table-of-contents)
 
