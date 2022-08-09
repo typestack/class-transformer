@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { defaultMetadataStorage } from '../../src/storage';
-import { plainToClass, Type, classToPlain } from '../../src';
+import { plainToInstance, Type, instanceToPlain } from '../../src';
 
 describe('promise field', () => {
   it('should transform plan to class with promise field', async () => {
@@ -14,7 +14,7 @@ describe('promise field', () => {
       promise: Promise.resolve('hi'),
     };
 
-    const instance = plainToClass(PromiseClass, plain);
+    const instance = plainToInstance(PromiseClass, plain);
     expect(instance.promise).toBeInstanceOf(Promise);
     const value = await instance.promise;
     expect(value).toBe('hi');
@@ -30,7 +30,7 @@ describe('promise field', () => {
     }
 
     const instance = new PromiseClass(Promise.resolve('hi'));
-    const plain = classToPlain(instance) as any;
+    const plain = instanceToPlain(instance) as any;
     expect(plain).toHaveProperty('promise');
     const value = await plain.promise;
     expect(value).toBe('hi');
@@ -48,7 +48,7 @@ describe('promise field', () => {
       promise: Promise.resolve(array),
     };
 
-    const instance = plainToClass(PromiseClass, plain);
+    const instance = plainToInstance(PromiseClass, plain);
     const value = await instance.promise;
     expect(value).toEqual(array);
 
@@ -75,7 +75,7 @@ describe('promise field', () => {
       promise: Promise.resolve(new InnerClass('developer')),
     };
 
-    const instance = plainToClass(PromiseClass, plain);
+    const instance = plainToInstance(PromiseClass, plain);
     const value = await instance.promise;
     expect(value).toBeInstanceOf(InnerClass);
     expect(value.position).toBe('developer');

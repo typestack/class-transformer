@@ -12,9 +12,9 @@ export class ClassTransformer {
   /**
    * Converts class (constructor) object to plain (literal) object. Also works with arrays.
    */
-  classToPlain<T extends Record<string, any>>(object: T, options?: ClassTransformOptions): Record<string, any>;
-  classToPlain<T extends Record<string, any>>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
-  classToPlain<T extends Record<string, any>>(
+  instanceToPlain<T extends Record<string, any>>(object: T, options?: ClassTransformOptions): Record<string, any>;
+  instanceToPlain<T extends Record<string, any>>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
+  instanceToPlain<T extends Record<string, any>>(
     object: T | T[],
     options?: ClassTransformOptions
   ): Record<string, any> | Record<string, any>[] {
@@ -55,17 +55,17 @@ export class ClassTransformer {
   /**
    * Converts plain (literal) object to class (constructor) object. Also works with arrays.
    */
-  plainToClass<T extends Record<string, any>, V extends Array<any>>(
+  plainToInstance<T extends Record<string, any>, V extends Array<any>>(
     cls: ClassConstructor<T>,
     plain: V,
     options?: ClassTransformOptions
   ): T[];
-  plainToClass<T extends Record<string, any>, V>(
+  plainToInstance<T extends Record<string, any>, V>(
     cls: ClassConstructor<T>,
     plain: V,
     options?: ClassTransformOptions
   ): T;
-  plainToClass<T extends Record<string, any>, V>(
+  plainToInstance<T extends Record<string, any>, V>(
     cls: ClassConstructor<T>,
     plain: V | V[],
     options?: ClassTransformOptions
@@ -103,9 +103,9 @@ export class ClassTransformer {
   /**
    * Converts class (constructor) object to new class (constructor) object. Also works with arrays.
    */
-  classToClass<T>(object: T, options?: ClassTransformOptions): T;
-  classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
-  classToClass<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
+  instanceToInstance<T>(object: T, options?: ClassTransformOptions): T;
+  instanceToInstance<T>(object: T[], options?: ClassTransformOptions): T[];
+  instanceToInstance<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
     const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, {
       ...defaultOptions,
       ...options,
@@ -134,7 +134,7 @@ export class ClassTransformer {
   serialize<T>(object: T, options?: ClassTransformOptions): string;
   serialize<T>(object: T[], options?: ClassTransformOptions): string;
   serialize<T>(object: T | T[], options?: ClassTransformOptions): string {
-    return JSON.stringify(this.classToPlain(object, options));
+    return JSON.stringify(this.instanceToPlain(object, options));
   }
 
   /**
@@ -142,7 +142,7 @@ export class ClassTransformer {
    */
   deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
     const jsonObject: T = JSON.parse(json);
-    return this.plainToClass(cls, jsonObject, options);
+    return this.plainToInstance(cls, jsonObject, options);
   }
 
   /**
@@ -150,6 +150,6 @@ export class ClassTransformer {
    */
   deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
     const jsonObject: any[] = JSON.parse(json);
-    return this.plainToClass(cls, jsonObject, options);
+    return this.plainToInstance(cls, jsonObject, options);
   }
 }

@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from './storage';
-import { TypeHelpOptions, TypeOptions, ClassTransformOptions, TypeMetadata } from './interfaces';
+import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
 import { TransformationType } from './enums';
 import { getGlobal, isPromise } from './utils';
 
@@ -131,7 +131,15 @@ export class TransformOperationExecutor {
     } else if (typeof value === 'object' && value !== null) {
       // try to guess the type
       if (!targetType && value.constructor !== Object /* && TransformationType === TransformationType.CLASS_TO_PLAIN*/)
-        targetType = value.constructor;
+        if (!Array.isArray(value) && value.constructor === Array) {
+          // Somebody attempts to convert special Array like object to Array, eg:
+          // const evilObject = { '100000000': '100000000', __proto__: [] };
+          // This could be used to cause Denial-of-service attack so we don't allow it.
+          // See prevent-array-bomb.spec.ts for more details.
+        } else {
+          // We are good we can use the built-in constructor
+          targetType = value.constructor;
+        }
       if (!targetType && source) targetType = source.constructor;
 
       if (this.options.enableCircularCheck) {
@@ -185,12 +193,22 @@ export class TransformOperationExecutor {
 
         // get a subvalue
         let subValue: any = undefined;
-        if (value instanceof Map) {
-          subValue = value.get(valueKey);
-        } else if (value[valueKey] instanceof Function) {
-          subValue = value[valueKey]();
-        } else {
+        if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+          /**
+           * This section is added for the following report:
+           * https://github.com/typestack/class-transformer/issues/596
+           *
+           * We should not call functions or constructors when transforming to class.
+           */
           subValue = value[valueKey];
+        } else {
+          if (value instanceof Map) {
+            subValue = value.get(valueKey);
+          } else if (value[valueKey] instanceof Function) {
+            subValue = value[valueKey]();
+          } else {
+            subValue = value[valueKey];
+          }
         }
 
         // determine a type
@@ -227,9 +245,11 @@ export class TransformOperationExecutor {
                   type = subValue.constructor;
                 }
                 if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
-                  subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find(
-                    subType => subType.value === subValue.constructor
-                  ).name;
+                  if (subValue) {
+                    subValue[metadata.options.discriminator.property] = metadata.options.discriminator.subTypes.find(
+                      subType => subType.value === subValue.constructor
+                    ).name;
+                  }
                 }
               } else {
                 type = metadata;
@@ -430,6 +450,16 @@ export class TransformOperationExecutor {
     if (isMap) {
       // expose & exclude do not apply for map keys only to fields
       return keys;
+    }
+
+    /**
+     * If decorators are ignored but we don't want the extraneous values, then we use the
+     * metadata to decide which property is needed, but doesn't apply the decorator effect.
+     */
+    if (this.options.ignoreDecorators && this.options.excludeExtraneousValues && target) {
+      const exposedProperties = defaultMetadataStorage.getExposedProperties(target, this.transformationType);
+      const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);
+      keys = [...exposedProperties, ...excludedProperties];
     }
 
     if (!this.options.ignoreDecorators && target) {

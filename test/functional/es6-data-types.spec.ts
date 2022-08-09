@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { classToPlain, plainToClass, Expose } from '../../src/index';
+import { instanceToPlain, plainToInstance, Expose } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Type } from '../../src/decorators';
 
@@ -34,7 +34,7 @@ describe('es6 data types', () => {
     user.name = 'Max Pain';
     user.weapons = weapons;
 
-    const classedUser = plainToClass(User, plainUser);
+    const classedUser = plainToInstance(User, plainUser);
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Max Pain');
@@ -44,7 +44,7 @@ describe('es6 data types', () => {
     expect(classedUser.weapons.get('secondWeapon')).toEqual('eagle');
     expect(classedUser.weapons.get('thirdWeapon')).toEqual('ak-47');
 
-    const plainedUser = classToPlain(user);
+    const plainedUser = instanceToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
     expect(plainedUser).toEqual({
       id: 1,
@@ -83,7 +83,7 @@ describe('es6 data types', () => {
     user.name = 'Max Pain';
     user.weapons = weapons;
 
-    const classedUser = plainToClass(User, plainUser);
+    const classedUser = plainToInstance(User, plainUser);
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Max Pain');
@@ -93,7 +93,7 @@ describe('es6 data types', () => {
     expect(classedUser.weapons.has('eagle')).toBeTruthy();
     expect(classedUser.weapons.has('ak-47')).toBeTruthy();
 
-    const plainedUser = classToPlain(user);
+    const plainedUser = instanceToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
     expect(plainedUser).toEqual({
       id: 1,
@@ -145,7 +145,7 @@ describe('es6 data types', () => {
     user.name = 'Max Pain';
     user.weapons = weapons;
 
-    const classedUser = plainToClass(User, plainUser);
+    const classedUser = plainToInstance(User, plainUser);
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Max Pain');
@@ -167,7 +167,7 @@ describe('es6 data types', () => {
       range: 800,
     });
 
-    const plainedUser = classToPlain(user);
+    const plainedUser = instanceToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
     expect(plainedUser).toEqual({
       id: 1,
@@ -223,7 +223,7 @@ describe('es6 data types', () => {
     user.name = 'Max Pain';
     user.weapons = weapons;
 
-    const classedUser = plainToClass(User, plainUser);
+    const classedUser = plainToInstance(User, plainUser);
     expect(classedUser).toBeInstanceOf(User);
     expect(classedUser.id).toEqual(1);
     expect(classedUser.name).toEqual('Max Pain');
@@ -240,7 +240,7 @@ describe('es6 data types', () => {
     expect(third).toBeInstanceOf(Weapon);
     expect(third).toEqual({ model: 'ak-47', range: 800 });
 
-    const plainedUser = classToPlain(user);
+    const plainedUser = instanceToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
     expect(plainedUser).toEqual({
       id: 1,
@@ -296,7 +296,7 @@ describe('es6 data types', () => {
     user.id = 1;
     user.name = 'Max Pain';
     user.weapons = weapons;
-    const plainedUser = classToPlain(user);
+    const plainedUser = instanceToPlain(user);
     expect(plainedUser).not.toBeInstanceOf(User);
     expect(plainedUser).toEqual({
       id: 1,
@@ -340,10 +340,10 @@ describe('es6 data types', () => {
       });
     }
 
-    const classedUser = plainToClass(User, plainUser, { excludeExtraneousValues: false });
+    const classedUser = plainToInstance(User, plainUser, { excludeExtraneousValues: false });
     checkPlainToClassUser(classedUser);
 
-    const classedUser2 = plainToClass(User, plainUser, { excludeExtraneousValues: true });
+    const classedUser2 = plainToInstance(User, plainUser, { excludeExtraneousValues: true });
     checkPlainToClassUser(classedUser2);
   });
 });

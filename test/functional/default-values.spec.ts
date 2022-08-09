@@ -1,4 +1,4 @@
-import { Expose, plainToClass, Transform } from '../../src';
+import { Expose, plainToInstance, Transform } from '../../src';
 
 describe('expose default values', () => {
   class User {
@@ -29,7 +29,7 @@ describe('expose default values', () => {
 
   it('should set default value if nothing provided', () => {
     const fromPlainUser = {};
-    const transformedUser = plainToClass(User, fromPlainUser, { exposeDefaultValues: true });
+    const transformedUser = plainToInstance(User, fromPlainUser, { exposeDefaultValues: true });
 
     expect(transformedUser).toBeInstanceOf(User);
     expect(transformedUser).toEqual({
@@ -44,7 +44,7 @@ describe('expose default values', () => {
 
   it('should take exposed values and ignore defaults', () => {
     const fromPlainUser = {};
-    const transformedUser = plainToClass(User, fromPlainUser);
+    const transformedUser = plainToInstance(User, fromPlainUser);
 
     expect(transformedUser).toBeInstanceOf(User);
     expect(transformedUser).toEqual({

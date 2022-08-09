@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { plainToClass } from '../../src/index';
+import { plainToInstance } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { Expose, Type } from '../../src/decorators';
 
@@ -15,7 +15,7 @@ describe('implicit type conversion', () => {
       readonly implicitTypeString: string;
     }
 
-    const result1: SimpleExample = plainToClass(
+    const result1: SimpleExample = plainToInstance(
       SimpleExample,
       {
         implicitTypeNumber: '100',
@@ -24,7 +24,7 @@ describe('implicit type conversion', () => {
       { enableImplicitConversion: true }
     );
 
-    const result2: SimpleExample = plainToClass(
+    const result2: SimpleExample = plainToInstance(
       SimpleExample,
       {
         implicitTypeNumber: '100',
@@ -52,7 +52,7 @@ describe('implicit and explicity type declarations', () => {
     readonly explicitType: string;
   }
 
-  const result: Example = plainToClass(
+  const result: Example = plainToInstance(
     Example,
     {
       implicitTypeViaOtherDecorator: '2018-12-24T12:00:00Z',
@@ -78,7 +78,7 @@ describe('implicit and explicity type declarations', () => {
   });
 });
 
-describe('plainToClass transforms built-in primitive types properly', () => {
+describe('plainToInstance transforms built-in primitive types properly', () => {
   defaultMetadataStorage.clear();
 
   class Example {
@@ -104,7 +104,7 @@ describe('plainToClass transforms built-in primitive types properly', () => {
     boolean2: boolean;
   }
 
-  const result: Example = plainToClass(
+  const result: Example = plainToInstance(
     Example,
     {
       date: '2018-12-24T12:00:00Z',

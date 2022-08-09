@@ -6,7 +6,7 @@ import { ClassTransformOptions, ClassConstructor } from '../interfaces';
  *
  * Can be applied to functions and getters/setters only.
  */
-export function TransformPlainToClass(
+export function TransformPlainToInstance(
   classType: ClassConstructor<any>,
   params?: ClassTransformOptions
 ): MethodDecorator {
@@ -19,8 +19,8 @@ export function TransformPlainToClass(
       const isPromise =
         !!result && (typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function';
       return isPromise
-        ? result.then((data: any) => classTransformer.plainToClass(classType, data, params))
-        : classTransformer.plainToClass(classType, result, params);
+        ? result.then((data: any) => classTransformer.plainToInstance(classType, data, params))
+        : classTransformer.plainToInstance(classType, result, params);
     };
   };
 }

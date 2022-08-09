@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { classToClass, classToPlain, plainToClass } from '../../src/index';
+import { instanceToInstance, instanceToPlain, plainToInstance } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
 import { TransformOperationExecutor } from '../../src/TransformOperationExecutor';
 
 describe('circular reference problem', () => {
-  it('should skip circular reference objects in classToPlain operation', () => {
+  it('should skip circular reference objects in instanceToPlain operation', () => {
     defaultMetadataStorage.clear();
 
     class Caption {
@@ -50,7 +50,7 @@ describe('circular reference problem', () => {
     photo1.caption = caption;
     photo2.caption = caption;
 
-    const plainUser = classToPlain(user, { enableCircularCheck: true });
+    const plainUser = instanceToPlain(user, { enableCircularCheck: true });
     expect(plainUser).toEqual({
       firstName: 'Umed Khudoiberdiev',
       caption: { text: 'cool photo' },
@@ -71,7 +71,7 @@ describe('circular reference problem', () => {
     });
   });
 
-  it('should not skip circular reference objects, but handle it correctly in classToClass operation', () => {
+  it('should not skip circular reference objects, but handle it correctly in instanceToInstance operation', () => {
     defaultMetadataStorage.clear();
 
     class Photo {
@@ -104,7 +104,7 @@ describe('circular reference problem', () => {
     photo1.users = [user];
     photo2.users = [user];
 
-    const classUser = classToClass(user, { enableCircularCheck: true });
+    const classUser = instanceToInstance(user, { enableCircularCheck: true });
     expect(classUser).not.toBe(user);
     expect(classUser).toBeInstanceOf(User);
     expect(classUser).toEqual(user);
@@ -139,12 +139,12 @@ describe('circular reference problem', () => {
     });
 
     it('enableCircularCheck option is undefined (default)', () => {
-      plainToClass<User, Record<string, any>>(User, user);
+      plainToInstance<User, Record<string, any>>(User, user);
       expect(isCircularSpy).not.toHaveBeenCalled();
     });
 
     it('enableCircularCheck option is true', () => {
-      plainToClass<User, Record<string, any>>(User, user, { enableCircularCheck: true });
+      plainToInstance<User, Record<string, any>>(User, user, { enableCircularCheck: true });
       expect(isCircularSpy).toHaveBeenCalled();
     });
   });
