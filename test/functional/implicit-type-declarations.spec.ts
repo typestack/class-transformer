@@ -142,3 +142,99 @@ describe('plainToInstance transforms built-in primitive types properly', () => {
     expect(result.boolean2).toBeFalsy();
   });
 });
+
+describe('plainToInstance transforms boolean types properly', () => {
+  defaultMetadataStorage.clear();
+
+  class Example {
+    @Type()
+    undefinedValue: boolean;
+
+    @Type()
+    nullValue: boolean;
+
+    @Type()
+    booleanTrueString: boolean;
+
+    @Type()
+    booleanFalseString: boolean;
+
+    @Type()
+    trueNumberStringValue: boolean;
+
+    @Type()
+    falseNumberStringValue: boolean;
+
+    @Type()
+    boolean: boolean;
+
+    @Type()
+    boolean2: boolean;
+
+    @Type()
+    boolean3: boolean;
+
+    @Type()
+    boolean4: boolean;
+
+    @Type()
+    onTrueString: boolean;
+
+    @Type()
+    offFalseString: boolean;
+
+    @Type()
+    booleanTrueNumber: boolean;
+
+    @Type()
+    booleanFalseNumber: boolean;
+
+    @Type()
+    falseRandomString: boolean;
+  }
+
+  const result: Example = plainToInstance(
+    Example,
+    {
+      undefinedValue: undefined,
+      nullValue: null,
+      booleanTrueString: 'true',
+      booleanFalseString: 'false',
+      trueNumberStringValue: '1',
+      falseNumberStringValue: '0',
+      boolean: 1,
+      boolean2: 0,
+      boolean3: true,
+      boolean4: false,
+      onTrueString: 'on',
+      offFalseString: 'off',
+      booleanTrueNumber: '1',
+      booleanFalseNumber: '0',
+      falseRandomString: 'some random value that needs to be false',
+    },
+    { enableImplicitConversion: true }
+  );
+  it('should recognize and convert "undefined" and "null" to false', () => {
+    expect(result.undefinedValue).toBeFalsy();
+    expect(result.nullValue).toBeFalsy();
+  });
+
+  it('should recognize and convert string to boolean', () => {
+    expect(result.booleanTrueString).toBeTruthy();
+    expect(result.booleanFalseString).toBeFalsy();
+    expect(result.trueNumberStringValue).toBeTruthy();
+    expect(result.falseNumberStringValue).toBeFalsy();
+    expect(result.onTrueString).toBeTruthy();
+    expect(result.offFalseString).toBeFalsy();
+    expect(result.booleanTrueNumber).toBeTruthy();
+    expect(result.booleanFalseNumber).toBeFalsy();
+    expect(result.falseRandomString).toBeFalsy();
+  });
+
+  it('should recognize and convert to boolean', () => {
+    expect(result.boolean).toBeTruthy();
+    expect(result.boolean2).toBeFalsy();
+    expect(result.boolean3).toBeTruthy();
+    expect(result.boolean4).toBeFalsy();
+  });
+});
