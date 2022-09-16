@@ -294,7 +294,7 @@ export class TransformOperationExecutor {
         //     throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Type?`);
 
         // if newValue is a source object that has method that match newKeyName then skip it
-        if (newValue.constructor.prototype) {
+        if (newValue.constructor.prototype && !(newValue instanceof Map)) {
           const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
           if (
             (this.transformationType === TransformationType.PLAIN_TO_CLASS ||
