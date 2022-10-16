@@ -254,7 +254,7 @@ import { classToClass } from 'class-transformer';
 let photo = classToClass(photo);
 ```
 
-You can also use an `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
+You can also use an `ignoreDecorators` option in transformation options to ignore all decorators your classes are using.
 
 ### serialize[⬆](#table-of-contents)
 
