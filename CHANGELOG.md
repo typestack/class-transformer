@@ -31,7 +31,7 @@ Some of the exported functions has been renamed to better reflect what they are 
 
 #### Fixed
 
-- prevent unhandled error in `plaintToclass` when union-type member is undefined
+- prevent unhandled error in `plainToClass` when union-type member is undefined
 - fixed a scenario when a specially crafted JS object would be parsed to Array
 
 #### Changed
