@@ -104,6 +104,7 @@ export class TransformOperationExecutor {
       return String(value);
     } else if (targetType === Number && !isMap) {
       if (value === null || value === undefined) return value;
+      if (value === '') return null;
       return Number(value);
     } else if (targetType === Boolean && !isMap) {
       if (value === null || value === undefined) return value;
