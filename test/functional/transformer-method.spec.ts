@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { defaultMetadataStorage } from '../../src/storage';
+import { plainToClass } from '../../src/index';
 import {
   Exclude,
   Expose,
@@ -252,5 +253,21 @@ describe('transformer methods decorator', () => {
     };
 
     expect(resultV1).toEqual(plainUserV1);
+  });
+
+  it('should expose symbols', () => {
+    defaultMetadataStorage.clear();
+
+    const symbolField = Symbol('symbolField');
+    class ObjectId {
+      [symbolField]: string;
+    }
+
+    const plain = {
+      [symbolField]: 'id',
+    };
+
+    const obj = plainToClass(ObjectId, plain);
+    expect(obj[symbolField]).toBe('id');
   });
 });
