@@ -787,9 +787,9 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 
 | Signature                      | Example                                                 | Description                                                                           |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `@TransformInstanceToPlain`    | `@TransformInstanceToPlain({ groups: ["user"] })`       | Transform the method return with classToPlain and expose the properties on the class. |
-| `@TransformInstanceToInstance` | `@TransformInstanceToInstance({ groups: ["user"] })`    | Transform the method return with classToClass and expose the properties on the class. |
-| `@TransformPlainToInstance`    | `@TransformPlainToInstance(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class. |
+| `@TransformInstanceToPlain`    | `@TransformInstanceToPlain({ groups: ["user"] })`       | Transform the method return with instanceToPlain and expose the properties on the class. |
+| `@TransformInstanceToInstance` | `@TransformInstanceToInstance({ groups: ["user"] })`    | Transform the method return with instanceToInstance and expose the properties on the class. |
+| `@TransformPlainToInstance`    | `@TransformPlainToInstance(User, { groups: ["user"] })` | Transform the method return with plainToInstance and expose the properties on the class. |
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
