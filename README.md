@@ -22,7 +22,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
   - [plainToClass](#plaintoclass)
   - [plainToClassFromExist](#plaintoclassfromexist)
   - [classToPlain](#classtoplain)
-  - [classToClass](#classtoclass)
+  - [instanceToInstance](#instanceToInstance)
   - [serialize](#serialize)
   - [deserialize and deserializeArray](#deserialize-and-deserializearray)
 - [Enforcing type-safe instance](#enforcing-type-safe-instance)
@@ -244,17 +244,17 @@ import { classToPlain } from 'class-transformer';
 let photo = classToPlain(photo);
 ```
 
-### classToClass[⬆](#table-of-contents)
+### instanceToInstance[⬆](#table-of-contents)
 
 This method transforms your class object into a new instance of the class object.
 This may be treated as deep clone of your objects.
 
 ```typescript
-import { classToClass } from 'class-transformer';
-let photo = classToClass(photo);
+import { instanceToInstance } from 'class-transformer';
+let photo = instanceToInstance(photo);
 ```
 
-You can also use an `ignoreDecorators` option in transformation options to ignore all decorators you classes is using.
+You can also use an `ignoreDecorators` option in transformation options to ignore all decorators your classes are using.
 
 ### serialize[⬆](#table-of-contents)
 
