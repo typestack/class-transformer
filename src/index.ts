@@ -36,6 +36,18 @@ export function instanceToPlain<T>(
 }
 
 /**
+ * Converts class (constructor) object to plain (literal) object with support to promise values resolution
+ */
+export function instanceToPlainAsync<T>(object: T, options?: ClassTransformOptions): Record<string, any>;
+export function instanceToPlainAsync<T>(object: T[], options?: ClassTransformOptions): Record<string, any>[];
+export function instanceToPlainAsync<T>(
+  object: T | T[],
+  options?: ClassTransformOptions
+): Record<string, any> | Record<string, any>[] {
+  return classTransformer.instanceToPlainAsync(object, options);
+}
+
+/**
  * Converts class (constructor) object to plain (literal) object.
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
