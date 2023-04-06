@@ -3,12 +3,12 @@
  */
 export interface ExcludeOptions {
   /**
-   * Expose this property only when transforming from plain to class instance.
+   * Exclude this property only when transforming from plain to class instance.
    */
   toClassOnly?: boolean;
 
   /**
-   * Expose this property only when transforming from class instance to plain object.
+   * Exclude this property only when transforming from class instance to plain object.
    */
   toPlainOnly?: boolean;
 }
