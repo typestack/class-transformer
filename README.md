@@ -298,7 +298,7 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
+  unknownProp: 'hello there',
   firstName: 'Umed',
   lastName: 'Khudoiberdiev',
 };
