@@ -52,7 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
     "@types/jest": "^27.5.0",
     "@types/node": "^18.15.11",
