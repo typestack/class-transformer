@@ -15,4 +15,5 @@ export const defaultOptions: Partial<ClassTransformOptions> = {
   strategy: undefined,
   targetMaps: undefined,
   version: undefined,
+  resolveCircularDependenyWhenPlainToClassInSimpleCases: false,
 };

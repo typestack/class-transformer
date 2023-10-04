@@ -2,6 +2,7 @@ import { defaultMetadataStorage } from './storage';
 import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
 import { TransformationType } from './enums';
 import { getGlobal, isPromise } from './utils';
+import { CircularDependencyLinkageManager } from './CircularDependencyLinkageManager';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
   const array = new (arrayType as any)();
@@ -18,6 +19,8 @@ export class TransformOperationExecutor {
 
   private recursionStack = new Set<Record<string, any>>();
 
+  private readonly circularDependencyLinkageManager = new CircularDependencyLinkageManager();
+
   // -------------------------------------------------------------------------
   // Constructor
   // -------------------------------------------------------------------------
@@ -28,22 +31,48 @@ export class TransformOperationExecutor {
   // Public Methods
   // -------------------------------------------------------------------------
 
+  /**
+   * @debug_only
+   */
+  private amountRecursion = -1;
+
+  /**
+   *
+   * @param source
+   * @param value the jsobj (or the inner_field of the jsobj -- nested jsobj (can be object / array / string / ...))
+   * @param targetType the Class Type, if given in the `@Type`
+   * @param arrayType custom Array Type?
+   * @param isMap
+   * @param level recursion depth level
+   * @param value_parent \@debug_only inner_field es parent
+   * @returns
+   */
   transform(
     source: Record<string, any> | Record<string, any>[] | any,
     value: Record<string, any> | Record<string, any>[] | any,
     targetType: Function | TypeMetadata,
     arrayType: Function,
     isMap: boolean,
-    level: number = 0
+    level: number = 0,
+    value_parent?: any | undefined
   ): any {
+    this.amountRecursion++;
+    // console.log(`${this.amountRecursion} ${level} ${value}`);
+    // const value = value_;
+    if (this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases) {
+      this.circularDependencyLinkageManager.addLinkageFirstEncounterFromJsobjSide(value);
+    }
     if (Array.isArray(value) || value instanceof Set) {
       const newValue =
         arrayType && this.transformationType === TransformationType.PLAIN_TO_CLASS
           ? instantiateArrayType(arrayType)
           : [];
-      (value as any[]).forEach((subValue, index) => {
+      for (const [index, subValue] of (value as any[]).entries()) {
         const subSource = source ? source[index] : undefined;
-        if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
+        if (
+          !(this.options.enableCircularCheck && this.isCircular(subValue)) ||
+          this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases
+        ) {
           let realTargetType;
           if (
             typeof targetType !== 'function' &&
@@ -76,19 +105,39 @@ export class TransformOperationExecutor {
           } else {
             realTargetType = targetType;
           }
-          const value = this.transform(
-            subSource,
-            subValue,
-            realTargetType,
-            undefined,
-            subValue instanceof Map,
-            level + 1
-          );
 
-          if (newValue instanceof Set) {
-            newValue.add(value);
+          // if (subValue.fileName === 'Mango.jpg' && value_parent.userName === 'Alpha') {
+          //   console.log(value_parent);
+          // }
+          if (
+            this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases &&
+            this.circularDependencyLinkageManager.detmThisIsACircularField(subValue)
+          ) {
+            const field_TransformedInto_insideArray =
+              this.circularDependencyLinkageManager.addLinkageFromCircularFieldSide_or_establishLinkageIfInstanceClassAlreadyCompletedConstructing(
+                subValue,
+                newValue,
+                index
+              );
+            if (newValue instanceof Set) {
+              newValue.add(field_TransformedInto_insideArray);
+            } else {
+              newValue.push(field_TransformedInto_insideArray); // yeah index not necessary...
+            }
           } else {
-            newValue.push(value);
+            const finalValue_insideArray = this.transform(
+              subSource,
+              subValue,
+              realTargetType,
+              undefined,
+              subValue instanceof Map,
+              level + 1
+            ); // @recursion
+            if (newValue instanceof Set) {
+              newValue.add(finalValue_insideArray);
+            } else {
+              newValue.push(finalValue_insideArray);
+            }
           }
         } else if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
           if (newValue instanceof Set) {
@@ -97,7 +146,15 @@ export class TransformOperationExecutor {
             newValue.push(subValue);
           }
         }
-      });
+      }
+
+      // @note,atten: its not just normal case where an Array is to store a structure (& encapsulated well) -- there are caese where Circular Reference is ON the Arary ...
+      if (this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases) {
+        this.circularDependencyLinkageManager.establishLinkageForAllCircularFieldRefToThisInstanceClass(
+          value,
+          newValue
+        );
+      }
       return newValue;
     } else if (targetType === String && !isMap) {
       if (value === null || value === undefined) return value;
@@ -163,7 +220,7 @@ export class TransformOperationExecutor {
         }
       }
 
-      // traverse over keys
+      // traverse over keys // @breadth_loop
       for (const key of keys) {
         if (key === '__proto__' || key === 'constructor') {
           continue;
@@ -306,31 +363,28 @@ export class TransformOperationExecutor {
             continue;
         }
 
-        if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
-          const transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
-          let finalValue;
-
-          if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
-            // Get original value
-            finalValue = value[transformKey];
-            // Apply custom transformation
-            finalValue = this.applyCustomTransformations(
-              finalValue,
-              targetType as Function,
-              transformKey,
-              value,
-              this.transformationType
+        if (
+          this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases &&
+          this.circularDependencyLinkageManager.detmThisIsACircularField(subValue)
+        ) {
+          newValue[newValueKey] =
+            this.circularDependencyLinkageManager.addLinkageFromCircularFieldSide_or_establishLinkageIfInstanceClassAlreadyCompletedConstructing(
+              subValue,
+              newValue,
+              newValueKey
             );
-            // If nothing change, it means no custom transformation was applied, so use the subValue.
-            finalValue = value[transformKey] === finalValue ? subValue : finalValue;
-            // Apply the default transformation
-            finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
-          } else {
-            if (subValue === undefined && this.options.exposeDefaultValues) {
-              // Set default value if nothing provided
-              finalValue = newValue[newValueKey];
-            } else {
-              finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1);
+        } else {
+          if (
+            !(this.options.enableCircularCheck && this.isCircular(subValue)) ||
+            this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases
+          ) {
+            const transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
+            let finalValue;
+
+            if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
+              // Get original value
+              finalValue = value[transformKey];
+              // Apply custom transformation
               finalValue = this.applyCustomTransformations(
                 finalValue,
                 targetType as Function,
@@ -338,30 +392,51 @@ export class TransformOperationExecutor {
                 value,
                 this.transformationType
               );
+              // If nothing change, it means no custom transformation was applied, so use the subValue.
+              finalValue = value[transformKey] === finalValue ? subValue : finalValue;
+              // Apply the default transformation
+              finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
+            } else {
+              if (subValue === undefined && this.options.exposeDefaultValues) {
+                // Set default value if nothing provided
+                finalValue = newValue[newValueKey];
+              } else {
+                finalValue = this.transform(subSource, subValue, type, arrayType, isSubValueMap, level + 1, value); // @recursion @main
+                // if (value.userName === 'Alpha') {
+                //   console.log(value);
+                // }
+                finalValue = this.applyCustomTransformations(
+                  finalValue,
+                  targetType as Function,
+                  transformKey,
+                  value,
+                  this.transformationType
+                );
+              }
             }
-          }
 
-          if (finalValue !== undefined || this.options.exposeUnsetFields) {
-            if (newValue instanceof Map) {
-              newValue.set(newValueKey, finalValue);
-            } else {
-              newValue[newValueKey] = finalValue;
+            if (finalValue !== undefined || this.options.exposeUnsetFields) {
+              if (newValue instanceof Map) {
+                newValue.set(newValueKey, finalValue);
+              } else {
+                newValue[newValueKey] = finalValue;
+              }
             }
-          }
-        } else if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
-          let finalValue = subValue;
-          finalValue = this.applyCustomTransformations(
-            finalValue,
-            targetType as Function,
-            key,
-            value,
-            this.transformationType
-          );
-          if (finalValue !== undefined || this.options.exposeUnsetFields) {
-            if (newValue instanceof Map) {
-              newValue.set(newValueKey, finalValue);
-            } else {
-              newValue[newValueKey] = finalValue;
+          } else if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
+            let finalValue = subValue;
+            finalValue = this.applyCustomTransformations(
+              finalValue,
+              targetType as Function,
+              key,
+              value,
+              this.transformationType
+            );
+            if (finalValue !== undefined || this.options.exposeUnsetFields) {
+              if (newValue instanceof Map) {
+                newValue.set(newValueKey, finalValue);
+              } else {
+                newValue[newValueKey] = finalValue;
+              }
             }
           }
         }
@@ -369,6 +444,13 @@ export class TransformOperationExecutor {
 
       if (this.options.enableCircularCheck) {
         this.recursionStack.delete(value);
+      }
+
+      if (this.options.resolveCircularDependenyWhenPlainToClassInSimpleCases) {
+        this.circularDependencyLinkageManager.establishLinkageForAllCircularFieldRefToThisInstanceClass(
+          value,
+          newValue
+        );
       }
 
       return newValue;

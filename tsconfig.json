@@ -5,15 +5,22 @@
     "target": "es2018",
     "lib": ["es2018"],
     "outDir": "build/node",
-    "rootDir": "./src",
+    "rootDir": "./src", // ;need_restore; 
+    // "rootDirs": ["./src", "./test"], // ;need_tmp_modify;
+    // @[vscode lint & extended tsconfig pb] 
+    // need to include test files, so vscode Jest Test Explorer can debug the code & other vscode linting / compiling error can work
+    // though, this is a bad practice, its just a workaround to make Vscode work. better comment back (restore) to original state
     "strict": true,
+    "strictNullChecks": false, // should be true, but the code was written in that way, so... 
     "sourceMap": true,
     "inlineSources": true,
     "removeComments": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true, // <see [ResolveCircularDependenyWhenPlainToClass.spec.ts][ReferenceError: Cannot access 'Photo' before initialization][https://github.com/typestack/class-transformer/issues/1622][https://stackoverflow.com/questions/56870661/angular-7-2-1-es6-class-referenceerror-cannot-access-x-before-initializatio]>
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["build", "node_modules", "sample", "**/*.spec.ts", "test/**"]
+  "exclude": ["build", "node_modules", "sample", "**/*.spec.ts", "test/**"], // ;need_restore; 
+  // "exclude": ["build", "node_modules", "sample"],  // , "**/*.spec.ts", "test/**"] // ;need_tmp_modify; // @[vscode lint & extended tsconfig pb] 
 }
+// need upgrade jest, otherwise the bomb array test fail dk why

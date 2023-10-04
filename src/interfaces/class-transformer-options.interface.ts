@@ -76,4 +76,14 @@ export interface ClassTransformOptions {
    * DEFAULT: `true`
    */
   exposeUnsetFields?: boolean;
+
+  /**
+   * true: able to convert `circular dependent Js plain object` to `Js class instance`
+   * false: (ignore the circular dependency, as the old original behvior)
+   * 
+   * this works independent of (- ignore / overwrite) the setting of `enableCircularCheck`
+   *
+   * DEFAULT: `false`
+   */
+  resolveCircularDependenyWhenPlainToClassInSimpleCases?: boolean;
 }

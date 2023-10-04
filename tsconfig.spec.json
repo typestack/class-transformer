@@ -3,9 +3,10 @@
   "compilerOptions": {
     "strict": false,
     "strictPropertyInitialization": false,
-    "sourceMap": false,
+    "sourceMap": true, // for debug
     "removeComments": true,
     "noImplicitAny": false,
+    // @[vscode lint & extended tsconfig pb] @[vscode Jest Test Explorer debug pb] // "rootDir": "./test", // need to include test files, so vscode Jest Test Explorer can debug the code & other vscode linting / compiling error can work // need to do it in the root tsconfig.json
   },
   "exclude": ["node_modules"]
 }
