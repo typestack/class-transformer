@@ -107,6 +107,17 @@ export function instanceToInstance<T>(object: T | T[], options?: ClassTransformO
 }
 
 /**
+ * Converts class (constructor) object to new class (constructor) object. Also works with arrays.
+ *
+ * @deprecated Function name changed, use the `instanceToInstance` method instead.
+ */
+export function classToClass<T>(object: T, options?: ClassTransformOptions): T;
+export function classToClass<T>(object: T[], options?: ClassTransformOptions): T[];
+export function classToClass<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
+  return classTransformer.instanceToInstance(object, options);
+}
+
+/**
  * Converts class (constructor) object to plain (literal) object.
  * Uses given plain object as source object (it means fills given plain object with data from class object).
  * Also works with arrays.
@@ -152,7 +163,6 @@ export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?:
  * ```
  * JSON.parse(json).map(value => instanceToClass(cls, value, options))
  * ```
- *
  */
 export function deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
   return classTransformer.deserializeArray(cls, json, options);
