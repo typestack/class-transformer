@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from '../storage';
-import { ExposeOptions } from '../interfaces';
+import { AliasOptions } from '../interfaces';
 
 /**
  * Marks the given class or property as included. By default the property is included in both
@@ -8,7 +8,7 @@ import { ExposeOptions } from '../interfaces';
  *
  * Can be applied to class definitions and properties.
  */
-export function Expose(options: ExposeOptions = {}): PropertyDecorator & ClassDecorator {
+export function Alias(options: AliasOptions = {}): PropertyDecorator & ClassDecorator {
   /**
    * NOTE: The `propertyName` property must be marked as optional because
    * this decorator used both as a class and a property decorator and the
@@ -16,15 +16,15 @@ export function Expose(options: ExposeOptions = {}): PropertyDecorator & ClassDe
    * decorator only receives one parameter.
    */
   return function (object: any, propertyName?: string | Symbol): void {
-    const metadata = {
+    defaultMetadataStorage.addExposeMetadata({
       target: object instanceof Function ? object : object.constructor,
       propertyName: propertyName as string,
-      options: {
-        ...options,
-        name: options.name || (propertyName as string),
-      },
-    };
-
-    defaultMetadataStorage.addExposeMetadata(metadata);
+      options: { name: options.from || (propertyName as string), toClassOnly: true },
+    });
+    defaultMetadataStorage.addExposeMetadata({
+      target: object instanceof Function ? object : object.constructor,
+      propertyName: propertyName as string,
+      options: { name: options.to || (propertyName as string), toPlainOnly: true },
+    });
   };
 }
