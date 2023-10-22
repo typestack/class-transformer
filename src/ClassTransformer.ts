@@ -3,6 +3,7 @@ import { TransformOperationExecutor } from './TransformOperationExecutor';
 import { TransformationType } from './enums';
 import { ClassConstructor } from './interfaces';
 import { defaultOptions } from './constants/default-options.constant';
+import { instanceToPlainAsync } from './utils';
 
 export class ClassTransformer {
   // -------------------------------------------------------------------------
@@ -23,6 +24,29 @@ export class ClassTransformer {
       ...options,
     });
     return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
+  }
+
+  /**
+   * Converts class (constructor) object to plain (literal) object with support to promise values resolution
+   */
+
+  instanceToPlainAsync<T extends Record<string, any>>(object: T, options?: ClassTransformOptions): Record<string, any>;
+  instanceToPlainAsync<T extends Record<string, any>>(
+    object: T[],
+    options?: ClassTransformOptions
+  ): Record<string, any>[];
+  instanceToPlainAsync<T extends Record<string, any>>(
+    object: T | T[],
+    options?: ClassTransformOptions
+  ): Record<string, any> | Record<string, any>[] {
+    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, {
+      ...defaultOptions,
+      ...options,
+    });
+    return instanceToPlainAsync(
+      executor.transform(undefined, object, undefined, undefined, undefined, undefined),
+      this.instanceToPlain
+    );
   }
 
   /**
