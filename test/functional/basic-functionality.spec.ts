@@ -152,6 +152,33 @@ describe('basic functionality', () => {
     });
   });
 
+  it('should throw an error if the throwErrorExtraneousValues option is set to true', () => {
+    defaultMetadataStorage.clear();
+
+    class User {
+      @Expose() id: number;
+      @Expose() firstName: string;
+      @Expose() lastName: string;
+    }
+
+    const fromPlainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      age: 12,
+    };
+
+    const transformedUser = plainToInstance(User, fromPlainUser);
+    expect(transformedUser).toBeInstanceOf(User);
+    expect(transformedUser).toHaveProperty('age');
+    expect(transformedUser.id).toBeUndefined();
+
+    function drinkOctopus() {
+      plainToInstance(User, fromPlainUser, { throwErrorExtraneousValues: true });
+    }
+
+    expect(drinkOctopus).toThrowError(new Error('Unknown properties found. [age]'));
+  });
+
   it('should exclude all objects marked with @Exclude() decorator', () => {
     defaultMetadataStorage.clear();
 

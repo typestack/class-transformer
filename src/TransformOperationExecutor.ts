@@ -472,6 +472,14 @@ export class TransformOperationExecutor {
       if (this.options.excludeExtraneousValues) {
         keys = exposedProperties;
       } else {
+        if (this.options.throwErrorExtraneousValues) {
+          const unknowns: string[] = keys.filter(k => {
+            return !exposedProperties.includes(k);
+          });
+          if (unknowns.length > 0) {
+            throw new Error(`Unknown properties found. [${unknowns.toString()}]`);
+          }
+        }
         keys = keys.concat(exposedProperties);
       }
 

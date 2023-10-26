@@ -26,6 +26,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
   - [serialize](#serialize)
   - [deserialize and deserializeArray](#deserialize-and-deserializearray)
 - [Enforcing type-safe instance](#enforcing-type-safe-instance)
+- [Throw error for unknown properties](#throw-error-for-unknown-properties)
 - [Working with nested objects](#working-with-nested-objects)
   - [Providing more than one type option](#providing-more-than-one-type-option)
 - [Exposing getters and method return values](#exposing-getters-and-method-return-values)
@@ -337,6 +338,32 @@ console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true })
 //   firstName: 'Umed',
 //   lastName: 'Khudoiberdiev'
 // }
+```
+
+## Throw error for unknown properties[⬆](#table-of-contents)
+
+The default behaviour of the `plainToClass` method is to set _all_ properties from the plain object,
+even those which are not specified in the class.
+If throwErrorExtraneousValues is true, it will throw an error when unknown properties are found.
+
+```typescript
+import { plainToClass } from 'class-transformer';
+
+class User {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+const fromPlainUser = {
+  unknownProp: 'hello there',
+  firstName: 'Umed',
+  lastName: 'Khudoiberdiev',
+};
+
+plainToClass(User, fromPlainUser, { throwErrorExtraneousValues: true });
+
+// An error object will be thrown, because the 'unknownProp' is not defined in the User class.
 ```
 
 ## Working with nested objects[⬆](#table-of-contents)
