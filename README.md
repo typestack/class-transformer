@@ -785,11 +785,11 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 
 ## Other decorators[⬆](#table-of-contents)
 
-| Signature                | Example                                              | Description                                                                           |
-| ------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })`       | Transform the method return with classToPlain and expose the properties on the class. |
-| `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })`       | Transform the method return with classToClass and expose the properties on the class. |
-| `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class. |
+| Signature                      | Example                                                 | Description                                                                           |
+| ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `@TransformInstanceToPlain`    | `@TransformInstanceToPlain({ groups: ["user"] })`       | Transform the method return with instanceToPlain and expose the properties on the class. |
+| `@TransformInstanceToInstance` | `@TransformInstanceToInstance({ groups: ["user"] })`    | Transform the method return with instanceToInstance and expose the properties on the class. |
+| `@TransformPlainToInstance`    | `@TransformPlainToInstance(User, { groups: ["user"] })` | Transform the method return with plainToInstance and expose the properties on the class. |
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
@@ -814,7 +814,7 @@ class User {
 }
 
 class UserController {
-  @TransformClassToPlain({ groups: ['user.email'] })
+  @TransformInstanceToPlain({ groups: ['user.email'] })
   getUser() {
     const user = new User();
     user.firstName = 'Snir';
