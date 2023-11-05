@@ -1,7 +1,7 @@
 import { defaultMetadataStorage } from './storage';
 import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
 import { TransformationType } from './enums';
-import { getGlobal, isPromise } from './utils';
+import { getGlobal, isPromise, toBoolean } from './utils';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
   const array = new (arrayType as any)();
@@ -106,8 +106,9 @@ export class TransformOperationExecutor {
       if (value === null || value === undefined) return value;
       return Number(value);
     } else if (targetType === Boolean && !isMap) {
-      if (value === null || value === undefined) return value;
-      return Boolean(value);
+      // Note: Next line can safely be removed as this is being handled by util to return false if either of these two are set.
+      //if (value === null || value === undefined) return value;
+      return toBoolean(value);
     } else if ((targetType === Date || value instanceof Date) && !isMap) {
       if (value instanceof Date) {
         return new Date(value.valueOf());
