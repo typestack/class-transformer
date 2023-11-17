@@ -456,7 +456,7 @@ export class User {
   password: string;
 
   @Expose()
-  get name() {
+  getName() {
     return this.firstName + ' ' + this.lastName;
   }
 
