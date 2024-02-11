@@ -124,7 +124,7 @@ export function classToClassFromExist<T>(object: T, fromObject: T | T[], options
  *
  * @deprecated This function is being removed. Please use
  * ```
- * JSON.stringify(instanceToPlain(object, options))
+ * JSON.stringify(plainToInstance(object, options))
  * ```
  */
 export function serialize<T>(object: T, options?: ClassTransformOptions): string;
@@ -138,7 +138,7 @@ export function serialize<T>(object: T | T[], options?: ClassTransformOptions): 
  *
  * @deprecated This function is being removed. Please use the following instead:
  * ```
- * instanceToClass(cls, JSON.parse(json), options)
+ * plainToInstance(cls, JSON.parse(json), options)
  * ```
  */
 export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T {
@@ -150,7 +150,7 @@ export function deserialize<T>(cls: ClassConstructor<T>, json: string, options?:
  *
  * @deprecated This function is being removed. Please use the following instead:
  * ```
- * JSON.parse(json).map(value => instanceToClass(cls, value, options))
+ * JSON.parse(json).map(value => plainToInstance(cls, value, options))
  * ```
  *
  */
