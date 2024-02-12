@@ -13,9 +13,6 @@ This tool is super useful on both frontend and backend.
 - [class-transform](#class-transform)
   - [Table of contents](#table-of-contents)
   - [About class-transform(#table-of-contents)](#about-class-transformtable-of-contents)
-  - [Installation(#table-of-contents)](#installationtable-of-contents)
-    - [Node.js(#table-of-contents)](#nodejstable-of-contents)
-    - [Browser(#table-of-contents)](#browsertable-of-contents)
   - [Functions(#table-of-contents)](#functionstable-of-contents)
     - [plainToInstance(#table-of-contents)](#plaintoinstancetable-of-contents)
     - [instanceToPlain(#table-of-contents)](#instancetoplaintable-of-contents)
@@ -108,11 +105,11 @@ You are assuming that you are downloading users of type `User` from `users.json`
 following code:
 
 ```typescript
-fetch('users.json').then((users: User[]) => {
-  // you can use users here, and type hinting also will be available to you,
-  //  but users are not actually instances of User class
-  // this means that you can't use methods of User class
-});
+let response = await fetch('users.json');
+let users: Array<User> = await response.json();
+// you can use users here, and type hinting also will be available to you,
+// but users are not actually instances of User class
+// this means that you can't use methods of User class
 ```
 
 In this code you can use `users[0].id`, you can also use `users[0].firstName` and `users[0].lastName`.
@@ -132,78 +129,12 @@ because it provides a great tooling to control what your models are exposing in 
 Here is an example how it will look like:
 
 ```typescript
-fetch('users.json').then((users: Object[]) => {
-  const realUsers = plainToInstance(User, users);
-  // now each user in realUsers is an instance of User class
-});
+let response = await fetch('users.json');
+let realUsers = plainToInstance(User, await response.json());
+// now each user in realUsers is an instance of User class
 ```
 
 Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
-
-## Installation(#table-of-contents)
-
-### Node.js(#table-of-contents)
-
-1. Install module:
-
-   `npm install class-transform --save`
-
-2. `reflect-metadata` shim is required, install it too:
-
-   `npm install reflect-metadata --save`
-
-   and make sure to import it in a global place, like app.ts:
-
-   ```typescript
-   import 'reflect-metadata';
-   ```
-
-3. ES6 features are used, if you are using old version of node.js you may need to install es6-shim:
-
-   `npm install es6-shim --save`
-
-   and import it in a global place like app.ts:
-
-   ```typescript
-   import 'es6-shim';
-   ```
-
-### Browser(#table-of-contents)
-
-1. Install module:
-
-   `npm install class-transform --save`
-
-2. `reflect-metadata` shim is required, install it too:
-
-   `npm install reflect-metadata --save`
-
-   add `<script>` to reflect-metadata in the head of your `index.html`:
-
-   ```html
-   <html>
-     <head>
-       <!-- ... -->
-       <script src="node_modules/reflect-metadata/Reflect.js"></script>
-     </head>
-     <!-- ... -->
-   </html>
-   ```
-
-   If you are using angular 2 you should already have this shim installed.
-
-3. If you are using system.js you may want to add this into `map` and `package` config:
-
-   ```json
-   {
-     "map": {
-       "class-transform": "node_modules/class-transform"
-     },
-     "packages": {
-       "class-transform": { "main": "index.js", "defaultExtension": "js" }
-     }
-   }
-   ```
 
 ## Functions(#table-of-contents)
 
@@ -213,7 +144,6 @@ This method transforms a plain javascript object to instance of specific class.
 
 ```typescript
 import { plainToInstance } from 'class-transform';
-
 let users = plainToInstance(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
@@ -430,11 +360,8 @@ import { expose } from 'class-transform';
 export class User {
   @expose({ name: 'uid' })
   id: number;
-
   firstName: string;
-
   lastName: string;
-
   @expose({ name: 'secretKey' })
   password: string;
 
@@ -455,9 +382,7 @@ import { expose } from 'class-transform';
 
 export class User {
   id: number;
-
   email: string;
-
   @exclude()
   password: string;
 }
@@ -474,9 +399,7 @@ import { expose } from 'class-transform';
 
 export class User {
   id: number;
-
   email: string;
-
   @exclude({ toPlainOnly: true })
   password: string;
 }
@@ -495,10 +418,8 @@ import { exclude, expose } from 'class-transform';
 export class User {
   @expose()
   id: number;
-
   @expose()
   email: string;
-
   password: string;
 }
 ```
@@ -590,12 +511,9 @@ import { exclude, expose, instanceToPlain } from 'class-transform';
 
 export class User {
   id: number;
-
   name: string;
-
   @expose({ since: 0.7, until: 1 }) // this means that this property will be exposed for version starting from 0.7 until 1
   email: string;
-
   @expose({ since: 2.1 }) // this means that this property will be exposed for version starting from 2.1
   password: string;
 }
@@ -618,13 +536,9 @@ import { nested } from 'class-transform';
 
 export class User {
   id: number;
-
   email: string;
-
   password: string;
-
-  @nested(Date)
-  registrationDate: Date;
+  @nested(Date) registrationDate: Date;
 }
 ```
 
@@ -641,11 +555,8 @@ import { nested } from 'class-transform';
 
 export class Photo {
   id: number;
-
   name: string;
-
-  @nested(Album)
-  albums: Array<Album>;
+  @nested(Album) albums: Array<Album>;
 }
 ```
 
@@ -661,9 +572,7 @@ export class AlbumCollection extends Array<Album> {
 export class Photo {
   id: number;
   name: string;
-
-  @nested(Album)
-  albums: AlbumCollection;
+  @nested(Album) albums: AlbumCollection;
 }
 ```
 
@@ -683,12 +592,8 @@ export class Weapon {
 
 export class Player {
   name: string;
-
-  @nested(Skill)
-  skills: Set<Skill>;
-
-  @nested(Weapon)
-  weapons: Map<string, Weapon>;
+  @nested(Skill) skills: Set<Skill>;
+  @nested(Weapon) weapons: Map<string, Weapon>;
 }
 ```
 

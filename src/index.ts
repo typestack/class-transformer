@@ -1,6 +1,7 @@
 import { ClassTransformer } from './ClassTransformer';
 import { ClassTransformOptions } from './interfaces';
 import { ClassConstructor } from './interfaces';
+import 'reflect-metadata';
 
 export { ClassTransformer } from './ClassTransformer';
 export * from './decorators';
