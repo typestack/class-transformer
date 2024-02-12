@@ -216,7 +216,7 @@ const fromPlainUser = {
 };
 
 console.log(
-  plainToInstance(User, fromPlainUser, { excludeExtraneousValues: true }),
+  plainToInstance(User, fromPlainUser, { excludeExtraneousValues: true })
 );
 
 // User {
@@ -580,25 +580,6 @@ export class Photo {
 
 Library will handle proper transformation automatically.
 
-ES6 collections `Set` and `Map` also require the `@nested` decorator:
-
-```typescript
-export class Skill {
-  name: string;
-}
-
-export class Weapon {
-  name: string;
-  range: number;
-}
-
-export class Player {
-  name: string;
-  @nested(Skill) skills: Set<Skill>;
-  @nested(Weapon) weapons: Map<string, Weapon>;
-}
-```
-
 ## Additional data transformation(#table-of-contents)
 
 ### Basic usage(#table-of-contents)
@@ -665,12 +646,12 @@ class MyPayload {
 const result1 = plainToInstance(
   MyPayload,
   { prop: 1234 },
-  { enableImplicitConversion: true },
+  { enableImplicitConversion: true }
 );
 const result2 = plainToInstance(
   MyPayload,
   { prop: 1234 },
-  { enableImplicitConversion: false },
+  { enableImplicitConversion: false }
 );
 
 /**
