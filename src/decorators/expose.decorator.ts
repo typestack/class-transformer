@@ -1,5 +1,5 @@
-import { defaultMetadataStorage } from '../storage';
-import { ExposeOptions } from '../interfaces';
+import { defaultMetadataStorage } from "../storage";
+import { ExposeOptions } from "../interfaces";
 
 /**
  * Marks the given class or property as included. By default the property is included in both
@@ -8,7 +8,9 @@ import { ExposeOptions } from '../interfaces';
  *
  * Can be applied to class definitions and properties.
  */
-export function expose(options: ExposeOptions = {}): PropertyDecorator & ClassDecorator {
+export function expose(
+  options: ExposeOptions = {},
+): PropertyDecorator & ClassDecorator {
   /**
    * NOTE: The `propertyName` property must be marked as optional because
    * this decorator used both as a class and a property decorator and the

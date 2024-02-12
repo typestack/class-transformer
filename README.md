@@ -92,7 +92,7 @@ export class User {
   age: number;
 
   getName() {
-    return this.firstName + ' ' + this.lastName;
+    return this.firstName + " " + this.lastName;
   }
 
   isAdult() {
@@ -105,7 +105,7 @@ You are assuming that you are downloading users of type `User` from `users.json`
 following code:
 
 ```typescript
-let response = await fetch('users.json');
+let response = await fetch("users.json");
 let users: Array<User> = await response.json();
 // you can use users here, and type hinting also will be available to you,
 // but users are not actually instances of User class
@@ -129,7 +129,7 @@ because it provides a great tooling to control what your models are exposing in 
 Here is an example how it will look like:
 
 ```typescript
-let response = await fetch('users.json');
+let response = await fetch("users.json");
 let realUsers = plainToInstance(User, await response.json());
 // now each user in realUsers is an instance of User class
 ```
@@ -143,7 +143,7 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 This method transforms a plain javascript object to instance of specific class.
 
 ```typescript
-import { plainToInstance } from 'class-transform';
+import { plainToInstance } from "class-transform";
 let users = plainToInstance(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
@@ -152,7 +152,7 @@ let users = plainToInstance(User, userJson); // to convert user plain object a s
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
 
 ```typescript
-import { instanceToPlain } from 'class-transform';
+import { instanceToPlain } from "class-transform";
 let photo = instanceToPlain(photo);
 ```
 
@@ -162,7 +162,7 @@ This method transforms your class object into a new instance of the class object
 This may be treated as deep clone of your objects.
 
 ```typescript
-import { instanceToInstance } from 'class-transform';
+import { instanceToInstance } from "class-transform";
 let photo = instanceToInstance(photo);
 ```
 
@@ -174,7 +174,7 @@ The default behaviour of the `plainToInstance` method is to set _all_ properties
 even those which are not specified in the class.
 
 ```typescript
-import { plainToInstance } from 'class-transform';
+import { plainToInstance } from "class-transform";
 
 class User {
   id: number;
@@ -183,9 +183,9 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
-  firstName: 'Umed',
-  lastName: 'Khudoiberdiev',
+  unkownProp: "hello there",
+  firstName: "Umed",
+  lastName: "Khudoiberdiev",
 };
 
 console.log(plainToInstance(User, fromPlainUser));
@@ -201,7 +201,7 @@ If this behaviour does not suit your needs, you can use the `excludeExtraneousVa
 in the `plainToInstance` method while _exposing all your class properties_ as a requirement.
 
 ```typescript
-import { expose, plainToInstance } from 'class-transform';
+import { expose, plainToInstance } from "class-transform";
 
 class User {
   @expose() id: number;
@@ -210,12 +210,14 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
-  firstName: 'Umed',
-  lastName: 'Khudoiberdiev',
+  unkownProp: "hello there",
+  firstName: "Umed",
+  lastName: "Khudoiberdiev",
 };
 
-console.log(plainToInstance(User, fromPlainUser, { excludeExtraneousValues: true }));
+console.log(
+  plainToInstance(User, fromPlainUser, { excludeExtraneousValues: true }),
+);
 
 // User {
 //   id: undefined,
@@ -236,7 +238,7 @@ Lets say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
-import { nested, plainToInstance } from 'class-transform';
+import { nested, plainToInstance } from "class-transform";
 
 export class Album {
   id: number;
@@ -281,7 +283,7 @@ the additional property `__type`. This property is removed during transformation
 ```
 
 ```typescript
-import { nested, plainToInstance } from 'class-transform';
+import { nested, plainToInstance } from "class-transform";
 
 export abstract class Photo {
   id: number;
@@ -306,11 +308,11 @@ export class Album {
 
   @nested(Photo, {
     discriminator: {
-      property: '__type',
+      property: "__type",
       subTypes: [
-        { value: Landscape, name: 'landscape' },
-        { value: Portrait, name: 'portrait' },
-        { value: UnderWater, name: 'underwater' },
+        { value: Landscape, name: "landscape" },
+        { value: Portrait, name: "portrait" },
+        { value: UnderWater, name: "underwater" },
       ],
     },
   })
@@ -329,7 +331,7 @@ in the options to keep the discriminator property also inside your resulting cla
 You can expose what your getter or method return by setting an `@expose()` decorator to those getters or methods:
 
 ```typescript
-import { expose } from 'class-transform';
+import { expose } from "class-transform";
 
 export class User {
   id: number;
@@ -339,12 +341,12 @@ export class User {
 
   @expose()
   get name() {
-    return this.firstName + ' ' + this.lastName;
+    return this.firstName + " " + this.lastName;
   }
 
   @expose()
   getFullName() {
-    return this.firstName + ' ' + this.lastName;
+    return this.firstName + " " + this.lastName;
   }
 }
 ```
@@ -355,19 +357,19 @@ If you want to expose some of the properties with a different name,
 you can do that by specifying a `name` option to `@expose` decorator:
 
 ```typescript
-import { expose } from 'class-transform';
+import { expose } from "class-transform";
 
 export class User {
-  @expose({ name: 'uid' })
+  @expose({ name: "uid" })
   id: number;
   firstName: string;
   lastName: string;
-  @expose({ name: 'secretKey' })
+  @expose({ name: "secretKey" })
   password: string;
 
-  @expose({ name: 'fullName' })
+  @expose({ name: "fullName" })
   getFullName() {
-    return this.firstName + ' ' + this.lastName;
+    return this.firstName + " " + this.lastName;
   }
 }
 ```
@@ -378,7 +380,7 @@ Sometimes you want to skip some properties during transformation.
 This can be done using `@exclude` decorator:
 
 ```typescript
-import { expose } from 'class-transform';
+import { expose } from "class-transform";
 
 export class User {
   id: number;
@@ -395,7 +397,7 @@ Now when you transform a User, the `password` property will be skipped and not b
 You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
 
 ```typescript
-import { expose } from 'class-transform';
+import { expose } from "class-transform";
 
 export class User {
   id: number;
@@ -412,7 +414,7 @@ Now `password` property will be excluded only during `instanceToPlain` operation
 You can skip all properties of the class, and expose only those are needed explicitly:
 
 ```typescript
-import { exclude, expose } from 'class-transform';
+import { exclude, expose } from "class-transform";
 
 @exclude()
 export class User {
@@ -428,8 +430,8 @@ Now `id` and `email` will be exposed, and password will be excluded during trans
 Alternatively, you can set exclusion strategy during transformation:
 
 ```typescript
-import { instanceToPlain } from 'class-transform';
-let photo = instanceToPlain(photo, { strategy: 'excludeAll' });
+import { instanceToPlain } from "class-transform";
+let photo = instanceToPlain(photo, { strategy: "excludeAll" });
 ```
 
 In this case you don't need to `@exclude()` a whole class.
@@ -440,8 +442,8 @@ If you name your private properties with a prefix, lets say with `_`,
 then you can exclude such properties from transformation too:
 
 ```typescript
-import { instanceToPlain } from 'class-transform';
-let photo = instanceToPlain(photo, { excludePrefixes: ['_'] });
+import { instanceToPlain } from "class-transform";
+let photo = instanceToPlain(photo, { excludePrefixes: ["_"] });
 ```
 
 This will skip all properties that start with `_` prefix.
@@ -449,7 +451,7 @@ You can pass any number of prefixes and all properties that begin with these pre
 For example:
 
 ```typescript
-import { expose, instanceToPlain } from 'class-transform';
+import { expose, instanceToPlain } from "class-transform";
 
 export class User {
   id: number;
@@ -464,16 +466,16 @@ export class User {
 
   @expose()
   get name() {
-    return this._firstName + ' ' + this._lastName;
+    return this._firstName + " " + this._lastName;
   }
 }
 
 const user = new User();
 user.id = 1;
-user.setName('Johny', 'Cage');
-user._password = '123';
+user.setName("Johny", "Cage");
+user._password = "123";
 
-const plainUser = instanceToPlain(user, { excludePrefixes: ['_'] });
+const plainUser = instanceToPlain(user, { excludePrefixes: ["_"] });
 // here plainUser will be equal to
 // { id: 1, name: "Johny Cage" }
 ```
@@ -483,22 +485,22 @@ const plainUser = instanceToPlain(user, { excludePrefixes: ['_'] });
 You can use groups to control what data will be exposed and what will not be:
 
 ```typescript
-import { exclude, expose, instanceToPlain } from 'class-transform';
+import { exclude, expose, instanceToPlain } from "class-transform";
 
 export class User {
   id: number;
 
   name: string;
 
-  @expose({ groups: ['user', 'admin'] }) // this means that this data will be exposed only to users and admins
+  @expose({ groups: ["user", "admin"] }) // this means that this data will be exposed only to users and admins
   email: string;
 
-  @expose({ groups: ['user'] }) // this means that this data will be exposed only to users
+  @expose({ groups: ["user"] }) // this means that this data will be exposed only to users
   password: string;
 }
 
-let user1 = instanceToPlain(user, { groups: ['user'] }); // will contain id, name, email and password
-let user2 = instanceToPlain(user, { groups: ['admin'] }); // will contain id, name and email
+let user1 = instanceToPlain(user, { groups: ["user"] }); // will contain id, name, email and password
+let user2 = instanceToPlain(user, { groups: ["admin"] }); // will contain id, name and email
 ```
 
 ## Using versioning to control exposed and excluded properties(#table-of-contents)
@@ -507,7 +509,7 @@ If you are building an API that has different versions, class-transform has extr
 You can control which properties of your model should be exposed or excluded in what version. Example:
 
 ```typescript
-import { exclude, expose, instanceToPlain } from 'class-transform';
+import { exclude, expose, instanceToPlain } from "class-transform";
 
 export class User {
   id: number;
@@ -532,7 +534,7 @@ And you want to create a real javascript Date object from it.
 You can do it simply by passing a Date object to the `@nested` decorator:
 
 ```typescript
-import { nested } from 'class-transform';
+import { nested } from "class-transform";
 
 export class User {
   id: number;
@@ -551,7 +553,7 @@ When you are using arrays you must provide a type of the object that array conta
 This type, you specify in a `@nested()` decorator:
 
 ```typescript
-import { nested } from 'class-transform';
+import { nested } from "class-transform";
 
 export class Photo {
   id: number;
@@ -563,7 +565,7 @@ export class Photo {
 You can also use custom array types:
 
 ```typescript
-import { nested } from 'class-transform';
+import { nested } from "class-transform";
 
 export class AlbumCollection extends Array<Album> {
   // custom array functions ...
@@ -606,9 +608,9 @@ For example, you want to make your `Date` object to be a `moment` object when yo
 transforming object from plain to class:
 
 ```typescript
-import { transform } from 'class-transform';
-import * as moment from 'moment';
-import { Moment } from 'moment';
+import { transform } from "class-transform";
+import * as moment from "moment";
+import { Moment } from "moment";
 
 export class Photo {
   id: number;
@@ -653,15 +655,23 @@ There are some tweaks however you can use, that maybe can solve your problem.
 Enables automatic conversion between built-in types based on type information provided by Typescript. Disabled by default.
 
 ```ts
-import { IsString } from 'class-validator';
+import { IsString } from "class-validator";
 
 class MyPayload {
   @IsString()
   prop: string;
 }
 
-const result1 = plainToInstance(MyPayload, { prop: 1234 }, { enableImplicitConversion: true });
-const result2 = plainToInstance(MyPayload, { prop: 1234 }, { enableImplicitConversion: false });
+const result1 = plainToInstance(
+  MyPayload,
+  { prop: 1234 },
+  { enableImplicitConversion: true },
+);
+const result2 = plainToInstance(
+  MyPayload,
+  { prop: 1234 },
+  { enableImplicitConversion: false },
+);
 
 /**
  *  result1 will be `{ prop: "1234" }` - notice how the prop value has been converted to string.

@@ -1,4 +1,4 @@
-import { TargetMap } from './target-map.interface';
+import { TargetMap } from "./target-map.interface";
 
 /**
  * Options to be passed during transformation.
@@ -8,7 +8,7 @@ export interface ClassTransformOptions {
    * Exclusion strategy. By default exposeAll is used, which means that it will expose all properties are transformed
    * by default.
    */
-  strategy?: 'excludeAll' | 'exposeAll';
+  strategy?: "excludeAll" | "exposeAll";
 
   /**
    * Indicates if extraneous properties should be excluded from the value when converting a plain value to a class.

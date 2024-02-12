@@ -1,5 +1,5 @@
-import { nested, exclude } from '../../src/decorators';
-import { User } from './User';
+import { nested, exclude } from "../../src/decorators";
+import { User } from "./User";
 
 export class Authorable {
   authorName: string;

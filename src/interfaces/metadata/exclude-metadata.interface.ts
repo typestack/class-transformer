@@ -1,4 +1,4 @@
-import { ExcludeOptions } from '..';
+import { ExcludeOptions } from "..";
 
 /**
  * This object represents metadata assigned to a property via the @exclude decorator.

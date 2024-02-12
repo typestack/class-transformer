@@ -1,4 +1,4 @@
-import { ClassTransformOptions } from '../interfaces/class-transform-options.interface';
+import { ClassTransformOptions } from "../interfaces/class-transform-options.interface";
 
 /**
  * These are the default options used by any transformation operation.

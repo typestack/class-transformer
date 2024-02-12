@@ -1,6 +1,6 @@
-import { Album } from './Album';
-import { AlbumArray } from './AlbumArray';
-import { nested } from '../../src/decorators';
+import { Album } from "./Album";
+import { AlbumArray } from "./AlbumArray";
+import { nested } from "../../src/decorators";
 
 export class Photo {
   id: string;

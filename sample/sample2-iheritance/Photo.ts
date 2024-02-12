@@ -1,6 +1,6 @@
-import { nested, exclude } from '../../src/decorators';
-import { Album } from './Album';
-import { Authorable } from './Authorable';
+import { nested, exclude } from "../../src/decorators";
+import { Album } from "./Album";
+import { Authorable } from "./Authorable";
 
 export class Photo extends Authorable {
   id: string;

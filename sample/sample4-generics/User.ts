@@ -1,4 +1,4 @@
-import { exclude } from '../../src/decorators';
+import { exclude } from "../../src/decorators";
 
 export class User {
   id: number;
@@ -10,7 +10,12 @@ export class User {
   @exclude()
   password: string;
 
-  constructor(id: number, firstName: string, lastName: string, password: string) {
+  constructor(
+    id: number,
+    firstName: string,
+    lastName: string,
+    password: string,
+  ) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -18,6 +23,6 @@ export class User {
   }
 
   get name() {
-    return this.firstName + ' ' + this.lastName;
+    return this.firstName + " " + this.lastName;
   }
 }

@@ -1,4 +1,4 @@
-import { DiscriminatorDescriptor } from './type-discriminator-descriptor.interface';
+import { DiscriminatorDescriptor } from "./type-discriminator-descriptor.interface";
 
 /**
  * Possible transformation options for the @nested decorator.

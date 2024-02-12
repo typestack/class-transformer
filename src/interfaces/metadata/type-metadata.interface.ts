@@ -1,4 +1,4 @@
-import { TypeOptions } from '..';
+import { TypeOptions } from "..";
 
 /**
  * This object represents metadata assigned to a property via the @nested decorator.

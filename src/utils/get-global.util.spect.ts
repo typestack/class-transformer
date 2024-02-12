@@ -1,11 +1,11 @@
-import { getGlobal } from '.';
+import { getGlobal } from ".";
 
-describe('getGlobal()', () => {
-  it('should return true if Buffer is present in globalThis', () => {
+describe("getGlobal()", () => {
+  it("should return true if Buffer is present in globalThis", () => {
     expect(getGlobal().Buffer).toBe(true);
   });
 
-  it('should return false if Buffer is not present in globalThis', () => {
+  it("should return false if Buffer is not present in globalThis", () => {
     const bufferImp = global.Buffer;
     delete global.Buffer;
 

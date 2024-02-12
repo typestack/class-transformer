@@ -1,4 +1,4 @@
-import { nested } from '../../src/decorators';
+import { nested } from "../../src/decorators";
 
 export class User {
   @nested(Number)

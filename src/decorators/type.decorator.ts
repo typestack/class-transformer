@@ -1,5 +1,5 @@
-import { defaultMetadataStorage } from '../storage';
-import { TypeOptions } from '../interfaces';
+import { defaultMetadataStorage } from "../storage";
+import { TypeOptions } from "../interfaces";
 
 /**
  * Specifies the type of the nested property.
@@ -11,9 +11,16 @@ import { TypeOptions } from '../interfaces';
  * For class properties of primitive types,
  * this decorator is not needed.
  */
-export function nested(classConstructor: new (...args: any[]) => any, options: TypeOptions = {}): PropertyDecorator {
+export function nested(
+  classConstructor: new (...args: any[]) => any,
+  options: TypeOptions = {},
+): PropertyDecorator {
   return function (target: any, propertyName: string | Symbol): void {
-    const reflectedType = (Reflect as any).getMetadata('design:type', target, propertyName);
+    const reflectedType = (Reflect as any).getMetadata(
+      "design:type",
+      target,
+      propertyName,
+    );
     defaultMetadataStorage.addTypeMetadata({
       target: target.constructor,
       propertyName: propertyName as string,
