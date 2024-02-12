@@ -394,7 +394,7 @@ the additional property `__type`. This property is removed during transformation
   "name": "foo",
   "topPhoto": {
     "id": 9,
-    "filename": "cool_wale.jpg",
+    "filename": "cool_whale.jpg",
     "depth": 1245,
     "__type": "underwater"
   }
