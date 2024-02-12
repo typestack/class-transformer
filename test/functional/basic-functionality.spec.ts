@@ -119,7 +119,7 @@ describe('basic functionality', () => {
   });
 
   it('should exclude extraneous values if both excludeExtraneousValues and ignoreDecorators option is set to true', () => {
-    // fixes https://github.com/typestack/class-transformer/issues/533
+    // fixes https://github.com/cunarist/class-transform/issues/533
     defaultMetadataStorage.clear();
 
     class ExampleClass {

@@ -194,7 +194,7 @@ export class TransformOperationExecutor {
         if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
           /**
            * This section is added for the following report:
-           * https://github.com/typestack/class-transformer/issues/596
+           * https://github.com/cunarist/class-transform/issues/596
            *
            * We should not call functions or constructors when transforming to class.
            */

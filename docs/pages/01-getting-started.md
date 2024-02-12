@@ -1,6 +1,6 @@
 # Getting Started
 
-The `class-transformer` package is a zero-dependency utility library helping you to quickly transform class instances to plain objects and vice-versa.
+The `class-transform` package is a zero-dependency utility library helping you to quickly transform class instances to plain objects and vice-versa.
 It works well with the [`class-validator`][class-validator] library. The main features include:
 
 - conditionally transforming object properties
@@ -12,10 +12,10 @@ It works well with the [`class-validator`][class-validator] library. The main fe
 
 ## Installation
 
-To start using class-transformer install the required packages via NPM:
+To start using class-transform install the required packages via NPM:
 
 ```bash
-npm install class-transformer reflect-metadata
+npm install class-transform reflect-metadata
 ```
 
 Import the `reflect-metadata` package at the **first line** of your application:
@@ -34,14 +34,14 @@ As the last step, you need to enable emitting decorator metadata in your Typescr
 "experimentalDecorators": true,
 ```
 
-Now you are ready to use class-transformer with Typescript!
+Now you are ready to use class-transform with Typescript!
 
 ## Basic Usage
 
 The most basic usage is to transform a class to a plain object:
 
 ```ts
-import { Expose, Exclude, classToPlain } from 'class-transformer';
+import { Expose, Exclude, classToPlain } from 'class-transform';
 
 class User {
   /**
@@ -71,4 +71,4 @@ const plain = classToPlain(user);
 // contains { id: '42', name: 'John Snow' }
 ```
 
-[class-validator]: https://github.com/typestack/class-validator/
+[class-validator]: https://github.com/cunarist/class-validator/

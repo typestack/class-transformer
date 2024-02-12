@@ -3,7 +3,7 @@ import { TypeOptions } from '../interfaces';
 
 /**
  * Specifies the type of the nested property.
- * The given class parameter is used by `class-transformer` library
+ * The given class parameter is used by `class-transform` library
  * to transform plain objects into class instances.
  * A discriminator can be given in the options.
  *
