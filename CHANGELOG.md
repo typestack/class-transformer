@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.6.2 - 2024-02-13
+
+- Removed deprecated APIs and organized guides.
+
 ### 0.6.1 - 2024-02-12
 
 - Fixed the NPM publishing issue.
