@@ -1,4 +1,4 @@
-import { TargetMap } from './target-map.interface';
+import { TargetMap } from "./target-map.interface";
 
 /**
  * Options to be passed during transformation.
@@ -8,12 +8,12 @@ export interface ClassTransformOptions {
    * Exclusion strategy. By default exposeAll is used, which means that it will expose all properties are transformed
    * by default.
    */
-  strategy?: 'excludeAll' | 'exposeAll';
+  strategy?: "excludeAll" | "exposeAll";
 
   /**
    * Indicates if extraneous properties should be excluded from the value when converting a plain value to a class.
    *
-   * This option requires that each property on the target class has at least one `@Expose` or `@Exclude` decorator
+   * This option requires that each property on the target class has at least one `@expose` or `@exclude` decorator
    * assigned from this library.
    */
   excludeExtraneousValues?: boolean;
@@ -21,7 +21,7 @@ export interface ClassTransformOptions {
   /**
    * Only properties with given groups gonna be transformed.
    */
-  groups?: string[];
+  groups?: Array<string>;
 
   /**
    * Only properties with "since" > version < "until" gonna be transformed.
@@ -33,10 +33,10 @@ export interface ClassTransformOptions {
    * you can set this option's value to ["_", "__"] and all private properties will be skipped.
    * This works only for "exposeAll" strategy.
    */
-  excludePrefixes?: string[];
+  excludePrefixes?: Array<string>;
 
   /**
-   * If set to true then class transformer will ignore the effect of all @Expose and @Exclude decorators.
+   * If set to true then class transformer will ignore the effect of all @expose and @exclude decorators.
    * This option is useful if you want to kinda clone your object but do not apply decorators affects.
    *
    * __NOTE:__ You may still have to add the decorators to make other options work.
@@ -44,11 +44,11 @@ export interface ClassTransformOptions {
   ignoreDecorators?: boolean;
 
   /**
-   * Target maps allows to set a Types of the transforming object without using @Type decorator.
+   * Target maps allows to set a Types of the transforming object without using @nested decorator.
    * This is useful when you are transforming external classes, or if you already have type metadata for
    * objects and you don't want to set it up again.
    */
-  targetMaps?: TargetMap[];
+  targetMaps?: Array<TargetMap>;
 
   /**
    * If set to true then class transformer will perform a circular check. (circular check is turned off by default)

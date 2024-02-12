@@ -1,12 +1,12 @@
-import { Type, Exclude } from '../../src/decorators';
-import { User } from './User';
+import { nested, exclude } from "../../src/decorators";
+import { User } from "./User";
 
 export class Authorable {
   authorName: string;
 
-  @Exclude()
+  @exclude()
   authorEmail: string;
 
-  @Type(() => User)
+  @nested(User)
   author: User;
 }

@@ -1,4 +1,4 @@
-import { ClassConstructor } from '..';
+import { ClassConstructor } from "..";
 
 /**
  * Discriminator object containing the type information to select a proper type

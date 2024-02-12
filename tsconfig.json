@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es2018",
-    "lib": ["es2018"],
-    "outDir": "build/node",
+    "module": "ES2015",
+    "moduleResolution": "Node",
+    "target": "ES2015",
+    "lib": ["ES2015"],
+    "outDir": "build/",
     "rootDir": "./src",
-    "strict": true,
+    "strict": false,
+    "declaration": true,
     "sourceMap": true,
     "inlineSources": true,
     "removeComments": false,
@@ -15,5 +16,5 @@
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["build", "node_modules", "sample", "**/*.spec.ts", "test/**"]
+  "exclude": ["build", "node_modules", "sample", "**/*.spec.ts"]
 }

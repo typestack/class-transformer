@@ -1,6 +1,16 @@
 # Changelog
 
-_This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
+### 0.6.2 - 2024-02-13
+
+- Removed deprecated APIs and organized guides.
+
+### 0.6.1 - 2024-02-12
+
+- Fixed the NPM publishing issue.
+
+### 0.6.0 - 2024-02-12
+
+- `@Type` decorator has been changed to `@Nested`, with a simpler syntax.
 
 ### [0.5.1][v0.5.1] [BREAKING CHANGE] - 2021-11-22
 
@@ -180,7 +190,7 @@ This version has introduced a breaking-change when this library is used with cla
 
 #### Added
 
-- renamed library from `constructor-utils` to `class-transformer`
+- renamed library from `constructor-utils` to `class-transform`
 - completely renamed most of names
 - renamed all main methods: `plainToConstructor` now is `plainToClass` and `constructorToPlain` is `classToPlain`, etc.
 - `plainToConstructorArray` method removed - now `plainToClass` handles it
@@ -235,14 +245,14 @@ This version has introduced a breaking-change when this library is used with cla
 - Library has changed its name from `serializer.ts` to `constructor-utils`.
 - Added `constructor-utils` namespace.
 
-[v0.5.1]: https://github.com/typestack/class-transformer/compare/v0.5.0...v0.5.1
-[v0.5.0]: https://github.com/typestack/class-transformer/compare/v0.4.1...v0.5.0
-[v0.4.1]: https://github.com/typestack/class-transformer/compare/v0.4.0...v0.4.1
-[v0.4.0]: https://github.com/typestack/class-transformer/compare/v0.3.2...v0.4.0
-[v0.3.2]: https://github.com/typestack/class-transformer/compare/v0.3.1...v0.3.2
-[v0.3.1]: https://github.com/typestack/class-transformer/compare/v0.2.3...v0.3.1
-[v0.2.3]: https://github.com/typestack/class-transformer/compare/v0.2.2...v0.2.3
-[v0.2.2]: https://github.com/typestack/class-transformer/compare/v0.2.1...v0.2.2
-[v0.2.1]: https://github.com/typestack/class-transformer/compare/v0.2.0...v0.2.1
-[v0.2.0]: https://github.com/typestack/class-transformer/compare/v0.1.10...v0.2.0
+[v0.5.1]: https://github.com/cunarist/class-transform/compare/v0.5.0...v0.5.1
+[v0.5.0]: https://github.com/cunarist/class-transform/compare/v0.4.1...v0.5.0
+[v0.4.1]: https://github.com/cunarist/class-transform/compare/v0.4.0...v0.4.1
+[v0.4.0]: https://github.com/cunarist/class-transform/compare/v0.3.2...v0.4.0
+[v0.3.2]: https://github.com/cunarist/class-transform/compare/v0.3.1...v0.3.2
+[v0.3.1]: https://github.com/cunarist/class-transform/compare/v0.2.3...v0.3.1
+[v0.2.3]: https://github.com/cunarist/class-transform/compare/v0.2.2...v0.2.3
+[v0.2.2]: https://github.com/cunarist/class-transform/compare/v0.2.1...v0.2.2
+[v0.2.1]: https://github.com/cunarist/class-transform/compare/v0.2.0...v0.2.1
+[v0.2.0]: https://github.com/cunarist/class-transform/compare/v0.1.10...v0.2.0
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0/

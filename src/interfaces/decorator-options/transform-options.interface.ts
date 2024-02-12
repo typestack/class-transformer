@@ -1,5 +1,5 @@
 /**
- * Possible transformation options for the @Transform decorator.
+ * Possible transformation options for the @transform decorator.
  */
 export interface TransformOptions {
   /**
@@ -32,7 +32,7 @@ export interface TransformOptions {
    * instanceToPlain(payload, { groups: ['user'] });
    * ```
    */
-  groups?: string[];
+  groups?: Array<string>;
 
   /**
    * Expose this property only when transforming from plain to class instance.

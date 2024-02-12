@@ -1,8 +1,8 @@
-import { TransformOptions } from '..';
-import { TransformFnParams } from './transform-fn-params.interface';
+import { TransformOptions } from "..";
+import { TransformFnParams } from "./transform-fn-params.interface";
 
 /**
- * This object represents metadata assigned to a property via the @Transform decorator.
+ * This object represents metadata assigned to a property via the @transform decorator.
  */
 export interface TransformMetadata {
   target: Function;
@@ -13,12 +13,12 @@ export interface TransformMetadata {
   propertyName: string;
 
   /**
-   * The custom transformation function provided by the user in the @Transform decorator.
+   * The custom transformation function provided by the user in the @transform decorator.
    */
   transformFn: (params: TransformFnParams) => any;
 
   /**
-   * Options passed to the @Transform operator for this property.
+   * Options passed to the @transform operator for this property.
    */
   options: TransformOptions;
 }

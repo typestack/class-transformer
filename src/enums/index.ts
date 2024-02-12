@@ -1,1 +1,1 @@
-export * from './transformation-type.enum';
+export * from "./transformation-type.enum";

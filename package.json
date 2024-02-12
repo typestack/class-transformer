@@ -1,42 +1,36 @@
 {
-  "name": "class-transformer",
-  "version": "0.5.1",
-  "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
-  "author": "TypeStack contributors",
+  "name": "class-transform",
+  "version": "0.6.2",
+  "description": "Decorator-based transformation between plain JavaScript objects and class instances",
+  "author": "Cunarist",
   "license": "MIT",
-  "readmeFilename": "README.md",
-  "sideEffects": false,
-  "main": "./cjs/index.js",
-  "module": "./esm5/index.js",
-  "es2015": "./esm2015/index.js",
-  "typings": "./types/index.d.ts",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/typestack/class-transformer.git"
+    "url": "https://github.com/cunarist/class-transform.git"
   },
   "tags": [
-    "serialization",
-    "deserialization",
-    "serializer",
     "typescript",
     "object-to-class",
-    "typescript-serializer"
+    "class-to-object"
   ],
   "scripts": {
-    "build": "npm run build:cjs",
-    "build:clean": "rimraf build",
-    "build:es2015": "tsc --project tsconfig.prod.esm2015.json",
-    "build:esm5": "tsc --project tsconfig.prod.esm5.json",
-    "build:cjs": "tsc --project tsconfig.prod.cjs.json",
-    "build:umd": "rollup --config rollup.config.js",
-    "build:types": "tsc --project tsconfig.prod.types.json",
+    "build": "tsc",
     "prettier:fix": "prettier --write \"**/*.{ts,md}\"",
-    "prettier:check": "prettier --check \"**/*.{ts,md}\"",
-    "lint:fix": "eslint --max-warnings 0 --fix --ext .ts src/",
-    "lint:check": "eslint --max-warnings 0 --ext .ts src/",
-    "test": "jest --coverage --verbose",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --runInBand --no-cache --coverage --verbose"
+    "prettier:check": "prettier --check \"**/*.{ts,md}\""
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.1",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
   },
   "husky": {
     "hooks": {
@@ -50,27 +44,5 @@
     "*.ts": [
       "npm run prettier:fix"
     ]
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.5",
-    "@rollup/plugin-node-resolve": "^15.2.2",
-    "@types/jest": "^27.5.0",
-    "@types/node": "^20.8.5",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-jest": "^26.8.7",
-    "husky": "^4.3.8",
-    "jest": "^26.6.3",
-    "lint-staged": "^14.0.1",
-    "prettier": "^2.8.8",
-    "reflect-metadata": "0.1.13",
-    "rimraf": "5.0.5",
-    "rollup": "^2.79.1",
-    "rollup-plugin-terser": "^7.0.2",
-    "ts-jest": "^26.5.6",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
   }
 }

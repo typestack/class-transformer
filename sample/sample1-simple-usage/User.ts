@@ -1,13 +1,13 @@
-import { Type } from '../../src/decorators';
+import { nested } from "../../src/decorators";
 
 export class User {
-  @Type(() => Number)
+  @nested(Number)
   id: number;
 
   firstName: string;
 
   lastName: string;
 
-  @Type(() => Date)
+  @nested(Date)
   registrationDate: Date;
 }

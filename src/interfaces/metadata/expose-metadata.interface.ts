@@ -1,7 +1,7 @@
-import { ExposeOptions } from '..';
+import { ExposeOptions } from "..";
 
 /**
- * This object represents metadata assigned to a property via the @Expose decorator.
+ * This object represents metadata assigned to a property via the @expose decorator.
  */
 export interface ExposeMetadata {
   target: Function;
@@ -14,7 +14,7 @@ export interface ExposeMetadata {
   propertyName: string | undefined;
 
   /**
-   * Options passed to the @Expose operator for this property.
+   * Options passed to the @expose operator for this property.
    */
   options: ExposeOptions;
 }
