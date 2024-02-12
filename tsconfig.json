@@ -16,5 +16,5 @@
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["build", "node_modules", "sample", "**/*.spec.ts", "test/**"]
+  "exclude": ["build", "node_modules", "sample", "**/*.spec.ts"]
 }

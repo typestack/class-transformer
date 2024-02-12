@@ -1,6 +1,6 @@
 import 'es6-shim';
 import 'reflect-metadata';
-import { classToPlain, plainToClass } from '../../src/index';
+import { instanceToPlain, plainToInstance } from '../../src/index';
 import { Photo } from './Photo';
 
 let photoJson = {
@@ -30,12 +30,12 @@ let photoJson = {
   ],
 };
 
-let photo = plainToClass(Photo, photoJson);
+let photo = plainToInstance(Photo, photoJson);
 console.log('deserialized object: ', photo);
 
 // now check serialization
 
-let newPhotoJson = classToPlain(photo);
+let newPhotoJson = instanceToPlain(photo);
 console.log('serialized object: ', newPhotoJson);
 
 // try to deserialize an array
@@ -85,10 +85,10 @@ let photosJson = [
   },
 ];
 
-let photos = plainToClass(Photo, photosJson);
+let photos = plainToInstance(Photo, photosJson);
 console.log('deserialized array: ', photos);
 
 // now check array serialization
 
-let newPhotosJson = classToPlain(photos);
+let newPhotosJson = instanceToPlain(photos);
 console.log('serialized array: ', newPhotosJson);

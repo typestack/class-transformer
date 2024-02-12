@@ -4,13 +4,8 @@ import { nested } from '../../src/decorators';
 
 export class Photo {
   id: string;
-
   filename: string;
-
   description: string;
-
-  tags: string[];
-
-  @nested(Album)
-  albums: AlbumArray;
+  tags: Array<string>;
+  @nested(Album) albums: AlbumArray;
 }

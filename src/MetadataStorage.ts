@@ -168,13 +168,13 @@ export class MetadataStorage {
   private getMetadata<T extends { target: Function; propertyName: string }>(
     metadatas: Map<Function, Map<string, T>>,
     target: Function
-  ): T[] {
+  ): Array<T> {
     const metadataFromTargetMap = metadatas.get(target);
-    let metadataFromTarget: T[];
+    let metadataFromTarget: Array<T>;
     if (metadataFromTargetMap) {
       metadataFromTarget = Array.from(metadataFromTargetMap.values()).filter(meta => meta.propertyName !== undefined);
     }
-    const metadataFromAncestors: T[] = [];
+    const metadataFromAncestors: Array<T> = [];
     for (const ancestor of this.getAncestors(target)) {
       const ancestorMetadataMap = metadatas.get(ancestor);
       if (ancestorMetadataMap) {
@@ -212,16 +212,16 @@ export class MetadataStorage {
   }
 
   private findMetadatas<T extends { target: Function; propertyName: string }>(
-    metadatas: Map<Function, Map<string, T[]>>,
+    metadatas: Map<Function, Map<string, Array<T>>>,
     target: Function,
     propertyName: string
-  ): T[] {
+  ): Array<T> {
     const metadataFromTargetMap = metadatas.get(target);
-    let metadataFromTarget: T[];
+    let metadataFromTarget: Array<T>;
     if (metadataFromTargetMap) {
       metadataFromTarget = metadataFromTargetMap.get(propertyName);
     }
-    const metadataFromAncestorsTarget: T[] = [];
+    const metadataFromAncestorsTarget: Array<T> = [];
     for (const ancestor of this.getAncestors(target)) {
       const ancestorMetadataMap = metadatas.get(ancestor);
       if (ancestorMetadataMap) {

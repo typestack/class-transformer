@@ -1,4 +1,4 @@
 export class SimpleCollection<T> {
-  items: T[];
+  items: Array<T>;
   count: number;
 }

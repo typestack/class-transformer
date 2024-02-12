@@ -21,7 +21,7 @@ export interface ClassTransformOptions {
   /**
    * Only properties with given groups gonna be transformed.
    */
-  groups?: string[];
+  groups?: Array<string>;
 
   /**
    * Only properties with "since" > version < "until" gonna be transformed.
@@ -33,7 +33,7 @@ export interface ClassTransformOptions {
    * you can set this option's value to ["_", "__"] and all private properties will be skipped.
    * This works only for "exposeAll" strategy.
    */
-  excludePrefixes?: string[];
+  excludePrefixes?: Array<string>;
 
   /**
    * If set to true then class transformer will ignore the effect of all @expose and @exclude decorators.
@@ -48,7 +48,7 @@ export interface ClassTransformOptions {
    * This is useful when you are transforming external classes, or if you already have type metadata for
    * objects and you don't want to set it up again.
    */
-  targetMaps?: TargetMap[];
+  targetMaps?: Array<TargetMap>;
 
   /**
    * If set to true then class transformer will perform a circular check. (circular check is turned off by default)

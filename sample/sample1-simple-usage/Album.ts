@@ -8,5 +8,5 @@ export class Album {
   name: string;
 
   @nested(Photo)
-  photos: Photo[];
+  photos: Array<Photo>;
 }

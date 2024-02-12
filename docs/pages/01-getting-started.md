@@ -41,7 +41,7 @@ Now you are ready to use class-transform with Typescript!
 The most basic usage is to transform a class to a plain object:
 
 ```ts
-import { expose, exclude, classToPlain } from 'class-transform';
+import { expose, exclude, instanceToPlain } from 'class-transform';
 
 class User {
   /**
@@ -67,7 +67,7 @@ class User {
 const user = getUserMagically();
 // contains: User { _id: '42', name: 'John Snow', passwordHash: '2f55ce082...' }
 
-const plain = classToPlain(user);
+const plain = instanceToPlain(user);
 // contains { id: '42', name: 'John Snow' }
 ```
 

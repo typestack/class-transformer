@@ -4,18 +4,11 @@ import { User } from './User';
 
 export class Photo {
   id: string;
-
   filename: string;
-
   description: string;
-
-  tags: string[];
-
-  @nested(User)
-  author: User;
-
-  @nested(Album)
-  albums: Album[];
+  tags: Array<string>;
+  @nested(User) author: User;
+  @nested(Album) albums: Array<Album>;
 
   get name() {
     return this.id + '_' + this.filename;

@@ -2,32 +2,24 @@
 
 # class-transform
 
-![Build Status](https://github.com/cunarist/class-transform/workflows/CI/badge.svg)
 [![npm version](https://badge.fury.io/js/class-transform.svg)](https://badge.fury.io/js/class-transform)
 
 Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more than ever.
-Class-transform allows you to transform plain object to some instance of class and versa.
-Also it allows to serialize / deserialize object based on criteria.
+Class-transform allows you to transform JSON or plain object to some instance of class and vice versa.
 This tool is super useful on both frontend and backend.
-
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
-Source code is available [here](https://github.com/pleerock/class-transform-demo).
 
 ## Table of contents
 
 - [class-transform](#class-transform)
   - [Table of contents](#table-of-contents)
-  - [What is class-transform(#table-of-contents)](#what-is-class-transformtable-of-contents)
+  - [About class-transform(#table-of-contents)](#about-class-transformtable-of-contents)
   - [Installation(#table-of-contents)](#installationtable-of-contents)
     - [Node.js(#table-of-contents)](#nodejstable-of-contents)
     - [Browser(#table-of-contents)](#browsertable-of-contents)
-  - [Methods(#table-of-contents)](#methodstable-of-contents)
-    - [plainToClass(#table-of-contents)](#plaintoclasstable-of-contents)
-    - [plainToClassFromExist(#table-of-contents)](#plaintoclassfromexisttable-of-contents)
-    - [classToPlain(#table-of-contents)](#classtoplaintable-of-contents)
+  - [Functions(#table-of-contents)](#functionstable-of-contents)
+    - [plainToInstance(#table-of-contents)](#plaintoinstancetable-of-contents)
+    - [instanceToPlain(#table-of-contents)](#instancetoplaintable-of-contents)
     - [instanceToInstance(#table-of-contents)](#instancetoinstancetable-of-contents)
-    - [serialize(#table-of-contents)](#serializetable-of-contents)
-    - [deserialize and deserializeArray(#table-of-contents)](#deserialize-and-deserializearraytable-of-contents)
   - [Enforcing type-safe instance(#table-of-contents)](#enforcing-type-safe-instancetable-of-contents)
   - [Working with nested objects(#table-of-contents)](#working-with-nested-objectstable-of-contents)
     - [Providing more than one type option(#table-of-contents)](#providing-more-than-one-type-optiontable-of-contents)
@@ -44,15 +36,13 @@ Source code is available [here](https://github.com/pleerock/class-transform-demo
   - [Additional data transformation(#table-of-contents)](#additional-data-transformationtable-of-contents)
     - [Basic usage(#table-of-contents)](#basic-usagetable-of-contents)
     - [Advanced usage(#table-of-contents)](#advanced-usagetable-of-contents)
-  - [Other decorators(#table-of-contents)](#other-decoratorstable-of-contents)
   - [Working with generics(#table-of-contents)](#working-with-genericstable-of-contents)
   - [Implicit type conversion(#table-of-contents)](#implicit-type-conversiontable-of-contents)
   - [How does it handle circular references?(#table-of-contents)](#how-does-it-handle-circular-referencestable-of-contents)
-  - [Example with Angular2(#table-of-contents)](#example-with-angular2table-of-contents)
   - [Samples(#table-of-contents)](#samplestable-of-contents)
   - [Release notes(#table-of-contents)](#release-notestable-of-contents)
 
-## What is class-transform(#table-of-contents)
+## About class-transform(#table-of-contents)
 
 In JavaScript there are two types of objects:
 
@@ -143,7 +133,7 @@ Here is an example how it will look like:
 
 ```typescript
 fetch('users.json').then((users: Object[]) => {
-  const realUsers = plainToClass(User, users);
+  const realUsers = plainToInstance(User, users);
   // now each user in realUsers is an instance of User class
 });
 ```
@@ -215,36 +205,25 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    }
    ```
 
-## Methods(#table-of-contents)
+## Functions(#table-of-contents)
 
-### plainToClass(#table-of-contents)
+### plainToInstance(#table-of-contents)
 
 This method transforms a plain javascript object to instance of specific class.
 
 ```typescript
-import { plainToClass } from 'class-transform';
+import { plainToInstance } from 'class-transform';
 
-let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
+let users = plainToInstance(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
-### plainToClassFromExist(#table-of-contents)
-
-This method transforms a plain object into an instance using an already filled Object which is an instance of the target class.
-
-```typescript
-const defaultUser = new User();
-defaultUser.role = 'user';
-
-let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
-```
-
-### classToPlain(#table-of-contents)
+### instanceToPlain(#table-of-contents)
 
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
 
 ```typescript
-import { classToPlain } from 'class-transform';
-let photo = classToPlain(photo);
+import { instanceToPlain } from 'class-transform';
+let photo = instanceToPlain(photo);
 ```
 
 ### instanceToInstance(#table-of-contents)
@@ -259,40 +238,13 @@ let photo = instanceToInstance(photo);
 
 You can also use an `ignoreDecorators` option in transformation options to ignore all decorators your classes are using.
 
-### serialize(#table-of-contents)
-
-You can serialize your model right to json using `serialize` method:
-
-```typescript
-import { serialize } from 'class-transform';
-let photo = serialize(photo);
-```
-
-`serialize` works with both arrays and non-arrays.
-
-### deserialize and deserializeArray(#table-of-contents)
-
-You can deserialize your model from json using the `deserialize` method:
-
-```typescript
-import { deserialize } from 'class-transform';
-let photo = deserialize(Photo, photo);
-```
-
-To make deserialization work with arrays, use the `deserializeArray` method:
-
-```typescript
-import { deserializeArray } from 'class-transform';
-let photos = deserializeArray(Photo, photos);
-```
-
 ## Enforcing type-safe instance(#table-of-contents)
 
-The default behaviour of the `plainToClass` method is to set _all_ properties from the plain object,
+The default behaviour of the `plainToInstance` method is to set _all_ properties from the plain object,
 even those which are not specified in the class.
 
 ```typescript
-import { plainToClass } from 'class-transform';
+import { plainToInstance } from 'class-transform';
 
 class User {
   id: number;
@@ -306,7 +258,7 @@ const fromPlainUser = {
   lastName: 'Khudoiberdiev',
 };
 
-console.log(plainToClass(User, fromPlainUser));
+console.log(plainToInstance(User, fromPlainUser));
 
 // User {
 //   unkownProp: 'hello there',
@@ -316,10 +268,10 @@ console.log(plainToClass(User, fromPlainUser));
 ```
 
 If this behaviour does not suit your needs, you can use the `excludeExtraneousValues` option
-in the `plainToClass` method while _exposing all your class properties_ as a requirement.
+in the `plainToInstance` method while _exposing all your class properties_ as a requirement.
 
 ```typescript
-import { expose, plainToClass } from 'class-transform';
+import { expose, plainToInstance } from 'class-transform';
 
 class User {
   @expose() id: number;
@@ -333,7 +285,7 @@ const fromPlainUser = {
   lastName: 'Khudoiberdiev',
 };
 
-console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true }));
+console.log(plainToInstance(User, fromPlainUser, { excludeExtraneousValues: true }));
 
 // User {
 //   id: undefined,
@@ -354,15 +306,12 @@ Lets say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
-import { nested, plainToClass } from 'class-transform';
+import { nested, plainToInstance } from 'class-transform';
 
 export class Album {
   id: number;
-
   name: string;
-
-  @nested(Photo)
-  photos: Photo[];
+  @nested(Photo) photos: Array<Photo>;
 }
 
 export class Photo {
@@ -370,7 +319,7 @@ export class Photo {
   filename: string;
 }
 
-let album = plainToClass(Album, albumJson);
+let album = plainToInstance(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
@@ -402,7 +351,7 @@ the additional property `__type`. This property is removed during transformation
 ```
 
 ```typescript
-import { nested, plainToClass } from 'class-transform';
+import { nested, plainToInstance } from 'class-transform';
 
 export abstract class Photo {
   id: number;
@@ -438,7 +387,7 @@ export class Album {
   topPhoto: Landscape | Portrait | UnderWater;
 }
 
-let album = plainToClass(Album, albumJson);
+let album = plainToInstance(Album, albumJson);
 // now album is Album object with a UnderWater object without `__type` property.
 ```
 
@@ -533,7 +482,7 @@ export class User {
 }
 ```
 
-Now `password` property will be excluded only during `classToPlain` operation. Vice versa, use the `toClassOnly` option.
+Now `password` property will be excluded only during `instanceToPlain` operation. Vice versa, use the `toClassOnly` option.
 
 ## Skipping all properties of the class(#table-of-contents)
 
@@ -558,8 +507,8 @@ Now `id` and `email` will be exposed, and password will be excluded during trans
 Alternatively, you can set exclusion strategy during transformation:
 
 ```typescript
-import { classToPlain } from 'class-transform';
-let photo = classToPlain(photo, { strategy: 'excludeAll' });
+import { instanceToPlain } from 'class-transform';
+let photo = instanceToPlain(photo, { strategy: 'excludeAll' });
 ```
 
 In this case you don't need to `@exclude()` a whole class.
@@ -570,8 +519,8 @@ If you name your private properties with a prefix, lets say with `_`,
 then you can exclude such properties from transformation too:
 
 ```typescript
-import { classToPlain } from 'class-transform';
-let photo = classToPlain(photo, { excludePrefixes: ['_'] });
+import { instanceToPlain } from 'class-transform';
+let photo = instanceToPlain(photo, { excludePrefixes: ['_'] });
 ```
 
 This will skip all properties that start with `_` prefix.
@@ -579,7 +528,7 @@ You can pass any number of prefixes and all properties that begin with these pre
 For example:
 
 ```typescript
-import { expose, classToPlain } from 'class-transform';
+import { expose, instanceToPlain } from 'class-transform';
 
 export class User {
   id: number;
@@ -603,7 +552,7 @@ user.id = 1;
 user.setName('Johny', 'Cage');
 user._password = '123';
 
-const plainUser = classToPlain(user, { excludePrefixes: ['_'] });
+const plainUser = instanceToPlain(user, { excludePrefixes: ['_'] });
 // here plainUser will be equal to
 // { id: 1, name: "Johny Cage" }
 ```
@@ -613,7 +562,7 @@ const plainUser = classToPlain(user, { excludePrefixes: ['_'] });
 You can use groups to control what data will be exposed and what will not be:
 
 ```typescript
-import { exclude, expose, classToPlain } from 'class-transform';
+import { exclude, expose, instanceToPlain } from 'class-transform';
 
 export class User {
   id: number;
@@ -627,8 +576,8 @@ export class User {
   password: string;
 }
 
-let user1 = classToPlain(user, { groups: ['user'] }); // will contain id, name, email and password
-let user2 = classToPlain(user, { groups: ['admin'] }); // will contain id, name and email
+let user1 = instanceToPlain(user, { groups: ['user'] }); // will contain id, name, email and password
+let user2 = instanceToPlain(user, { groups: ['admin'] }); // will contain id, name and email
 ```
 
 ## Using versioning to control exposed and excluded properties(#table-of-contents)
@@ -637,7 +586,7 @@ If you are building an API that has different versions, class-transform has extr
 You can control which properties of your model should be exposed or excluded in what version. Example:
 
 ```typescript
-import { exclude, expose, classToPlain } from 'class-transform';
+import { exclude, expose, instanceToPlain } from 'class-transform';
 
 export class User {
   id: number;
@@ -651,11 +600,11 @@ export class User {
   password: string;
 }
 
-let user1 = classToPlain(user, { version: 0.5 }); // will contain id and name
-let user2 = classToPlain(user, { version: 0.7 }); // will contain id, name and email
-let user3 = classToPlain(user, { version: 1 }); // will contain id and name
-let user4 = classToPlain(user, { version: 2 }); // will contain id and name
-let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and password
+let user1 = instanceToPlain(user, { version: 0.5 }); // will contain id and name
+let user2 = instanceToPlain(user, { version: 0.7 }); // will contain id, name and email
+let user3 = instanceToPlain(user, { version: 1 }); // will contain id and name
+let user4 = instanceToPlain(user, { version: 2 }); // will contain id and name
+let user5 = instanceToPlain(user, { version: 2.1 }); // will contain id, name and password
 ```
 
 ## Сonverting date strings into Date objects(#table-of-contents)
@@ -696,7 +645,7 @@ export class Photo {
   name: string;
 
   @nested(Album)
-  albums: Album[];
+  albums: Array<Album>;
 }
 ```
 
@@ -765,7 +714,7 @@ export class Photo {
 }
 ```
 
-Now when you call `plainToClass` and send a plain representation of the Photo object,
+Now when you call `plainToInstance` and send a plain representation of the Photo object,
 it will convert a date value in your photo object to moment date.
 `@transform` decorator also supports groups and versioning.
 
@@ -784,55 +733,6 @@ The `@transform` decorator is given more arguments to let you configure how you 
 | `obj`     | The transformation source object.                       |
 | `type`    | The transformation type.                                |
 | `options` | The options object passed to the transformation method. |
-
-## Other decorators(#table-of-contents)
-
-| Signature                      | Example                                                 | Description                                                          |
-| ------------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------- |
-| `@transformInstanceToPlain`    | `@transformInstanceToPlain({ groups: ["user"] })`       | Transforms the method return and expose the properties on the class. |
-| `@transformInstanceToInstance` | `@transformInstanceToInstance({ groups: ["user"] })`    | Transforms the method return and expose the properties on the class. |
-| `@transformPlainToInstance`    | `@transformPlainToInstance(User, { groups: ["user"] })` | Transforms the method return and expose the properties on the class. |
-
-The above decorators accept one optional argument:
-ClassTransformOptions - The transform options like groups, version, name
-
-An example:
-
-```typescript
-@exclude()
-class User {
-  id: number;
-
-  @expose()
-  firstName: string;
-
-  @expose()
-  lastName: string;
-
-  @expose({ groups: ['user.email'] })
-  email: string;
-
-  password: string;
-}
-
-class UserController {
-  @transformClassToPlain({ groups: ['user.email'] })
-  getUser() {
-    const user = new User();
-    user.firstName = 'Snir';
-    user.lastName = 'Segal';
-    user.password = 'imnosuperman';
-
-    return user;
-  }
-}
-
-const controller = new UserController();
-const user = controller.getUser();
-```
-
-the `user` variable will contain only firstName,lastName, email properties because they are
-the exposed variables. email property is also exposed because we metioned the group "user.email".
 
 ## Working with generics(#table-of-contents)
 
@@ -855,8 +755,8 @@ class MyPayload {
   prop: string;
 }
 
-const result1 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversion: true });
-const result2 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversion: false });
+const result1 = plainToInstance(MyPayload, { prop: 1234 }, { enableImplicitConversion: true });
+const result2 = plainToInstance(MyPayload, { prop: 1234 }, { enableImplicitConversion: false });
 
 /**
  *  result1 will be `{ prop: "1234" }` - notice how the prop value has been converted to string.
@@ -869,29 +769,7 @@ const result2 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversi
 Circular references are ignored.
 For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
 and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
-Circular references are not ignored only during `classToClass` operation.
-
-## Example with Angular2(#table-of-contents)
-
-Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
-
-```typescript
-import { plainToClass } from 'class-transform';
-
-this.http
-  .get('users.json')
-  .map(res => res.json())
-  .map(res => plainToClass(User, res as Object[]))
-  .subscribe(users => {
-    // now "users" is type of User[] and each user has getName() and isAdult() methods available
-    console.log(users);
-  });
-```
-
-You can also inject a class `ClassTransformer` as a service in `providers`, and use its methods.
-
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
-Source code is [here](https://github.com/pleerock/class-transform-demo).
+Circular references are not ignored only during `instanceToInstance` operation.
 
 ## Samples(#table-of-contents)
 
