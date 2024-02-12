@@ -2,7 +2,7 @@
   "name": "class-transformer",
   "version": "0.5.1",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
-  "author": "TypeStack contributors",
+  "author": "Cunarist",
   "license": "MIT",
   "readmeFilename": "README.md",
   "sideEffects": false,
@@ -12,7 +12,7 @@
   "typings": "./types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/typestack/class-transformer.git"
+    "url": "https://github.com/cunarist/class-transform.git"
   },
   "tags": [
     "serialization",
