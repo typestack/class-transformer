@@ -1,15 +1,13 @@
 {
-  "name": "class-transformer",
-  "version": "0.5.1",
+  "name": "class-transform",
+  "version": "0.6.0",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "author": "Cunarist",
   "license": "MIT",
   "readmeFilename": "README.md",
   "sideEffects": false,
-  "main": "./cjs/index.js",
-  "module": "./esm5/index.js",
-  "es2015": "./esm2015/index.js",
-  "typings": "./types/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/cunarist/class-transform.git"
