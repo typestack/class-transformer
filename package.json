@@ -1,6 +1,6 @@
 {
   "name": "class-transform",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Proper decorator-based transformation / serialization / deserialization of plain javascript objects to class constructors",
   "author": "Cunarist",
   "license": "MIT",

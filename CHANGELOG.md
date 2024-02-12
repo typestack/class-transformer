@@ -1,6 +1,12 @@
 # Changelog
 
-_This changelog follows the [keep a changelog][keep-a-changelog]_ format to maintain a human readable changelog.
+### 0.6.1 - 2024-02-12
+
+- Fixed the NPM publishing issue.
+
+### 0.6.0 - 2024-02-12
+
+- `@Type` decorator has been changed to `@Nested`, with a simpler syntax.
 
 ### [0.5.1][v0.5.1] [BREAKING CHANGE] - 2021-11-22
 
