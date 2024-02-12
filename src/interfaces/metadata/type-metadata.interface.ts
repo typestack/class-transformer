@@ -1,7 +1,7 @@
-import { TypeHelpOptions, TypeOptions } from '..';
+import { TypeOptions } from '..';
 
 /**
- * This object represents metadata assigned to a property via the @Type decorator.
+ * This object represents metadata assigned to a property via the @Nested decorator.
  */
 export interface TypeMetadata {
   target: Function;
@@ -17,13 +17,13 @@ export interface TypeMetadata {
   reflectedType: any;
 
   /**
-   * The custom function provided by the user in the @Type decorator which
+   * The custom function provided by the user in the @Nested decorator which
    * returns the target type for the transformation.
    */
-  typeFunction: (options?: TypeHelpOptions) => Function;
+  classConstructor: new (...args: any[]) => any;
 
   /**
-   * Options passed to the @Type operator for this property.
+   * Options passed to the @Nested operator for this property.
    */
   options: TypeOptions;
 }

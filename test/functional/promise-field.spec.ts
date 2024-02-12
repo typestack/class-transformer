@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { defaultMetadataStorage } from '../../src/storage';
-import { plainToInstance, Type, instanceToPlain } from '../../src';
+import { plainToInstance, Nested, instanceToPlain } from '../../src';
 
 describe('promise field', () => {
   it('should transform plan to class with promise field', async () => {
@@ -59,7 +59,7 @@ describe('promise field', () => {
 
   it('should support Type decorator', async () => {
     class PromiseClass {
-      @Type(() => InnerClass)
+      @Nested(InnerClass)
       promise: Promise<InnerClass>;
     }
 

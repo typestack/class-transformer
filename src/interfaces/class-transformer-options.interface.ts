@@ -44,7 +44,7 @@ export interface ClassTransformOptions {
   ignoreDecorators?: boolean;
 
   /**
-   * Target maps allows to set a Types of the transforming object without using @Type decorator.
+   * Target maps allows to set a Types of the transforming object without using @Nested decorator.
    * This is useful when you are transforming external classes, or if you already have type metadata for
    * objects and you don't want to set it up again.
    */

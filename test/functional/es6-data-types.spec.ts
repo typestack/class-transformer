@@ -10,7 +10,7 @@ describe('es6 data types', () => {
     class User {
       id: number;
       name: string;
-      @Type(() => String)
+      @Nested(String)
       weapons: Map<string, string>;
     }
 
@@ -63,7 +63,7 @@ describe('es6 data types', () => {
     class User {
       id: number;
       name: string;
-      @Type(() => Set)
+      @Nested(Set)
       weapons: Set<string>;
     }
 
@@ -112,7 +112,7 @@ describe('es6 data types', () => {
     class User {
       id: number;
       name: string;
-      @Type(() => Weapon)
+      @Nested(Weapon)
       weapons: Map<string, Weapon>;
     }
 
@@ -199,7 +199,7 @@ describe('es6 data types', () => {
     class User {
       id: number;
       name: string;
-      @Type(() => Weapon)
+      @Nested(Weapon)
       weapons: Set<Weapon>;
     }
 
@@ -264,7 +264,7 @@ describe('es6 data types', () => {
       @Expose() id: number;
       @Expose() name: string;
       @Expose()
-      @Type(() => Weapon)
+      @Nested(Weapon)
       weapons: Map<string, Weapon>;
     }
 

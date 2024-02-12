@@ -478,28 +478,28 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should convert values to specific types if they are set via @Type decorator', () => {
+  it('should convert values to specific types if they are set via @Nested decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
 
-      @Type(type => String)
+      @Nested(String)
       firstName: string;
 
-      @Type(type => String)
+      @Nested(String)
       lastName: string;
 
-      @Type(type => Number)
+      @Nested(Number)
       password: number;
 
-      @Type(type => Boolean)
+      @Nested(Boolean)
       isActive: boolean;
 
-      @Type(type => Date)
+      @Nested(Date)
       registrationDate: Date;
 
-      @Type(type => String)
+      @Nested(String)
       lastVisitDate: string;
     }
 
@@ -703,7 +703,7 @@ describe('specifying target maps', () => {
       @Exclude()
       password: string;
 
-      @Type(type => ExtendedPhoto) // force specific type
+      @Nested(ExtendedPhoto) // force specific type
       photo: Photo;
     }
 
@@ -754,7 +754,7 @@ describe('specifying target maps', () => {
       @Exclude()
       password: string;
 
-      @Type(type => Photo)
+      @Nested(Photo)
       photo: Photo;
     }
 
@@ -886,13 +886,13 @@ describe('specifying target maps', () => {
       })
       isActive: boolean;
 
-      @Type(type => Photo)
+      @Nested(Photo)
       photo: Photo;
 
       @Expose({
         groups: ['admin'],
       })
-      @Type(type => Photo)
+      @Nested(Photo)
       photos: Photo[];
     }
 
@@ -1156,13 +1156,13 @@ describe('specifying target maps', () => {
       @Exclude()
       password: string;
 
-      @Type(type => Photo)
+      @Nested(Photo)
       photo: Photo;
 
       @Expose({
         since: 3,
       })
-      @Type(type => Photo)
+      @Nested(Photo)
       photos: Photo[];
     }
 
@@ -1488,7 +1488,7 @@ describe('specifying target maps', () => {
       @Exclude()
       password: string;
 
-      @Type(() => Photo)
+      @Nested(Photo)
       photo: Photo;
 
       @Expose()

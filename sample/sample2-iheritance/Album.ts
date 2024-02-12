@@ -1,4 +1,4 @@
-import { Type, Exclude } from '../../src/decorators';
+import { Nested, Exclude } from '../../src/decorators';
 import { Photo } from './Photo';
 import { Authorable } from './Authorable';
 
@@ -8,6 +8,6 @@ export class Album extends Authorable {
   @Exclude()
   name: string;
 
-  @Type(() => Photo)
+  @Nested(Photo)
   photos: Photo[];
 }

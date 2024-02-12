@@ -11,6 +11,6 @@ export class Photo {
 
   tags: string[];
 
-  @Type(() => Album)
+  @Nested(Album)
   albums: AlbumArray;
 }

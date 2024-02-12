@@ -1,5 +1,5 @@
 import { defaultMetadataStorage } from './storage';
-import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
+import { ClassTransformOptions, TypeMetadata, TypeOptions } from './interfaces';
 import { TransformationType } from './enums';
 import { getGlobal, isPromise } from './utils';
 
@@ -58,8 +58,7 @@ export class TransformOperationExecutor {
                 subType =>
                   subType.name === subValue[(targetType as { options: TypeOptions }).options.discriminator.property]
               );
-              const options: TypeHelpOptions = { newObject: newValue, object: subValue, property: undefined };
-              const newType = targetType.typeFunction(options);
+              const newType = targetType.classConstructor;
               realTargetType === undefined ? (realTargetType = newType) : (realTargetType = realTargetType.value);
               if (!targetType.options.keepDiscriminatorProperty)
                 delete subValue[targetType.options.discriminator.property];
@@ -218,8 +217,7 @@ export class TransformOperationExecutor {
         } else if (targetType) {
           const metadata = defaultMetadataStorage.findTypeMetadata(targetType as Function, propertyName);
           if (metadata) {
-            const options: TypeHelpOptions = { newObject: newValue, object: value, property: propertyName };
-            const newType = metadata.typeFunction ? metadata.typeFunction(options) : metadata.reflectedType;
+            const newType = metadata.classConstructor ?? metadata.reflectedType;
             if (
               metadata.options &&
               metadata.options.discriminator &&
@@ -266,7 +264,7 @@ export class TransformOperationExecutor {
             this.options.enableImplicitConversion &&
             this.transformationType === TransformationType.PLAIN_TO_CLASS
           ) {
-            // if we have no registererd type via the @Type() decorator then we check if we have any
+            // if we have no registererd type via the @Nested() decorator then we check if we have any
             // type declarations in reflect-metadata (type declaration is emited only if some decorator is added to the property.)
             const reflectedType = (Reflect as any).getMetadata(
               'design:type',
@@ -291,7 +289,7 @@ export class TransformOperationExecutor {
         // if its deserialization then type if required
         // if we uncomment this types like string[] will not work
         // if (this.transformationType === TransformationType.PLAIN_TO_CLASS && !type && subValue instanceof Object && !(subValue instanceof Date))
-        //     throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Type?`);
+        //     throw new Error(`Cannot determine type for ${(targetType as any).name }.${propertyName}, did you forget to specify a @Nested?`);
 
         // if newValue is a source object that has method that match newKeyName then skip it
         if (newValue.constructor.prototype) {

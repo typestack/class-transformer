@@ -345,20 +345,20 @@ When you are trying to transform objects that have nested objects,
 it's required to known what type of object you are trying to transform.
 Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
-This is done using `@Type` decorator.
+This is done using `@Nested` decorator.
 
 Lets say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
-import { Type, plainToClass } from 'class-transformer';
+import { Nested, plainToClass } from 'class-transformer';
 
 export class Album {
   id: number;
 
   name: string;
 
-  @Type(() => Photo)
+  @Nested(Photo)
   photos: Photo[];
 }
 
@@ -399,7 +399,7 @@ the additional property `__type`. This property is removed during transformation
 ```
 
 ```typescript
-import { Type, plainToClass } from 'class-transformer';
+import { Nested, plainToClass } from 'class-transformer';
 
 export abstract class Photo {
   id: number;
@@ -422,7 +422,7 @@ export class Album {
   id: number;
   name: string;
 
-  @Type(() => Photo, {
+  @Nested(Photo, {
     discriminator: {
       property: '__type',
       subTypes: [
@@ -659,7 +659,7 @@ let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and p
 
 Sometimes you have a Date in your plain javascript object received in a string format.
 And you want to create a real javascript Date object from it.
-You can do it simply by passing a Date object to the `@Type` decorator:
+You can do it simply by passing a Date object to the `@Nested` decorator:
 
 ```typescript
 import { Type } from 'class-transformer';
@@ -671,7 +671,7 @@ export class User {
 
   password: string;
 
-  @Type(() => Date)
+  @Nested(Date)
   registrationDate: Date;
 }
 ```
@@ -682,7 +682,7 @@ primitive types when you want to convert your values into these types.
 ## Working with arrays[⬆](#table-of-contents)
 
 When you are using arrays you must provide a type of the object that array contains.
-This type, you specify in a `@Type()` decorator:
+This type, you specify in a `@Nested()` decorator:
 
 ```typescript
 import { Type } from 'class-transformer';
@@ -692,7 +692,7 @@ export class Photo {
 
   name: string;
 
-  @Type(() => Album)
+  @Nested(Album)
   albums: Album[];
 }
 ```
@@ -708,17 +708,16 @@ export class AlbumCollection extends Array<Album> {
 
 export class Photo {
   id: number;
-
   name: string;
 
-  @Type(() => Album)
+  @Nested(Album)
   albums: AlbumCollection;
 }
 ```
 
 Library will handle proper transformation automatically.
 
-ES6 collections `Set` and `Map` also require the `@Type` decorator:
+ES6 collections `Set` and `Map` also require the `@Nested` decorator:
 
 ```typescript
 export class Skill {
@@ -733,10 +732,10 @@ export class Weapon {
 export class Player {
   name: string;
 
-  @Type(() => Skill)
+  @Nested(Skill)
   skills: Set<Skill>;
 
-  @Type(() => Weapon)
+  @Nested(Weapon)
   weapons: Map<string, Weapon>;
 }
 ```
@@ -757,7 +756,7 @@ import { Moment } from 'moment';
 export class Photo {
   id: number;
 
-  @Type(() => Date)
+  @Nested(Date)
   @Transform(({ value }) => moment(value), { toClassOnly: true })
   date: Moment;
 }

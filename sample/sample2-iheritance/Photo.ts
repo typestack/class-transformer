@@ -1,4 +1,4 @@
-import { Type, Exclude } from '../../src/decorators';
+import { Nested, Exclude } from '../../src/decorators';
 import { Album } from './Album';
 import { Authorable } from './Authorable';
 
@@ -12,6 +12,6 @@ export class Photo extends Authorable {
   @Exclude() // this will ignore skipping inherited from Authorable class
   authorEmail: string;
 
-  @Type(() => Album)
+  @Nested(Album)
   albums: Album[];
 }

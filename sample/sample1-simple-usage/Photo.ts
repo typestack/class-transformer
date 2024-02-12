@@ -11,10 +11,10 @@ export class Photo {
 
   tags: string[];
 
-  @Type(() => User)
+  @Nested(User)
   author: User;
 
-  @Type(() => Album)
+  @Nested(Album)
   albums: Album[];
 
   get name() {

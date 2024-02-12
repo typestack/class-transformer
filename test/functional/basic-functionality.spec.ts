@@ -8,7 +8,7 @@ import {
   plainToClassFromExist,
 } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose, Type, Transform } from '../../src/decorators';
+import { Exclude, Expose, Nested, Transform } from '../../src/decorators';
 
 describe('basic functionality', () => {
   it('should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour', () => {
@@ -537,46 +537,46 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should convert values to specific types if they are set via @Type decorator', () => {
+  it('should convert values to specific types if they are set via @Nested decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
 
-      @Type(type => String)
+      @Nested(String)
       firstName: string;
 
-      @Type(type => String)
+      @Nested(String)
       lastName: string;
 
-      @Type(type => Number)
+      @Nested(Number)
       password: number;
 
-      @Type(type => Boolean)
+      @Nested(Boolean)
       isActive: boolean;
 
-      @Type(type => Date)
+      @Nested(Date)
       registrationDate: Date;
 
-      @Type(type => String)
+      @Nested(String)
       lastVisitDate: string;
 
-      @Type(type => Buffer)
+      @Nested(Buffer)
       uuidBuffer: Buffer;
 
-      @Type(type => String)
+      @Nested(String)
       nullableString?: null | string;
 
-      @Type(type => Number)
+      @Nested(Number)
       nullableNumber?: null | number;
 
-      @Type(type => Boolean)
+      @Nested(Boolean)
       nullableBoolean?: null | boolean;
 
-      @Type(type => Date)
+      @Nested(Date)
       nullableDate?: null | Date;
 
-      @Type(type => Buffer)
+      @Nested(Buffer)
       nullableBuffer?: null | Buffer;
     }
 
@@ -829,7 +829,7 @@ describe('basic functionality', () => {
       @Exclude()
       password: string;
 
-      @Type(type => ExtendedPhoto) // force specific type
+      @Nested(ExtendedPhoto) // force specific type
       photo: Photo;
     }
 
@@ -880,7 +880,7 @@ describe('basic functionality', () => {
       @Exclude()
       password: string;
 
-      @Type(type => Photo)
+      @Nested(Photo)
       photo: Photo;
     }
 
@@ -1012,13 +1012,13 @@ describe('basic functionality', () => {
       })
       isActive: boolean;
 
-      @Type(type => Photo)
+      @Nested(Photo)
       photo: Photo;
 
       @Expose({
         groups: ['admin'],
       })
-      @Type(type => Photo)
+      @Nested(Photo)
       photos: Photo[];
     }
 
@@ -1282,13 +1282,13 @@ describe('basic functionality', () => {
       @Exclude()
       password: string;
 
-      @Type(type => Photo)
+      @Nested(Photo)
       photo: Photo;
 
       @Expose({
         since: 3,
       })
-      @Type(type => Photo)
+      @Nested(Photo)
       photos: Photo[];
     }
 
@@ -1614,7 +1614,7 @@ describe('basic functionality', () => {
       @Exclude()
       password: string;
 
-      @Type(() => Photo)
+      @Nested(Photo)
       photo: Photo;
 
       @Expose()
@@ -1831,10 +1831,10 @@ describe('basic functionality', () => {
     }
 
     class TestClass {
-      @Type(() => User)
+      @Nested(User)
       usersDefined: User[] | undefined;
 
-      @Type(() => User)
+      @Nested(User)
       usersUndefined: User[] | undefined;
     }
 

@@ -1,4 +1,4 @@
-import { Type, Exclude } from '../../src/decorators';
+import { Nested, Exclude } from '../../src/decorators';
 import { Photo } from './Photo';
 
 export class Album {
@@ -7,6 +7,6 @@ export class Album {
   @Exclude()
   name: string;
 
-  @Type(() => Photo)
+  @Nested(Photo)
   photos: Photo[];
 }

@@ -45,10 +45,10 @@ describe('implicit and explicity type declarations', () => {
     @Expose()
     readonly implicitTypeViaOtherDecorator: Date;
 
-    @Type()
+    @Nested()
     readonly implicitTypeViaEmptyTypeDecorator: number;
 
-    @Type(() => String)
+    @Nested(String)
     readonly explicitType: string;
   }
 
@@ -62,17 +62,17 @@ describe('implicit and explicity type declarations', () => {
     { enableImplicitConversion: true }
   );
 
-  it('should use implicitly defined design:type to convert value when no @Type decorator is used', () => {
+  it('should use implicitly defined design:type to convert value when no @Nested decorator is used', () => {
     expect(result.implicitTypeViaOtherDecorator).toBeInstanceOf(Date);
     expect(result.implicitTypeViaOtherDecorator.getTime()).toEqual(new Date('2018-12-24T12:00:00Z').getTime());
   });
 
-  it('should use implicitly defined design:type to convert value when empty @Type() decorator is used', () => {
+  it('should use implicitly defined design:type to convert value when empty @Nested() decorator is used', () => {
     expect(typeof result.implicitTypeViaEmptyTypeDecorator).toBe('number');
     expect(result.implicitTypeViaEmptyTypeDecorator).toEqual(100);
   });
 
-  it('should use explicitly defined type when @Type(() => Construtable) decorator is used', () => {
+  it('should use explicitly defined type when @Nested(Construtable) decorator is used', () => {
     expect(typeof result.explicitType).toBe('string');
     expect(result.explicitType).toEqual('100');
   });
@@ -82,25 +82,25 @@ describe('plainToInstance transforms built-in primitive types properly', () => {
   defaultMetadataStorage.clear();
 
   class Example {
-    @Type()
+    @Nested()
     date: Date;
 
-    @Type()
+    @Nested()
     string: string;
 
-    @Type()
+    @Nested()
     string2: string;
 
-    @Type()
+    @Nested()
     number: number;
 
-    @Type()
+    @Nested()
     number2: number;
 
-    @Type()
+    @Nested()
     boolean: boolean;
 
-    @Type()
+    @Nested()
     boolean2: boolean;
   }
 

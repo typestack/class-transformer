@@ -9,12 +9,12 @@ describe('inheritence', () => {
     class Contact {
       @Transform(({ value }) => value.toUpperCase())
       name: string;
-      @Type(() => Date)
+      @Nested(Date)
       birthDate: Date;
     }
 
     class User extends Contact {
-      @Type(() => Number)
+      @Nested(Number)
       id: number;
       email: string;
     }

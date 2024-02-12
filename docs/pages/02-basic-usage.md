@@ -11,7 +11,7 @@ the class definition. The four main decorators are:
 - `@Expose` specifies how expose the given property on the plain object
 - `@Exclude` marks the property as skipped, so it won't show up in the transformation
 - `@Transform` allows specifying a custom transformation on the property via a custom handler
-- `@Type` decorator explicitly sets the type of the property, during the transformation `class-transformer` will attempt
+- `@Nested` decorator explicitly sets the type of the property, during the transformation `class-transformer` will attempt
   to create an instance of the specified type
 
 You must always decorate all your properties with an `@Expose` or `@Exclude` decorator.

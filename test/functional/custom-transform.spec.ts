@@ -74,11 +74,11 @@ describe('custom transformation decorator', () => {
       id: number;
       name: string;
 
-      @Type(() => Date)
+      @Nested(Date)
       @Transform(({ value }) => 'custom-transformed-version-check', { since: 1, until: 2 })
       date: Date;
 
-      @Type(() => Date)
+      @Nested(Date)
       @Transform(({ value }) => value.toString(), { groups: ['user'] })
       lastVisitDate: Date;
     }
@@ -207,10 +207,10 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Address)
+        @Nested(Address)
         public address: Address;
 
-        @Type(() => Hobby)
+        @Nested(Hobby)
         @Transform(({ value }) => value.filter((hobby: any) => hobby.type === 'sport'), { toClassOnly: true })
         public hobbies: Hobby[];
 
@@ -251,7 +251,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -305,7 +305,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -357,7 +357,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -410,7 +410,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -458,7 +458,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -506,7 +506,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -560,7 +560,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -611,7 +611,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -659,7 +659,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -715,7 +715,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [],
@@ -763,7 +763,7 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Type(() => Hobby, {
+        @Nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [],

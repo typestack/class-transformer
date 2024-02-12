@@ -1,4 +1,4 @@
-import { Type, Transform } from '../../src/decorators';
+import { Nested, Transform } from '../../src/decorators';
 import * as moment from 'moment';
 
 export class User {
@@ -6,7 +6,7 @@ export class User {
 
   name: string;
 
-  @Type(() => Date)
+  @Nested(Date)
   @Transform(value => value.toString(), { toPlainOnly: true })
   @Transform(value => moment(value), { toClassOnly: true })
   date: Date;
