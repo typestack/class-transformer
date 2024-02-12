@@ -1,32 +1,32 @@
 import 'reflect-metadata';
 import { defaultMetadataStorage } from '../../src/storage';
 import {
-  Exclude,
-  Expose,
-  TransformInstanceToInstance,
-  TransformInstanceToPlain,
-  TransformPlainToInstance,
+  exclude,
+  expose,
+  transformInstanceToInstance,
+  transformInstanceToPlain,
+  transformPlainToInstance,
 } from '../../src/decorators';
 
 describe('transformer methods decorator', () => {
   it('should expose non configuration properties and return User instance class', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
     }
 
     class UserController {
-      @TransformInstanceToInstance()
+      @transformInstanceToInstance()
       getUser(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -54,21 +54,21 @@ describe('transformer methods decorator', () => {
   it('should expose non configuration properties and return User instance class instead of plain object', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
     }
 
     class UserController {
-      @TransformPlainToInstance(User)
+      @transformPlainToInstance(User)
       getUser(): User {
         const user: any = {};
         user.firstName = 'Snir';
@@ -95,21 +95,21 @@ describe('transformer methods decorator', () => {
   it('should expose non configuration properties', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
     }
 
     class UserController {
-      @TransformInstanceToPlain()
+      @transformInstanceToPlain()
       getUser(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -136,24 +136,24 @@ describe('transformer methods decorator', () => {
   it('should expose non configuration properties and properties with specific groups', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
-      @Expose({ groups: ['user.permissions'] })
+      @expose({ groups: ['user.permissions'] })
       roles: string[];
 
       password: string;
     }
 
     class UserController {
-      @TransformInstanceToPlain({ groups: ['user.permissions'] })
+      @transformInstanceToPlain({ groups: ['user.permissions'] })
       getUserWithRoles(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -182,27 +182,27 @@ describe('transformer methods decorator', () => {
   it('should expose non configuration properties with specific version', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
-      @Expose({ groups: ['user.permissions'] })
+      @expose({ groups: ['user.permissions'] })
       roles: string[];
 
-      @Expose({ since: 2 })
+      @expose({ since: 2 })
       websiteUrl?: string;
 
       password: string;
     }
 
     class UserController {
-      @TransformInstanceToPlain({ version: 1 })
+      @transformInstanceToPlain({ version: 1 })
       getUserVersion1(): User {
         const user = new User();
         user.firstName = 'Snir';
@@ -214,7 +214,7 @@ describe('transformer methods decorator', () => {
         return user;
       }
 
-      @TransformInstanceToPlain({ version: 2 })
+      @transformInstanceToPlain({ version: 2 })
       getUserVersion2(): User {
         const user = new User();
         user.firstName = 'Snir';

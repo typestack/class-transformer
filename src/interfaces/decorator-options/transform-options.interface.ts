@@ -1,5 +1,5 @@
 /**
- * Possible transformation options for the @Transform decorator.
+ * Possible transformation options for the @transform decorator.
  */
 export interface TransformOptions {
   /**

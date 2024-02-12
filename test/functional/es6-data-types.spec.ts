@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { instanceToPlain, plainToInstance, Expose } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Type } from '../../src/decorators';
+import { nested } from '../../src/decorators';
 
 describe('es6 data types', () => {
   it('using Map', () => {
@@ -10,7 +10,7 @@ describe('es6 data types', () => {
     class User {
       id: number;
       name: string;
-      @Nested(String)
+      @nested(String)
       weapons: Map<string, string>;
     }
 
@@ -63,7 +63,7 @@ describe('es6 data types', () => {
     class User {
       id: number;
       name: string;
-      @Nested(Set)
+      @nested(Set)
       weapons: Set<string>;
     }
 
@@ -106,13 +106,16 @@ describe('es6 data types', () => {
     defaultMetadataStorage.clear();
 
     class Weapon {
-      constructor(public model: string, public range: number) {}
+      constructor(
+        public model: string,
+        public range: number
+      ) {}
     }
 
     class User {
       id: number;
       name: string;
-      @Nested(Weapon)
+      @nested(Weapon)
       weapons: Map<string, Weapon>;
     }
 
@@ -193,13 +196,16 @@ describe('es6 data types', () => {
     defaultMetadataStorage.clear();
 
     class Weapon {
-      constructor(public model: string, public range: number) {}
+      constructor(
+        public model: string,
+        public range: number
+      ) {}
     }
 
     class User {
       id: number;
       name: string;
-      @Nested(Weapon)
+      @nested(Weapon)
       weapons: Set<Weapon>;
     }
 
@@ -257,14 +263,17 @@ describe('es6 data types', () => {
     defaultMetadataStorage.clear();
 
     class Weapon {
-      constructor(public model: string, public range: number) {}
+      constructor(
+        public model: string,
+        public range: number
+      ) {}
     }
 
     class User {
-      @Expose() id: number;
-      @Expose() name: string;
-      @Expose()
-      @Nested(Weapon)
+      @expose() id: number;
+      @expose() name: string;
+      @expose()
+      @nested(Weapon)
       weapons: Map<string, Weapon>;
     }
 

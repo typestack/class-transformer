@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { instanceToPlain } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose } from '../../src/decorators';
+import { exclude, expose } from '../../src/decorators';
 
 describe('ignoring specific decorators', () => {
   it('when ignoreDecorators is set to true it should ignore all decorators', () => {
@@ -10,13 +10,13 @@ describe('ignoring specific decorators', () => {
     class User {
       id: number;
 
-      @Expose({ name: 'lala' })
+      @expose({ name: 'lala' })
       firstName: string;
 
-      @Expose({ groups: ['user'] })
+      @expose({ groups: ['user'] })
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
     }
 

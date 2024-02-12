@@ -1,17 +1,17 @@
 import 'reflect-metadata';
 import { plainToInstance } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Expose, Type } from '../../src/decorators';
+import { expose, nested } from '../../src/decorators';
 
 describe('implicit type conversion', () => {
   it('should run only when enabled', () => {
     defaultMetadataStorage.clear();
 
     class SimpleExample {
-      @Expose()
+      @expose()
       readonly implicitTypeNumber: number;
 
-      @Expose()
+      @expose()
       readonly implicitTypeString: string;
     }
 
@@ -42,13 +42,13 @@ describe('implicit and explicity type declarations', () => {
   defaultMetadataStorage.clear();
 
   class Example {
-    @Expose()
+    @expose()
     readonly implicitTypeViaOtherDecorator: Date;
 
-    @Nested()
+    @nested()
     readonly implicitTypeViaEmptyTypeDecorator: number;
 
-    @Nested(String)
+    @nested(String)
     readonly explicitType: string;
   }
 
@@ -62,17 +62,17 @@ describe('implicit and explicity type declarations', () => {
     { enableImplicitConversion: true }
   );
 
-  it('should use implicitly defined design:type to convert value when no @Nested decorator is used', () => {
+  it('should use implicitly defined design:type to convert value when no @nested decorator is used', () => {
     expect(result.implicitTypeViaOtherDecorator).toBeInstanceOf(Date);
     expect(result.implicitTypeViaOtherDecorator.getTime()).toEqual(new Date('2018-12-24T12:00:00Z').getTime());
   });
 
-  it('should use implicitly defined design:type to convert value when empty @Nested() decorator is used', () => {
+  it('should use implicitly defined design:type to convert value when empty @nested() decorator is used', () => {
     expect(typeof result.implicitTypeViaEmptyTypeDecorator).toBe('number');
     expect(result.implicitTypeViaEmptyTypeDecorator).toEqual(100);
   });
 
-  it('should use explicitly defined type when @Nested(Construtable) decorator is used', () => {
+  it('should use explicitly defined type when @nested(Construtable) decorator is used', () => {
     expect(typeof result.explicitType).toBe('string');
     expect(result.explicitType).toEqual('100');
   });
@@ -82,25 +82,25 @@ describe('plainToInstance transforms built-in primitive types properly', () => {
   defaultMetadataStorage.clear();
 
   class Example {
-    @Nested()
+    @nested()
     date: Date;
 
-    @Nested()
+    @nested()
     string: string;
 
-    @Nested()
+    @nested()
     string2: string;
 
-    @Nested()
+    @nested()
     number: number;
 
-    @Nested()
+    @nested()
     number2: number;
 
-    @Nested()
+    @nested()
     boolean: boolean;
 
-    @Nested()
+    @nested()
     boolean2: boolean;
   }
 

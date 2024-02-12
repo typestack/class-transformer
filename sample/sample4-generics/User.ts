@@ -1,4 +1,4 @@
-import { Exclude } from '../../src/decorators';
+import { exclude } from '../../src/decorators';
 
 export class User {
   id: number;
@@ -7,7 +7,7 @@ export class User {
 
   lastName: string;
 
-  @Exclude()
+  @exclude()
   password: string;
 
   constructor(id: number, firstName: string, lastName: string, password: string) {

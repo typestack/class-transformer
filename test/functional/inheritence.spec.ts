@@ -7,20 +7,20 @@ describe('inheritence', () => {
     defaultMetadataStorage.clear();
 
     class Contact {
-      @Transform(({ value }) => value.toUpperCase())
+      @transform(({ value }) => value.toUpperCase())
       name: string;
-      @Nested(Date)
+      @nested(Date)
       birthDate: Date;
     }
 
     class User extends Contact {
-      @Nested(Number)
+      @nested(Number)
       id: number;
       email: string;
     }
 
     class Student extends User {
-      @Transform(({ value }) => value.toUpperCase())
+      @transform(({ value }) => value.toUpperCase())
       university: string;
     }
 

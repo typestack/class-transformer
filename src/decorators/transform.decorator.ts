@@ -6,7 +6,7 @@ import { TransformFnParams, TransformOptions } from '../interfaces';
  *
  * Can be applied to properties only.
  */
-export function Transform(
+export function transform(
   transformFn: (params: TransformFnParams) => any,
   options: TransformOptions = {}
 ): PropertyDecorator {

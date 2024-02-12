@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { plainToInstance } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Expose, Transform } from '../../src/decorators';
+import { expose, transform } from '../../src/decorators';
 
 describe('applying several transformations', () => {
   beforeEach(() => defaultMetadataStorage.clear());
@@ -9,9 +9,9 @@ describe('applying several transformations', () => {
 
   it('should keep the order of the applied decorators after several plainToInstance() calls', () => {
     class User {
-      @Transform(() => 'Jonathan')
-      @Transform(() => 'John')
-      @Expose()
+      @transform(() => 'Jonathan')
+      @transform(() => 'John')
+      @expose()
       name: string;
     }
 

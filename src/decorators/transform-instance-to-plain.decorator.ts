@@ -6,7 +6,7 @@ import { ClassTransformOptions } from '../interfaces';
  *
  * Can be applied to functions and getters/setters only.
  */
-export function TransformInstanceToPlain(params?: ClassTransformOptions): MethodDecorator {
+export function transformInstanceToPlain(params?: ClassTransformOptions): MethodDecorator {
   return function (target: Record<string, any>, propertyKey: string | Symbol, descriptor: PropertyDescriptor): void {
     const classTransformer: ClassTransformer = new ClassTransformer();
     const originalMethod = descriptor.value;

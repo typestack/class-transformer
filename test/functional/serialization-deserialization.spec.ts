@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { deserialize, deserializeArray, serialize } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude } from '../../src/decorators';
+import { exclude } from '../../src/decorators';
 
 describe('serialization and deserialization objects', () => {
   it('should perform serialization and deserialization properly', () => {
@@ -10,7 +10,7 @@ describe('serialization and deserialization objects', () => {
     class User {
       firstName: string;
       lastName: string;
-      @Exclude()
+      @exclude()
       password: string;
     }
 

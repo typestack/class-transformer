@@ -41,26 +41,26 @@ Now you are ready to use class-transform with Typescript!
 The most basic usage is to transform a class to a plain object:
 
 ```ts
-import { Expose, Exclude, classToPlain } from 'class-transform';
+import { expose, exclude, classToPlain } from 'class-transform';
 
 class User {
   /**
    * When transformed to plain the `_id` property will be remapped to `id`
    * in the plain object.
    */
-  @Expose({ name: 'id' })
+  @expose({ name: 'id' })
   private _id: string;
 
   /**
    * Expose the `name` property as it is in the plain object.
    */
-  @Expose()
+  @expose()
   public name: string;
 
   /**
    * Exclude the `passwordHash` so it won't be included in the plain object.
    */
-  @Exclude()
+  @exclude()
   public passwordHash: string;
 }
 

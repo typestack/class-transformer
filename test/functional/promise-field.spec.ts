@@ -59,7 +59,7 @@ describe('promise field', () => {
 
   it('should support Type decorator', async () => {
     class PromiseClass {
-      @Nested(InnerClass)
+      @nested(InnerClass)
       promise: Promise<InnerClass>;
     }
 

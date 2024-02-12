@@ -1,4 +1,4 @@
-import { Type } from '../../src/decorators';
+import { nested } from '../../src/decorators';
 import { Album } from './Album';
 import { User } from './User';
 
@@ -11,10 +11,10 @@ export class Photo {
 
   tags: string[];
 
-  @Nested(User)
+  @nested(User)
   author: User;
 
-  @Nested(Album)
+  @nested(Album)
   albums: Album[];
 
   get name() {

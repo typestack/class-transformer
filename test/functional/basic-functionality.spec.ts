@@ -8,7 +8,7 @@ import {
   plainToClassFromExist,
 } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose, Nested, Transform } from '../../src/decorators';
+import { exclude, expose, nested, transform } from '../../src/decorators';
 
 describe('basic functionality', () => {
   it('should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour', () => {
@@ -97,9 +97,9 @@ describe('basic functionality', () => {
     defaultMetadataStorage.clear();
 
     class User {
-      @Expose() id: number;
-      @Expose() firstName: string;
-      @Expose() lastName: string;
+      @expose() id: number;
+      @expose() firstName: string;
+      @expose() lastName: string;
     }
 
     const fromPlainUser = {
@@ -123,10 +123,10 @@ describe('basic functionality', () => {
     defaultMetadataStorage.clear();
 
     class ExampleClass {
-      @Exclude()
+      @exclude()
       public valueOne!: number;
 
-      @Expose()
+      @expose()
       public valueTwo!: number;
     }
 
@@ -152,14 +152,14 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should exclude all objects marked with @Exclude() decorator', () => {
+  it('should exclude all objects marked with @exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
       firstName: string;
       lastName: string;
-      @Exclude()
+      @exclude()
       password: string;
     }
 
@@ -231,10 +231,10 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should exclude all properties from object if whole class is marked with @Exclude() decorator', () => {
+  it('should exclude all properties from object if whole class is marked with @exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
       firstName: string;
@@ -296,17 +296,17 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should exclude all properties from object if whole class is marked with @Exclude() decorator, but include properties marked with @Expose() decorator', () => {
+  it('should exclude all properties from object if whole class is marked with @exclude() decorator, but include properties marked with @expose() decorator', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
@@ -379,16 +379,16 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should exclude all properties from object if its defined via transformation options, but include properties marked with @Expose() decorator', () => {
+  it('should exclude all properties from object if its defined via transformation options, but include properties marked with @expose() decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
@@ -461,17 +461,17 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should expose all properties from object if its defined via transformation options, but exclude properties marked with @Exclude() decorator', () => {
+  it('should expose all properties from object if its defined via transformation options, but exclude properties marked with @exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
       firstName: string;
 
-      @Exclude()
+      @exclude()
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
     }
 
@@ -537,46 +537,46 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should convert values to specific types if they are set via @Nested decorator', () => {
+  it('should convert values to specific types if they are set via @nested decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
 
-      @Nested(String)
+      @nested(String)
       firstName: string;
 
-      @Nested(String)
+      @nested(String)
       lastName: string;
 
-      @Nested(Number)
+      @nested(Number)
       password: number;
 
-      @Nested(Boolean)
+      @nested(Boolean)
       isActive: boolean;
 
-      @Nested(Date)
+      @nested(Date)
       registrationDate: Date;
 
-      @Nested(String)
+      @nested(String)
       lastVisitDate: string;
 
-      @Nested(Buffer)
+      @nested(Buffer)
       uuidBuffer: Buffer;
 
-      @Nested(String)
+      @nested(String)
       nullableString?: null | string;
 
-      @Nested(Number)
+      @nested(Number)
       nullableNumber?: null | number;
 
-      @Nested(Boolean)
+      @nested(Boolean)
       nullableBoolean?: null | boolean;
 
-      @Nested(Date)
+      @nested(Date)
       nullableDate?: null | Date;
 
-      @Nested(Buffer)
+      @nested(Buffer)
       nullableBuffer?: null | Buffer;
     }
 
@@ -733,7 +733,7 @@ describe('basic functionality', () => {
       id: number;
       name: string;
 
-      @Exclude()
+      @exclude()
       filename: string;
 
       uploadDate: Date;
@@ -743,7 +743,7 @@ describe('basic functionality', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
       photo: Photo; // type should be automatically guessed
@@ -808,14 +808,14 @@ describe('basic functionality', () => {
       id: number;
       name: string;
 
-      @Exclude()
+      @exclude()
       filename: string;
     }
 
     class ExtendedPhoto implements Photo {
       id: number;
 
-      @Exclude()
+      @exclude()
       name: string;
 
       filename: string;
@@ -826,10 +826,10 @@ describe('basic functionality', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(ExtendedPhoto) // force specific type
+      @nested(ExtendedPhoto) // force specific type
       photo: Photo;
     }
 
@@ -865,7 +865,7 @@ describe('basic functionality', () => {
       id: number;
       name: string;
 
-      @Exclude()
+      @exclude()
       filename: string;
 
       metadata: string;
@@ -877,10 +877,10 @@ describe('basic functionality', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
     }
 
@@ -980,12 +980,12 @@ describe('basic functionality', () => {
     class Photo {
       id: number;
 
-      @Expose({
+      @expose({
         groups: ['user', 'guest'],
       })
       filename: string;
 
-      @Expose({
+      @expose({
         groups: ['admin'],
       })
       status: number;
@@ -997,28 +997,28 @@ describe('basic functionality', () => {
       id: number;
       firstName: string;
 
-      @Expose({
+      @expose({
         groups: ['user', 'guest'],
       })
       lastName: string;
 
-      @Expose({
+      @expose({
         groups: ['user'],
       })
       password: string;
 
-      @Expose({
+      @expose({
         groups: ['admin'],
       })
       isActive: boolean;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
 
-      @Expose({
+      @expose({
         groups: ['admin'],
       })
-      @Nested(Photo)
+      @nested(Photo)
       photos: Photo[];
     }
 
@@ -1255,40 +1255,40 @@ describe('basic functionality', () => {
     class Photo {
       id: number;
 
-      @Expose({
+      @expose({
         since: 1.5,
         until: 2,
       })
       filename: string;
 
-      @Expose({
+      @expose({
         since: 2,
       })
       status: number;
     }
 
     class User {
-      @Expose({
+      @expose({
         since: 1,
         until: 2,
       })
       firstName: string;
 
-      @Expose({
+      @expose({
         since: 0.5,
       })
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
 
-      @Expose({
+      @expose({
         since: 3,
       })
-      @Nested(Photo)
+      @nested(Photo)
       photos: Photo[];
     }
 
@@ -1496,22 +1496,22 @@ describe('basic functionality', () => {
     });
   });
 
-  it('should expose method and accessors that have @Expose()', () => {
+  it('should expose method and accessors that have @expose()', () => {
     defaultMetadataStorage.clear();
 
     class User {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this.firstName + ' ' + this.lastName;
       }
 
-      @Expose()
+      @expose()
       getName(): string {
         return this.firstName + ' ' + this.lastName;
       }
@@ -1549,21 +1549,21 @@ describe('basic functionality', () => {
     defaultMetadataStorage.clear();
 
     class User {
-      @Expose({ name: 'myName' })
+      @expose({ name: 'myName' })
       firstName: string;
 
-      @Expose({ name: 'secondName' })
+      @expose({ name: 'secondName' })
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this.firstName + ' ' + this.lastName;
       }
 
-      @Expose({ name: 'fullName' })
+      @expose({ name: 'fullName' })
       getName(): string {
         return this.firstName + ' ' + this.lastName;
       }
@@ -1611,13 +1611,13 @@ describe('basic functionality', () => {
       _firstName: string;
       _lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this._firstName + ' ' + this._lastName;
       }
@@ -1672,10 +1672,10 @@ describe('basic functionality', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this.firstName + ' ' + this.lastName;
       }
@@ -1831,10 +1831,10 @@ describe('basic functionality', () => {
     }
 
     class TestClass {
-      @Nested(User)
+      @nested(User)
       usersDefined: User[] | undefined;
 
-      @Nested(User)
+      @nested(User)
       usersUndefined: User[] | undefined;
     }
 

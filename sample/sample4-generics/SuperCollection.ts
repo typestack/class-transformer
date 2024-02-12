@@ -1,10 +1,10 @@
-import { Nested, Exclude } from '../../src/decorators';
+import { nested, exclude } from '../../src/decorators';
 
 export class SuperCollection<T> {
-  @Exclude()
+  @exclude()
   private type: Function;
 
-  @Nested(options => {
+  @nested(options => {
     return (options.newObject as SuperCollection<T>).type;
   })
   items: T[];

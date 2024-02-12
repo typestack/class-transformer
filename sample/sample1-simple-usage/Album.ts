@@ -1,12 +1,12 @@
-import { Nested, Exclude } from '../../src/decorators';
+import { nested, exclude } from '../../src/decorators';
 import { Photo } from './Photo';
 
 export class Album {
   id: string;
 
-  @Exclude()
+  @exclude()
   name: string;
 
-  @Nested(Photo)
+  @nested(Photo)
   photos: Photo[];
 }

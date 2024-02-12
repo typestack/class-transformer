@@ -1,6 +1,6 @@
 import { Album } from './Album';
 import { AlbumArray } from './AlbumArray';
-import { Type } from '../../src/decorators';
+import { nested } from '../../src/decorators';
 
 export class Photo {
   id: string;
@@ -11,6 +11,6 @@ export class Photo {
 
   tags: string[];
 
-  @Nested(Album)
+  @nested(Album)
   albums: AlbumArray;
 }

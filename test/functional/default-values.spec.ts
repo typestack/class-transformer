@@ -1,25 +1,25 @@
-import { Expose, plainToInstance, Transform } from '../../src';
+import { expose, plainToInstance, transform } from '../../src';
 
 describe('expose default values', () => {
   class User {
-    @Expose({ name: 'AGE' })
-    @Transform(({ value }) => parseInt(value, 10))
+    @expose({ name: 'AGE' })
+    @transform(({ value }) => parseInt(value, 10))
     age: number;
 
-    @Expose({ name: 'AGE_WITH_DEFAULT' })
-    @Transform(({ value }) => parseInt(value, 10))
+    @expose({ name: 'AGE_WITH_DEFAULT' })
+    @transform(({ value }) => parseInt(value, 10))
     ageWithDefault?: number = 18;
 
-    @Expose({ name: 'FIRST_NAME' })
+    @expose({ name: 'FIRST_NAME' })
     firstName: string;
 
-    @Expose({ name: 'FIRST_NAME_WITH_DEFAULT' })
+    @expose({ name: 'FIRST_NAME_WITH_DEFAULT' })
     firstNameWithDefault?: string = 'default first name';
 
-    @Transform(({ value }) => !!value)
+    @transform(({ value }) => !!value)
     admin: boolean;
 
-    @Transform(({ value }) => !!value)
+    @transform(({ value }) => !!value)
     adminWithDefault?: boolean = false;
 
     lastName: string;

@@ -8,7 +8,7 @@ import {
   plainToClassFromExist,
 } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose, Type } from '../../src/decorators';
+import { exclude, expose, nested } from '../../src/decorators';
 
 describe('specifying target maps', () => {
   it('should convert instance of the given object to plain javascript object and should expose all properties since its a default behaviour', () => {
@@ -93,14 +93,14 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should exclude all objects marked with @Exclude() decorator', () => {
+  it('should exclude all objects marked with @exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
       firstName: string;
       lastName: string;
-      @Exclude()
+      @exclude()
       password: string;
     }
 
@@ -172,10 +172,10 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should exclude all properties from object if whole class is marked with @Exclude() decorator', () => {
+  it('should exclude all properties from object if whole class is marked with @exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
       firstName: string;
@@ -237,17 +237,17 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should exclude all properties from object if whole class is marked with @Exclude() decorator, but include properties marked with @Expose() decorator', () => {
+  it('should exclude all properties from object if whole class is marked with @exclude() decorator, but include properties marked with @expose() decorator', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
@@ -320,16 +320,16 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should exclude all properties from object if its defined via transformation options, but include properties marked with @Expose() decorator', () => {
+  it('should exclude all properties from object if its defined via transformation options, but include properties marked with @expose() decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
 
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
       password: string;
@@ -402,17 +402,17 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should expose all properties from object if its defined via transformation options, but exclude properties marked with @Exclude() decorator', () => {
+  it('should expose all properties from object if its defined via transformation options, but exclude properties marked with @exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
       firstName: string;
 
-      @Exclude()
+      @exclude()
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
     }
 
@@ -478,28 +478,28 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should convert values to specific types if they are set via @Nested decorator', () => {
+  it('should convert values to specific types if they are set via @nested decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
 
-      @Nested(String)
+      @nested(String)
       firstName: string;
 
-      @Nested(String)
+      @nested(String)
       lastName: string;
 
-      @Nested(Number)
+      @nested(Number)
       password: number;
 
-      @Nested(Boolean)
+      @nested(Boolean)
       isActive: boolean;
 
-      @Nested(Date)
+      @nested(Date)
       registrationDate: Date;
 
-      @Nested(String)
+      @nested(String)
       lastVisitDate: string;
     }
 
@@ -607,7 +607,7 @@ describe('specifying target maps', () => {
       id: number;
       name: string;
 
-      @Exclude()
+      @exclude()
       filename: string;
 
       uploadDate: Date;
@@ -617,7 +617,7 @@ describe('specifying target maps', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
       photo: Photo; // type should be automatically guessed
@@ -682,14 +682,14 @@ describe('specifying target maps', () => {
       id: number;
       name: string;
 
-      @Exclude()
+      @exclude()
       filename: string;
     }
 
     class ExtendedPhoto implements Photo {
       id: number;
 
-      @Exclude()
+      @exclude()
       name: string;
 
       filename: string;
@@ -700,10 +700,10 @@ describe('specifying target maps', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(ExtendedPhoto) // force specific type
+      @nested(ExtendedPhoto) // force specific type
       photo: Photo;
     }
 
@@ -739,7 +739,7 @@ describe('specifying target maps', () => {
       id: number;
       name: string;
 
-      @Exclude()
+      @exclude()
       filename: string;
 
       metadata: string;
@@ -751,10 +751,10 @@ describe('specifying target maps', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
     }
 
@@ -854,12 +854,12 @@ describe('specifying target maps', () => {
     class Photo {
       id: number;
 
-      @Expose({
+      @expose({
         groups: ['user', 'guest'],
       })
       filename: string;
 
-      @Expose({
+      @expose({
         groups: ['admin'],
       })
       status: number;
@@ -871,28 +871,28 @@ describe('specifying target maps', () => {
       id: number;
       firstName: string;
 
-      @Expose({
+      @expose({
         groups: ['user', 'guest'],
       })
       lastName: string;
 
-      @Expose({
+      @expose({
         groups: ['user'],
       })
       password: string;
 
-      @Expose({
+      @expose({
         groups: ['admin'],
       })
       isActive: boolean;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
 
-      @Expose({
+      @expose({
         groups: ['admin'],
       })
-      @Nested(Photo)
+      @nested(Photo)
       photos: Photo[];
     }
 
@@ -1129,40 +1129,40 @@ describe('specifying target maps', () => {
     class Photo {
       id: number;
 
-      @Expose({
+      @expose({
         since: 1.5,
         until: 2,
       })
       filename: string;
 
-      @Expose({
+      @expose({
         since: 2,
       })
       status: number;
     }
 
     class User {
-      @Expose({
+      @expose({
         since: 1,
         until: 2,
       })
       firstName: string;
 
-      @Expose({
+      @expose({
         since: 0.5,
       })
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
 
-      @Expose({
+      @expose({
         since: 3,
       })
-      @Nested(Photo)
+      @nested(Photo)
       photos: Photo[];
     }
 
@@ -1370,22 +1370,22 @@ describe('specifying target maps', () => {
     });
   });
 
-  it('should expose method and accessors that have @Expose()', () => {
+  it('should expose method and accessors that have @expose()', () => {
     defaultMetadataStorage.clear();
 
     class User {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this.firstName + ' ' + this.lastName;
       }
 
-      @Expose()
+      @expose()
       getName(): string {
         return this.firstName + ' ' + this.lastName;
       }
@@ -1423,21 +1423,21 @@ describe('specifying target maps', () => {
     defaultMetadataStorage.clear();
 
     class User {
-      @Expose({ name: 'myName' })
+      @expose({ name: 'myName' })
       firstName: string;
 
-      @Expose({ name: 'secondName' })
+      @expose({ name: 'secondName' })
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this.firstName + ' ' + this.lastName;
       }
 
-      @Expose({ name: 'fullName' })
+      @expose({ name: 'fullName' })
       getName(): string {
         return this.firstName + ' ' + this.lastName;
       }
@@ -1485,13 +1485,13 @@ describe('specifying target maps', () => {
       _firstName: string;
       _lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Nested(Photo)
+      @nested(Photo)
       photo: Photo;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this._firstName + ' ' + this._lastName;
       }
@@ -1546,10 +1546,10 @@ describe('specifying target maps', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude()
+      @exclude()
       password: string;
 
-      @Expose()
+      @expose()
       get name(): string {
         return this.firstName + ' ' + this.lastName;
       }

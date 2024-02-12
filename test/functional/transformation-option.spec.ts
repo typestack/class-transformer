@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { instanceToPlain, plainToInstance } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude, Expose } from '../../src/decorators';
+import { exclude, expose } from '../../src/decorators';
 
 describe('filtering by transformation option', () => {
-  it('@Exclude with toPlainOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
+  it('@exclude with toPlainOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
     defaultMetadataStorage.clear();
 
     class User {
@@ -12,7 +12,7 @@ describe('filtering by transformation option', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude({ toPlainOnly: true })
+      @exclude({ toPlainOnly: true })
       password: string;
     }
 
@@ -42,7 +42,7 @@ describe('filtering by transformation option', () => {
     });
   });
 
-  it('@Exclude with toClassOnly set to true then it should be excluded only during plainToInstance and plainToClassFromExist operations', () => {
+  it('@exclude with toClassOnly set to true then it should be excluded only during plainToInstance and plainToClassFromExist operations', () => {
     defaultMetadataStorage.clear();
 
     class User {
@@ -50,7 +50,7 @@ describe('filtering by transformation option', () => {
       firstName: string;
       lastName: string;
 
-      @Exclude({ toClassOnly: true })
+      @exclude({ toClassOnly: true })
       password: string;
     }
 
@@ -80,18 +80,18 @@ describe('filtering by transformation option', () => {
     });
   });
 
-  it('@Expose with toClassOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
+  it('@expose with toClassOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
-      @Expose({ toClassOnly: true })
+      @expose({ toClassOnly: true })
       password: string;
     }
 
@@ -121,18 +121,18 @@ describe('filtering by transformation option', () => {
     });
   });
 
-  it('@Expose with toPlainOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
+  it('@expose with toPlainOnly set to true then it should be excluded only during instanceToPlain and classToPlainFromExist operations', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
 
-      @Expose({ toPlainOnly: true })
+      @expose({ toPlainOnly: true })
       password: string;
     }
 
@@ -165,12 +165,12 @@ describe('filtering by transformation option', () => {
   it('should ignore undefined properties when exposeUnsetFields is set to false during class to plain', () => {
     defaultMetadataStorage.clear();
 
-    @Exclude()
+    @exclude()
     class User {
-      @Expose()
+      @expose()
       firstName: string;
 
-      @Expose()
+      @expose()
       lastName: string;
     }
 

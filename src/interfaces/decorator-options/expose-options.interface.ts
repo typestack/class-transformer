@@ -1,5 +1,5 @@
 /**
- * Possible transformation options for the @Expose decorator.
+ * Possible transformation options for the @expose decorator.
  */
 export interface ExposeOptions {
   /**

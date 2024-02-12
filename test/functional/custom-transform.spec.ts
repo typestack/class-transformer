@@ -8,16 +8,16 @@ import {
   TransformFnParams,
 } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Expose, Transform, Type } from '../../src/decorators';
+import { expose, transform, nested } from '../../src/decorators';
 import { TransformationType } from '../../src/enums';
 
 describe('custom transformation decorator', () => {
-  it('@Expose decorator with "name" option should work with @Transform decorator', () => {
+  it('@expose decorator with "name" option should work with @transform decorator', () => {
     defaultMetadataStorage.clear();
 
     class User {
-      @Expose({ name: 'user_name' })
-      @Transform(({ value }) => value.toUpperCase())
+      @expose({ name: 'user_name' })
+      @transform(({ value }) => value.toUpperCase())
       name: string;
     }
 
@@ -29,15 +29,15 @@ describe('custom transformation decorator', () => {
     expect(classedUser.name).toEqual('JOHNY CAGE');
   });
 
-  it('@Transform decorator logic should be executed depend of toPlainOnly and toClassOnly set', () => {
+  it('@transform decorator logic should be executed depend of toPlainOnly and toClassOnly set', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
       name: string;
 
-      @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-      @Transform(({ value }) => 'custom-transformed', { toClassOnly: true })
+      @transform(({ value }) => value.toString(), { toPlainOnly: true })
+      @transform(({ value }) => 'custom-transformed', { toClassOnly: true })
       date: Date;
     }
 
@@ -67,19 +67,19 @@ describe('custom transformation decorator', () => {
     });
   });
 
-  it('versions and groups should work with @Transform decorator too', () => {
+  it('versions and groups should work with @transform decorator too', () => {
     defaultMetadataStorage.clear();
 
     class User {
       id: number;
       name: string;
 
-      @Nested(Date)
-      @Transform(({ value }) => 'custom-transformed-version-check', { since: 1, until: 2 })
+      @nested(Date)
+      @transform(({ value }) => 'custom-transformed-version-check', { since: 1, until: 2 })
       date: Date;
 
-      @Nested(Date)
-      @Transform(({ value }) => value.toString(), { groups: ['user'] })
+      @nested(Date)
+      @transform(({ value }) => value.toString(), { groups: ['user'] })
       lastVisitDate: Date;
     }
 
@@ -121,7 +121,7 @@ describe('custom transformation decorator', () => {
     expect(classedUser5.lastVisitDate).toEqual(new Date(plainUser.lastVisitDate).toString());
   });
 
-  it('@Transform decorator callback should be given correct arguments', () => {
+  it('@transform decorator callback should be given correct arguments', () => {
     defaultMetadataStorage.clear();
 
     let keyArg: string;
@@ -138,8 +138,8 @@ describe('custom transformation decorator', () => {
     }
 
     class User {
-      @Transform(transformCallback, { toPlainOnly: true })
-      @Transform(transformCallback, { toClassOnly: true })
+      @transform(transformCallback, { toPlainOnly: true })
+      @transform(transformCallback, { toClassOnly: true })
       name: string;
     }
 
@@ -197,7 +197,7 @@ describe('custom transformation decorator', () => {
       class Address {
         public street: string;
 
-        @Expose({ name: 'tel' })
+        @expose({ name: 'tel' })
         public telephone: string;
 
         public zip: number;
@@ -207,11 +207,11 @@ describe('custom transformation decorator', () => {
       class Person {
         public name: string;
 
-        @Nested(Address)
+        @nested(Address)
         public address: Address;
 
-        @Nested(Hobby)
-        @Transform(({ value }) => value.filter((hobby: any) => hobby.type === 'sport'), { toClassOnly: true })
+        @nested(Hobby)
+        @transform(({ value }) => value.filter((hobby: any) => hobby.type === 'sport'), { toClassOnly: true })
         public hobbies: Hobby[];
 
         public age: number;
@@ -244,14 +244,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -298,14 +298,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -350,14 +350,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -403,14 +403,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -451,14 +451,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -499,14 +499,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -553,14 +553,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -604,14 +604,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -652,14 +652,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [
@@ -708,14 +708,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [],
@@ -756,14 +756,14 @@ describe('custom transformation decorator', () => {
       }
 
       class Programming extends Hobby {
-        @Transform(({ value }) => value.toUpperCase())
+        @transform(({ value }) => value.toUpperCase())
         specialAbility: string;
       }
 
       class Person {
         public name: string;
 
-        @Nested(Hobby, {
+        @nested(Hobby, {
           discriminator: {
             property: '__type',
             subTypes: [],

@@ -319,12 +319,12 @@ If this behaviour does not suit your needs, you can use the `excludeExtraneousVa
 in the `plainToClass` method while _exposing all your class properties_ as a requirement.
 
 ```typescript
-import { Expose, plainToClass } from 'class-transform';
+import { expose, plainToClass } from 'class-transform';
 
 class User {
-  @Expose() id: number;
-  @Expose() firstName: string;
-  @Expose() lastName: string;
+  @expose() id: number;
+  @expose() firstName: string;
+  @expose() lastName: string;
 }
 
 const fromPlainUser = {
@@ -348,20 +348,20 @@ When you are trying to transform objects that have nested objects,
 it's required to known what type of object you are trying to transform.
 Since Typescript does not have good reflection abilities yet,
 we should implicitly specify what type of object each property contain.
-This is done using `@Nested` decorator.
+This is done using `@nested` decorator.
 
 Lets say we have an album with photos.
 And we are trying to convert album plain object to class object:
 
 ```typescript
-import { Nested, plainToClass } from 'class-transform';
+import { nested, plainToClass } from 'class-transform';
 
 export class Album {
   id: number;
 
   name: string;
 
-  @Nested(Photo)
+  @nested(Photo)
   photos: Photo[];
 }
 
@@ -402,7 +402,7 @@ the additional property `__type`. This property is removed during transformation
 ```
 
 ```typescript
-import { Nested, plainToClass } from 'class-transform';
+import { nested, plainToClass } from 'class-transform';
 
 export abstract class Photo {
   id: number;
@@ -425,7 +425,7 @@ export class Album {
   id: number;
   name: string;
 
-  @Nested(Photo, {
+  @nested(Photo, {
     discriminator: {
       property: '__type',
       subTypes: [
@@ -447,10 +447,10 @@ in the options to keep the discriminator property also inside your resulting cla
 
 ## Exposing getters and method return values(#table-of-contents)
 
-You can expose what your getter or method return by setting an `@Expose()` decorator to those getters or methods:
+You can expose what your getter or method return by setting an `@expose()` decorator to those getters or methods:
 
 ```typescript
-import { Expose } from 'class-transform';
+import { expose } from 'class-transform';
 
 export class User {
   id: number;
@@ -458,12 +458,12 @@ export class User {
   lastName: string;
   password: string;
 
-  @Expose()
+  @expose()
   get name() {
     return this.firstName + ' ' + this.lastName;
   }
 
-  @Expose()
+  @expose()
   getFullName() {
     return this.firstName + ' ' + this.lastName;
   }
@@ -473,23 +473,23 @@ export class User {
 ## Exposing properties with different names(#table-of-contents)
 
 If you want to expose some of the properties with a different name,
-you can do that by specifying a `name` option to `@Expose` decorator:
+you can do that by specifying a `name` option to `@expose` decorator:
 
 ```typescript
-import { Expose } from 'class-transform';
+import { expose } from 'class-transform';
 
 export class User {
-  @Expose({ name: 'uid' })
+  @expose({ name: 'uid' })
   id: number;
 
   firstName: string;
 
   lastName: string;
 
-  @Expose({ name: 'secretKey' })
+  @expose({ name: 'secretKey' })
   password: string;
 
-  @Expose({ name: 'fullName' })
+  @expose({ name: 'fullName' })
   getFullName() {
     return this.firstName + ' ' + this.lastName;
   }
@@ -499,17 +499,17 @@ export class User {
 ## Skipping specific properties(#table-of-contents)
 
 Sometimes you want to skip some properties during transformation.
-This can be done using `@Exclude` decorator:
+This can be done using `@exclude` decorator:
 
 ```typescript
-import { Exclude } from 'class-transform';
+import { expose } from 'class-transform';
 
 export class User {
   id: number;
 
   email: string;
 
-  @Exclude()
+  @exclude()
   password: string;
 }
 ```
@@ -521,14 +521,14 @@ Now when you transform a User, the `password` property will be skipped and not b
 You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
 
 ```typescript
-import { Exclude } from 'class-transform';
+import { expose } from 'class-transform';
 
 export class User {
   id: number;
 
   email: string;
 
-  @Exclude({ toPlainOnly: true })
+  @exclude({ toPlainOnly: true })
   password: string;
 }
 ```
@@ -540,14 +540,14 @@ Now `password` property will be excluded only during `classToPlain` operation. V
 You can skip all properties of the class, and expose only those are needed explicitly:
 
 ```typescript
-import { Exclude, Expose } from 'class-transform';
+import { exclude, expose } from 'class-transform';
 
-@Exclude()
+@exclude()
 export class User {
-  @Expose()
+  @expose()
   id: number;
 
-  @Expose()
+  @expose()
   email: string;
 
   password: string;
@@ -562,7 +562,7 @@ import { classToPlain } from 'class-transform';
 let photo = classToPlain(photo, { strategy: 'excludeAll' });
 ```
 
-In this case you don't need to `@Exclude()` a whole class.
+In this case you don't need to `@exclude()` a whole class.
 
 ## Skipping private properties, or some prefixed properties(#table-of-contents)
 
@@ -579,7 +579,7 @@ You can pass any number of prefixes and all properties that begin with these pre
 For example:
 
 ```typescript
-import { Expose, classToPlain } from 'class-transform';
+import { expose, classToPlain } from 'class-transform';
 
 export class User {
   id: number;
@@ -592,7 +592,7 @@ export class User {
     this._lastName = lastName;
   }
 
-  @Expose()
+  @expose()
   get name() {
     return this._firstName + ' ' + this._lastName;
   }
@@ -613,17 +613,17 @@ const plainUser = classToPlain(user, { excludePrefixes: ['_'] });
 You can use groups to control what data will be exposed and what will not be:
 
 ```typescript
-import { Exclude, Expose, classToPlain } from 'class-transform';
+import { exclude, expose, classToPlain } from 'class-transform';
 
 export class User {
   id: number;
 
   name: string;
 
-  @Expose({ groups: ['user', 'admin'] }) // this means that this data will be exposed only to users and admins
+  @expose({ groups: ['user', 'admin'] }) // this means that this data will be exposed only to users and admins
   email: string;
 
-  @Expose({ groups: ['user'] }) // this means that this data will be exposed only to users
+  @expose({ groups: ['user'] }) // this means that this data will be exposed only to users
   password: string;
 }
 
@@ -637,17 +637,17 @@ If you are building an API that has different versions, class-transform has extr
 You can control which properties of your model should be exposed or excluded in what version. Example:
 
 ```typescript
-import { Exclude, Expose, classToPlain } from 'class-transform';
+import { exclude, expose, classToPlain } from 'class-transform';
 
 export class User {
   id: number;
 
   name: string;
 
-  @Expose({ since: 0.7, until: 1 }) // this means that this property will be exposed for version starting from 0.7 until 1
+  @expose({ since: 0.7, until: 1 }) // this means that this property will be exposed for version starting from 0.7 until 1
   email: string;
 
-  @Expose({ since: 2.1 }) // this means that this property will be exposed for version starting from 2.1
+  @expose({ since: 2.1 }) // this means that this property will be exposed for version starting from 2.1
   password: string;
 }
 
@@ -662,10 +662,10 @@ let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and p
 
 Sometimes you have a Date in your plain javascript object received in a string format.
 And you want to create a real javascript Date object from it.
-You can do it simply by passing a Date object to the `@Nested` decorator:
+You can do it simply by passing a Date object to the `@nested` decorator:
 
 ```typescript
-import { Type } from 'class-transform';
+import { nested } from 'class-transform';
 
 export class User {
   id: number;
@@ -674,7 +674,7 @@ export class User {
 
   password: string;
 
-  @Nested(Date)
+  @nested(Date)
   registrationDate: Date;
 }
 ```
@@ -685,17 +685,17 @@ primitive types when you want to convert your values into these types.
 ## Working with arrays(#table-of-contents)
 
 When you are using arrays you must provide a type of the object that array contains.
-This type, you specify in a `@Nested()` decorator:
+This type, you specify in a `@nested()` decorator:
 
 ```typescript
-import { Type } from 'class-transform';
+import { nested } from 'class-transform';
 
 export class Photo {
   id: number;
 
   name: string;
 
-  @Nested(Album)
+  @nested(Album)
   albums: Album[];
 }
 ```
@@ -703,7 +703,7 @@ export class Photo {
 You can also use custom array types:
 
 ```typescript
-import { Type } from 'class-transform';
+import { nested } from 'class-transform';
 
 export class AlbumCollection extends Array<Album> {
   // custom array functions ...
@@ -713,14 +713,14 @@ export class Photo {
   id: number;
   name: string;
 
-  @Nested(Album)
+  @nested(Album)
   albums: AlbumCollection;
 }
 ```
 
 Library will handle proper transformation automatically.
 
-ES6 collections `Set` and `Map` also require the `@Nested` decorator:
+ES6 collections `Set` and `Map` also require the `@nested` decorator:
 
 ```typescript
 export class Skill {
@@ -735,10 +735,10 @@ export class Weapon {
 export class Player {
   name: string;
 
-  @Nested(Skill)
+  @nested(Skill)
   skills: Set<Skill>;
 
-  @Nested(Weapon)
+  @nested(Weapon)
   weapons: Map<string, Weapon>;
 }
 ```
@@ -747,34 +747,34 @@ export class Player {
 
 ### Basic usage(#table-of-contents)
 
-You can perform additional data transformation using `@Transform` decorator.
+You can perform additional data transformation using `@transform` decorator.
 For example, you want to make your `Date` object to be a `moment` object when you are
 transforming object from plain to class:
 
 ```typescript
-import { Transform } from 'class-transform';
+import { transform } from 'class-transform';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
 export class Photo {
   id: number;
 
-  @Nested(Date)
-  @Transform(({ value }) => moment(value), { toClassOnly: true })
+  @nested(Date)
+  @transform(({ value }) => moment(value), { toClassOnly: true })
   date: Moment;
 }
 ```
 
 Now when you call `plainToClass` and send a plain representation of the Photo object,
 it will convert a date value in your photo object to moment date.
-`@Transform` decorator also supports groups and versioning.
+`@transform` decorator also supports groups and versioning.
 
 ### Advanced usage(#table-of-contents)
 
-The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
+The `@transform` decorator is given more arguments to let you configure how you want the transformation to be done.
 
 ```ts
-@Transform(({ value, key, obj, type }) => value)
+@transform(({ value, key, obj, type }) => value)
 ```
 
 | Argument  | Description                                             |
@@ -787,11 +787,11 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 
 ## Other decorators(#table-of-contents)
 
-| Signature                | Example                                              | Description                                                                           |
-| ------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `@TransformClassToPlain` | `@TransformClassToPlain({ groups: ["user"] })`       | Transform the method return with classToPlain and expose the properties on the class. |
-| `@TransformClassToClass` | `@TransformClassToClass({ groups: ["user"] })`       | Transform the method return with classToClass and expose the properties on the class. |
-| `@TransformPlainToClass` | `@TransformPlainToClass(User, { groups: ["user"] })` | Transform the method return with plainToClass and expose the properties on the class. |
+| Signature                      | Example                                                 | Description                                                          |
+| ------------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------- |
+| `@transformInstanceToPlain`    | `@transformInstanceToPlain({ groups: ["user"] })`       | Transforms the method return and expose the properties on the class. |
+| `@transformInstanceToInstance` | `@transformInstanceToInstance({ groups: ["user"] })`    | Transforms the method return and expose the properties on the class. |
+| `@transformPlainToInstance`    | `@transformPlainToInstance(User, { groups: ["user"] })` | Transforms the method return and expose the properties on the class. |
 
 The above decorators accept one optional argument:
 ClassTransformOptions - The transform options like groups, version, name
@@ -799,24 +799,24 @@ ClassTransformOptions - The transform options like groups, version, name
 An example:
 
 ```typescript
-@Exclude()
+@exclude()
 class User {
   id: number;
 
-  @Expose()
+  @expose()
   firstName: string;
 
-  @Expose()
+  @expose()
   lastName: string;
 
-  @Expose({ groups: ['user.email'] })
+  @expose({ groups: ['user.email'] })
   email: string;
 
   password: string;
 }
 
 class UserController {
-  @TransformClassToPlain({ groups: ['user.email'] })
+  @transformClassToPlain({ groups: ['user.email'] })
   getUser() {
     const user = new User();
     user.firstName = 'Snir';
