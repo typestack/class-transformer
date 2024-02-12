@@ -17,42 +17,42 @@ Source code is available [here](https://github.com/pleerock/class-transform-demo
 
 - [class-transform](#class-transform)
   - [Table of contents](#table-of-contents)
-  - [What is class-transform⬆](#what-is-class-transform)
-  - [Installation⬆](#installation)
-    - [Node.js⬆](#nodejs)
-    - [Browser⬆](#browser)
-  - [Methods⬆](#methods)
-    - [plainToClass⬆](#plaintoclass)
-    - [plainToClassFromExist⬆](#plaintoclassfromexist)
-    - [classToPlain⬆](#classtoplain)
-    - [instanceToInstance⬆](#instancetoinstance)
-    - [serialize⬆](#serialize)
-    - [deserialize and deserializeArray⬆](#deserialize-and-deserializearray)
-  - [Enforcing type-safe instance⬆](#enforcing-type-safe-instance)
-  - [Working with nested objects⬆](#working-with-nested-objects)
-    - [Providing more than one type option⬆](#providing-more-than-one-type-option)
-  - [Exposing getters and method return values⬆](#exposing-getters-and-method-return-values)
-  - [Exposing properties with different names⬆](#exposing-properties-with-different-names)
-  - [Skipping specific properties⬆](#skipping-specific-properties)
-  - [Skipping depend of operation⬆](#skipping-depend-of-operation)
-  - [Skipping all properties of the class⬆](#skipping-all-properties-of-the-class)
-  - [Skipping private properties, or some prefixed properties⬆](#skipping-private-properties-or-some-prefixed-properties)
-  - [Using groups to control excluded properties⬆](#using-groups-to-control-excluded-properties)
-  - [Using versioning to control exposed and excluded properties⬆](#using-versioning-to-control-exposed-and-excluded-properties)
-  - [Сonverting date strings into Date objects⬆](#сonverting-date-strings-into-date-objects)
-  - [Working with arrays⬆](#working-with-arrays)
-  - [Additional data transformation⬆](#additional-data-transformation)
-    - [Basic usage⬆](#basic-usage)
-    - [Advanced usage⬆](#advanced-usage)
-  - [Other decorators⬆](#other-decorators)
-  - [Working with generics⬆](#working-with-generics)
-  - [Implicit type conversion⬆](#implicit-type-conversion)
-  - [How does it handle circular references?⬆](#how-does-it-handle-circular-references)
-  - [Example with Angular2⬆](#example-with-angular2)
-  - [Samples⬆](#samples)
-  - [Release notes⬆](#release-notes)
+  - [What is class-transform(#table-of-contents)](#what-is-class-transformtable-of-contents)
+  - [Installation(#table-of-contents)](#installationtable-of-contents)
+    - [Node.js(#table-of-contents)](#nodejstable-of-contents)
+    - [Browser(#table-of-contents)](#browsertable-of-contents)
+  - [Methods(#table-of-contents)](#methodstable-of-contents)
+    - [plainToClass(#table-of-contents)](#plaintoclasstable-of-contents)
+    - [plainToClassFromExist(#table-of-contents)](#plaintoclassfromexisttable-of-contents)
+    - [classToPlain(#table-of-contents)](#classtoplaintable-of-contents)
+    - [instanceToInstance(#table-of-contents)](#instancetoinstancetable-of-contents)
+    - [serialize(#table-of-contents)](#serializetable-of-contents)
+    - [deserialize and deserializeArray(#table-of-contents)](#deserialize-and-deserializearraytable-of-contents)
+  - [Enforcing type-safe instance(#table-of-contents)](#enforcing-type-safe-instancetable-of-contents)
+  - [Working with nested objects(#table-of-contents)](#working-with-nested-objectstable-of-contents)
+    - [Providing more than one type option(#table-of-contents)](#providing-more-than-one-type-optiontable-of-contents)
+  - [Exposing getters and method return values(#table-of-contents)](#exposing-getters-and-method-return-valuestable-of-contents)
+  - [Exposing properties with different names(#table-of-contents)](#exposing-properties-with-different-namestable-of-contents)
+  - [Skipping specific properties(#table-of-contents)](#skipping-specific-propertiestable-of-contents)
+  - [Skipping depend of operation(#table-of-contents)](#skipping-depend-of-operationtable-of-contents)
+  - [Skipping all properties of the class(#table-of-contents)](#skipping-all-properties-of-the-classtable-of-contents)
+  - [Skipping private properties, or some prefixed properties(#table-of-contents)](#skipping-private-properties-or-some-prefixed-propertiestable-of-contents)
+  - [Using groups to control excluded properties(#table-of-contents)](#using-groups-to-control-excluded-propertiestable-of-contents)
+  - [Using versioning to control exposed and excluded properties(#table-of-contents)](#using-versioning-to-control-exposed-and-excluded-propertiestable-of-contents)
+  - [Сonverting date strings into Date objects(#table-of-contents)](#сonverting-date-strings-into-date-objectstable-of-contents)
+  - [Working with arrays(#table-of-contents)](#working-with-arraystable-of-contents)
+  - [Additional data transformation(#table-of-contents)](#additional-data-transformationtable-of-contents)
+    - [Basic usage(#table-of-contents)](#basic-usagetable-of-contents)
+    - [Advanced usage(#table-of-contents)](#advanced-usagetable-of-contents)
+  - [Other decorators(#table-of-contents)](#other-decoratorstable-of-contents)
+  - [Working with generics(#table-of-contents)](#working-with-genericstable-of-contents)
+  - [Implicit type conversion(#table-of-contents)](#implicit-type-conversiontable-of-contents)
+  - [How does it handle circular references?(#table-of-contents)](#how-does-it-handle-circular-referencestable-of-contents)
+  - [Example with Angular2(#table-of-contents)](#example-with-angular2table-of-contents)
+  - [Samples(#table-of-contents)](#samplestable-of-contents)
+  - [Release notes(#table-of-contents)](#release-notestable-of-contents)
 
-## What is class-transform[⬆](#table-of-contents)
+## What is class-transform(#table-of-contents)
 
 In JavaScript there are two types of objects:
 
@@ -150,9 +150,9 @@ fetch('users.json').then((users: Object[]) => {
 
 Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
 
-## Installation[⬆](#table-of-contents)
+## Installation(#table-of-contents)
 
-### Node.js[⬆](#table-of-contents)
+### Node.js(#table-of-contents)
 
 1. Install module:
 
@@ -178,7 +178,7 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    import 'es6-shim';
    ```
 
-### Browser[⬆](#table-of-contents)
+### Browser(#table-of-contents)
 
 1. Install module:
 
@@ -215,9 +215,9 @@ Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
    }
    ```
 
-## Methods[⬆](#table-of-contents)
+## Methods(#table-of-contents)
 
-### plainToClass[⬆](#table-of-contents)
+### plainToClass(#table-of-contents)
 
 This method transforms a plain javascript object to instance of specific class.
 
@@ -227,7 +227,7 @@ import { plainToClass } from 'class-transform';
 let users = plainToClass(User, userJson); // to convert user plain object a single user. also supports arrays
 ```
 
-### plainToClassFromExist[⬆](#table-of-contents)
+### plainToClassFromExist(#table-of-contents)
 
 This method transforms a plain object into an instance using an already filled Object which is an instance of the target class.
 
@@ -238,7 +238,7 @@ defaultUser.role = 'user';
 let mixedUser = plainToClassFromExist(defaultUser, user); // mixed user should have the value role = user when no value is set otherwise.
 ```
 
-### classToPlain[⬆](#table-of-contents)
+### classToPlain(#table-of-contents)
 
 This method transforms your class object back to plain javascript object, that can be `JSON.stringify` later.
 
@@ -247,7 +247,7 @@ import { classToPlain } from 'class-transform';
 let photo = classToPlain(photo);
 ```
 
-### instanceToInstance[⬆](#table-of-contents)
+### instanceToInstance(#table-of-contents)
 
 This method transforms your class object into a new instance of the class object.
 This may be treated as deep clone of your objects.
@@ -259,7 +259,7 @@ let photo = instanceToInstance(photo);
 
 You can also use an `ignoreDecorators` option in transformation options to ignore all decorators your classes are using.
 
-### serialize[⬆](#table-of-contents)
+### serialize(#table-of-contents)
 
 You can serialize your model right to json using `serialize` method:
 
@@ -270,7 +270,7 @@ let photo = serialize(photo);
 
 `serialize` works with both arrays and non-arrays.
 
-### deserialize and deserializeArray[⬆](#table-of-contents)
+### deserialize and deserializeArray(#table-of-contents)
 
 You can deserialize your model from json using the `deserialize` method:
 
@@ -286,7 +286,7 @@ import { deserializeArray } from 'class-transform';
 let photos = deserializeArray(Photo, photos);
 ```
 
-## Enforcing type-safe instance[⬆](#table-of-contents)
+## Enforcing type-safe instance(#table-of-contents)
 
 The default behaviour of the `plainToClass` method is to set _all_ properties from the plain object,
 even those which are not specified in the class.
@@ -342,7 +342,7 @@ console.log(plainToClass(User, fromPlainUser, { excludeExtraneousValues: true })
 // }
 ```
 
-## Working with nested objects[⬆](#table-of-contents)
+## Working with nested objects(#table-of-contents)
 
 When you are trying to transform objects that have nested objects,
 it's required to known what type of object you are trying to transform.
@@ -374,7 +374,7 @@ let album = plainToClass(Album, albumJson);
 // now album is Album object with Photo objects inside
 ```
 
-### Providing more than one type option[⬆](#table-of-contents)
+### Providing more than one type option(#table-of-contents)
 
 In case the nested object can be of different types, you can provide an additional options object,
 that specifies a discriminator. The discriminator option must define a `property` that holds the subtype
@@ -445,7 +445,7 @@ let album = plainToClass(Album, albumJson);
 Hint: The same applies for arrays with different sub types. Moreover you can specify `keepDiscriminatorProperty: true`
 in the options to keep the discriminator property also inside your resulting class.
 
-## Exposing getters and method return values[⬆](#table-of-contents)
+## Exposing getters and method return values(#table-of-contents)
 
 You can expose what your getter or method return by setting an `@Expose()` decorator to those getters or methods:
 
@@ -470,7 +470,7 @@ export class User {
 }
 ```
 
-## Exposing properties with different names[⬆](#table-of-contents)
+## Exposing properties with different names(#table-of-contents)
 
 If you want to expose some of the properties with a different name,
 you can do that by specifying a `name` option to `@Expose` decorator:
@@ -496,7 +496,7 @@ export class User {
 }
 ```
 
-## Skipping specific properties[⬆](#table-of-contents)
+## Skipping specific properties(#table-of-contents)
 
 Sometimes you want to skip some properties during transformation.
 This can be done using `@Exclude` decorator:
@@ -516,7 +516,7 @@ export class User {
 
 Now when you transform a User, the `password` property will be skipped and not be included in the transformed result.
 
-## Skipping depend of operation[⬆](#table-of-contents)
+## Skipping depend of operation(#table-of-contents)
 
 You can control on what operation you will exclude a property. Use `toClassOnly` or `toPlainOnly` options:
 
@@ -535,7 +535,7 @@ export class User {
 
 Now `password` property will be excluded only during `classToPlain` operation. Vice versa, use the `toClassOnly` option.
 
-## Skipping all properties of the class[⬆](#table-of-contents)
+## Skipping all properties of the class(#table-of-contents)
 
 You can skip all properties of the class, and expose only those are needed explicitly:
 
@@ -564,7 +564,7 @@ let photo = classToPlain(photo, { strategy: 'excludeAll' });
 
 In this case you don't need to `@Exclude()` a whole class.
 
-## Skipping private properties, or some prefixed properties[⬆](#table-of-contents)
+## Skipping private properties, or some prefixed properties(#table-of-contents)
 
 If you name your private properties with a prefix, lets say with `_`,
 then you can exclude such properties from transformation too:
@@ -608,7 +608,7 @@ const plainUser = classToPlain(user, { excludePrefixes: ['_'] });
 // { id: 1, name: "Johny Cage" }
 ```
 
-## Using groups to control excluded properties[⬆](#table-of-contents)
+## Using groups to control excluded properties(#table-of-contents)
 
 You can use groups to control what data will be exposed and what will not be:
 
@@ -631,7 +631,7 @@ let user1 = classToPlain(user, { groups: ['user'] }); // will contain id, name, 
 let user2 = classToPlain(user, { groups: ['admin'] }); // will contain id, name and email
 ```
 
-## Using versioning to control exposed and excluded properties[⬆](#table-of-contents)
+## Using versioning to control exposed and excluded properties(#table-of-contents)
 
 If you are building an API that has different versions, class-transform has extremely useful tools for that.
 You can control which properties of your model should be exposed or excluded in what version. Example:
@@ -658,7 +658,7 @@ let user4 = classToPlain(user, { version: 2 }); // will contain id and name
 let user5 = classToPlain(user, { version: 2.1 }); // will contain id, name and password
 ```
 
-## Сonverting date strings into Date objects[⬆](#table-of-contents)
+## Сonverting date strings into Date objects(#table-of-contents)
 
 Sometimes you have a Date in your plain javascript object received in a string format.
 And you want to create a real javascript Date object from it.
@@ -682,7 +682,7 @@ export class User {
 Same technique can be used with `Number`, `String`, `Boolean`
 primitive types when you want to convert your values into these types.
 
-## Working with arrays[⬆](#table-of-contents)
+## Working with arrays(#table-of-contents)
 
 When you are using arrays you must provide a type of the object that array contains.
 This type, you specify in a `@Nested()` decorator:
@@ -743,9 +743,9 @@ export class Player {
 }
 ```
 
-## Additional data transformation[⬆](#table-of-contents)
+## Additional data transformation(#table-of-contents)
 
-### Basic usage[⬆](#table-of-contents)
+### Basic usage(#table-of-contents)
 
 You can perform additional data transformation using `@Transform` decorator.
 For example, you want to make your `Date` object to be a `moment` object when you are
@@ -769,7 +769,7 @@ Now when you call `plainToClass` and send a plain representation of the Photo ob
 it will convert a date value in your photo object to moment date.
 `@Transform` decorator also supports groups and versioning.
 
-### Advanced usage[⬆](#table-of-contents)
+### Advanced usage(#table-of-contents)
 
 The `@Transform` decorator is given more arguments to let you configure how you want the transformation to be done.
 
@@ -785,7 +785,7 @@ The `@Transform` decorator is given more arguments to let you configure how you 
 | `type`    | The transformation type.                                |
 | `options` | The options object passed to the transformation method. |
 
-## Other decorators[⬆](#table-of-contents)
+## Other decorators(#table-of-contents)
 
 | Signature                | Example                                              | Description                                                                           |
 | ------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -834,14 +834,14 @@ const user = controller.getUser();
 the `user` variable will contain only firstName,lastName, email properties because they are
 the exposed variables. email property is also exposed because we metioned the group "user.email".
 
-## Working with generics[⬆](#table-of-contents)
+## Working with generics(#table-of-contents)
 
 Generics are not supported because TypeScript does not have good reflection abilities yet.
 Once TypeScript team provide us better runtime type reflection tools, generics will be implemented.
 There are some tweaks however you can use, that maybe can solve your problem.
 [Checkout this example.](https://github.com/pleerock/class-transform/tree/master/sample/sample4-generics)
 
-## Implicit type conversion[⬆](#table-of-contents)
+## Implicit type conversion(#table-of-contents)
 
 > **NOTE** If you use class-validator together with class-transform you propably DON'T want to enable this function.
 
@@ -864,14 +864,14 @@ const result2 = plainToClass(MyPayload, { prop: 1234 }, { enableImplicitConversi
  */
 ```
 
-## How does it handle circular references?[⬆](#table-of-contents)
+## How does it handle circular references?(#table-of-contents)
 
 Circular references are ignored.
 For example, if you are transforming class `User` that contains property `photos` with type of `Photo`,
 and `Photo` contains link `user` to its parent `User`, then `user` will be ignored during transformation.
 Circular references are not ignored only during `classToClass` operation.
 
-## Example with Angular2[⬆](#table-of-contents)
+## Example with Angular2(#table-of-contents)
 
 Lets say you want to download users and want them automatically to be mapped to the instances of `User` class.
 
@@ -893,11 +893,11 @@ You can also inject a class `ClassTransformer` as a service in `providers`, and 
 Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
 Source code is [here](https://github.com/pleerock/class-transform-demo).
 
-## Samples[⬆](#table-of-contents)
+## Samples(#table-of-contents)
 
 Take a look on samples in [./sample](https://github.com/pleerock/class-transform/tree/master/sample) for more examples of
 usages.
 
-## Release notes[⬆](#table-of-contents)
+## Release notes(#table-of-contents)
 
 See information about breaking changes and release notes [here](https://github.com/cunarist/class-transform/blob/master/CHANGELOG.md).
