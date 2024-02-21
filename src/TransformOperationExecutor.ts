@@ -107,7 +107,11 @@ export class TransformOperationExecutor {
       return Number(value);
     } else if (targetType === Boolean && !isMap) {
       if (value === null || value === undefined) return value;
-      return Boolean(value);
+      if (this.options.parseBooleanStrings && typeof value === 'string') {
+        return value.toLowerCase() === 'true' || value === '1';
+      } else {
+        return Boolean(value);
+      }
     } else if ((targetType === Date || value instanceof Date) && !isMap) {
       if (value instanceof Date) {
         return new Date(value.valueOf());

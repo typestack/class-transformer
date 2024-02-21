@@ -10,6 +10,7 @@ export const defaultOptions: Partial<ClassTransformOptions> = {
   excludePrefixes: undefined,
   exposeDefaultValues: false,
   exposeUnsetFields: true,
+  parseBooleanStrings: false,
   groups: undefined,
   ignoreDecorators: false,
   strategy: undefined,
