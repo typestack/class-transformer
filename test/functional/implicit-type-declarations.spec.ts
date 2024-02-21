@@ -102,6 +102,12 @@ describe('plainToInstance transforms built-in primitive types properly', () => {
 
     @Type()
     boolean2: boolean;
+
+    @Type()
+    boolean3: boolean;
+
+    @Type()
+    boolean4: boolean;
   }
 
   const result: Example = plainToInstance(
@@ -114,8 +120,10 @@ describe('plainToInstance transforms built-in primitive types properly', () => {
       number2: 100,
       boolean: 1,
       boolean2: 0,
+      boolean3: 'true',
+      boolean4: 'false',
     },
-    { enableImplicitConversion: true }
+    { enableImplicitConversion: true, parseBooleanStrings: true }
   );
 
   it('should recognize and convert to Date', () => {
@@ -140,5 +148,7 @@ describe('plainToInstance transforms built-in primitive types properly', () => {
   it('should recognize and convert to boolean', () => {
     expect(result.boolean).toBeTruthy();
     expect(result.boolean2).toBeFalsy();
+    expect(result.boolean3).toBeTruthy();
+    expect(result.boolean4).toBeFalsy();
   });
 });

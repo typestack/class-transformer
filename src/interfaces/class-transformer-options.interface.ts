@@ -76,4 +76,12 @@ export interface ClassTransformOptions {
    * DEFAULT: `true`
    */
   exposeUnsetFields?: boolean;
+
+  /**
+   * When set to true, boolean fields with string `true` (case insensitive) or `1` as value will be converted to true, other
+   * string values will be converted to false.
+   *
+   * DEFAULT: `false`
+   */
+  parseBooleanStrings?: boolean;
 }
