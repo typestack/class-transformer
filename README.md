@@ -30,6 +30,7 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
   - [Providing more than one type option](#providing-more-than-one-type-option)
 - [Exposing getters and method return values](#exposing-getters-and-method-return-values)
 - [Exposing properties with different names](#exposing-properties-with-different-names)
+- [Stacking expose decorator on a property](#stacking-expose-decorator-on-a-property)
 - [Skipping specific properties](#skipping-specific-properties)
 - [Skipping depend of operation](#skipping-depend-of-operation)
 - [Skipping all properties of the class](#skipping-all-properties-of-the-class)
@@ -490,6 +491,34 @@ export class User {
   getFullName() {
     return this.firstName + ' ' + this.lastName;
   }
+}
+```
+
+## Stacking expose decorator on a property[⬆](#table-of-contents)
+
+You can stack `@Expose` decorator more than once if you want.
+
+```typescript
+import { Expose } from 'class-transformer';
+
+export class User {
+  id: number;
+
+  @Expose({ toClassOnly: true, groups: ['create', 'update'] })
+  @Expose({ toPlainOnly: true })
+  firstName: string;
+
+  @Expose({ toClassOnly: true, since: 2, name: 'lastName' })
+  @Expose({ toClassOnly: true, since: 1, until: 2, name: 'lastname' })
+  @Expose({ toClassOnly: true, until: 1, name: 'surname' })
+  @Expose({ toPlainOnly: true })
+  lastName: string;
+
+  @Transform(({ value }) => (value ? '*'.repeat(value.length) : value))
+  @Expose({ name: 'password', since: 2 })
+  @Expose({ name: 'secretKey', toClassOnly: true, since: 1, groups: ['create', 'update'] })
+  @Expose({ name: 'secretKey', toClassOnly: true, until: 1, groups: ['create'] })
+  password: string;
 }
 ```
 
