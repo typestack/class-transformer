@@ -145,7 +145,7 @@ fetch('users.json').then((users: Object[]) => {
 });
 ```
 
-Now you can use `users[0].getName()` and `users[0].isAdult()` methods.
+Now you can use `realUsers[0].getName()` and `realUsers[0].isAdult()` methods.
 
 ## Installation[⬆](#table-of-contents)
 
