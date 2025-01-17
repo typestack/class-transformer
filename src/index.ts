@@ -3,6 +3,7 @@ import { ClassTransformOptions } from './interfaces';
 import { ClassConstructor } from './interfaces';
 
 export { ClassTransformer } from './ClassTransformer';
+export { TransformOperationExecutor } from './TransformOperationExecutor';
 export * from './decorators';
 export * from './interfaces';
 export * from './enums';
