@@ -716,6 +716,62 @@ export class Photo {
 }
 ```
 
+### Array with multiple types[⬆](#table-of-contents)
+
+You can also use array with multiple types, using the `@Transform()` decorator.
+
+```typescript
+class Photo {
+  type: string;
+  filename: string;
+}
+
+class Landscape extends Photo {
+  local: string;
+}
+
+class Portrait extends Photo {
+  person: string;
+  gender: string;
+}
+
+export class Album {
+  @Transform(({ value }) => {
+    return value.map(item => {
+      const options = {
+        portrait: Portrait,
+        landscape: Landscape,
+      };
+      const obj = options[item.type];
+      return plainToInstance(obj, item);
+    });
+  })
+  photos: Array<Landscape | Portrait>;
+}
+```
+
+Is very util to add type for object arrays with dynamic types.
+
+```typescript
+const albumJson = {
+  photos: [
+    {
+      type: 'landscape',
+      filename: 'cataratas.png',
+      local: 'Cataratas do Iguaçu - PR/BR',
+    },
+    {
+      type: 'portrait',
+      filename: 'topmodel.jpg',
+      person: 'Alessandra Ambrósio',
+      gender: 'female',
+    },
+  ],
+};
+
+const albumObject = plainToInstance(Album, albumJson);
+```
+
 Library will handle proper transformation automatically.
 
 ES6 collections `Set` and `Map` also require the `@Type` decorator:
