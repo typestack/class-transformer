@@ -65,9 +65,9 @@ export function classToPlainFromExist<T>(
  *
  * @deprecated Function name changed, use the `plainToInstance` method instead.
  */
-export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V[], options?: ClassTransformOptions): T[];
-export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V, options?: ClassTransformOptions): T;
-export function plainToClass<T, V>(cls: ClassConstructor<T>, plain: V | V[], options?: ClassTransformOptions): T | T[] {
+export function plainToClass<T>(cls: ClassConstructor<T>, plain: T[], options?: ClassTransformOptions): T[];
+export function plainToClass<T>(cls: ClassConstructor<T>, plain: T, options?: ClassTransformOptions): T;
+export function plainToClass<T>(cls: ClassConstructor<T>, plain: T | T[], options?: ClassTransformOptions): T | T[] {
   return classTransformer.plainToInstance(cls, plain as any, options);
 }
 
@@ -91,9 +91,9 @@ export function plainToInstance<T, V>(
  *
  * @deprecated This function is being removed. The current implementation is incorrect as it modifies the source object.
  */
-export function plainToClassFromExist<T, V>(clsObject: T[], plain: V[], options?: ClassTransformOptions): T[];
-export function plainToClassFromExist<T, V>(clsObject: T, plain: V, options?: ClassTransformOptions): T;
-export function plainToClassFromExist<T, V>(clsObject: T, plain: V | V[], options?: ClassTransformOptions): T | T[] {
+export function plainToClassFromExist<T>(clsObject: T[], plain: T[], options?: ClassTransformOptions): T[];
+export function plainToClassFromExist<T>(clsObject: T, plain: T, options?: ClassTransformOptions): T;
+export function plainToClassFromExist<T>(clsObject: T, plain: T | T[], options?: ClassTransformOptions): T | T[] {
   return classTransformer.plainToClassFromExist(clsObject, plain, options);
 }
 
