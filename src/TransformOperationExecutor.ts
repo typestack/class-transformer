@@ -190,23 +190,20 @@ export class TransformOperationExecutor {
           }
         }
 
+        const sourceValue = value[valueKey];
         // get a subvalue
-        let subValue: any = undefined;
-        if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
+        let subValue: any = sourceValue;
+        if (this.transformationType !== TransformationType.PLAIN_TO_CLASS) {
           /**
            * This section is added for the following report:
            * https://github.com/typestack/class-transformer/issues/596
            *
            * We should not call functions or constructors when transforming to class.
            */
-          subValue = value[valueKey];
-        } else {
           if (value instanceof Map) {
             subValue = value.get(valueKey);
-          } else if (value[valueKey] instanceof Function) {
-            subValue = value[valueKey]();
-          } else {
-            subValue = value[valueKey];
+          } else if (subValue instanceof Function) {
+            subValue = subValue.call(value);
           }
         }
 
@@ -226,7 +223,7 @@ export class TransformOperationExecutor {
               metadata.options.discriminator.property &&
               metadata.options.discriminator.subTypes
             ) {
-              if (!(value[valueKey] instanceof Array)) {
+              if (!(sourceValue instanceof Array)) {
                 if (this.transformationType === TransformationType.PLAIN_TO_CLASS) {
                   type = metadata.options.discriminator.subTypes.find(subType => {
                     if (subValue && subValue instanceof Object && metadata.options.discriminator.property in subValue) {
@@ -281,7 +278,7 @@ export class TransformOperationExecutor {
         }
 
         // if value is an array try to get its custom array type
-        const arrayType = Array.isArray(value[valueKey])
+        const arrayType = Array.isArray(sourceValue)
           ? this.getReflectedType(targetType as Function, propertyName)
           : undefined;
 
@@ -307,12 +304,15 @@ export class TransformOperationExecutor {
         }
 
         if (!this.options.enableCircularCheck || !this.isCircular(subValue)) {
-          const transformKey = this.transformationType === TransformationType.PLAIN_TO_CLASS ? newValueKey : key;
+          const [originalValue, transformKey] =
+            this.transformationType === TransformationType.PLAIN_TO_CLASS
+              ? [value[newValueKey], newValueKey]
+              : [sourceValue, key];
           let finalValue;
 
           if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
             // Get original value
-            finalValue = value[transformKey];
+            finalValue = originalValue;
             // Apply custom transformation
             finalValue = this.applyCustomTransformations(
               finalValue,
@@ -322,7 +322,7 @@ export class TransformOperationExecutor {
               this.transformationType
             );
             // If nothing change, it means no custom transformation was applied, so use the subValue.
-            finalValue = value[transformKey] === finalValue ? subValue : finalValue;
+            finalValue = originalValue === finalValue ? subValue : finalValue;
             // Apply the default transformation
             finalValue = this.transform(subSource, finalValue, type, arrayType, isSubValueMap, level + 1);
           } else {

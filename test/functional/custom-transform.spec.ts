@@ -788,4 +788,27 @@ describe('custom transformation decorator', () => {
       instanceToPlain(model);
     }).not.toThrow();
   });
+
+  /**
+   * test-case for issue #1707
+   */
+  it('should serialize model into json without extra getter calls', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      class UserResponseDto {
+        @Expose()
+        get name(): string {
+          return 'name';
+        }
+      }
+
+      const userResponseSpy = jest.spyOn(UserResponseDto.prototype, 'name', 'get');
+      const model = new UserResponseDto();
+
+      const json: any = instanceToPlain(model);
+
+      expect(json.name).toBe('name');
+      expect(userResponseSpy).toHaveBeenCalledTimes(1);
+    }).not.toThrow();
+  });
 });
