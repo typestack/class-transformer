@@ -188,3 +188,75 @@ describe('filtering by transformation option', () => {
     });
   });
 });
+
+describe('Filtering by transform options, name using ExposeAll strategy', () => {
+  it('@Expose with custom name and toClassOnly set to true then it should be exposed only during plainToInstance', () => {
+    defaultMetadataStorage.clear();
+
+    class User {
+      @Expose()
+      firstName: string;
+
+      @Expose()
+      lastName: string;
+
+      @Expose({ name: 'pass', toClassOnly: true })
+      password: string;
+    }
+
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      pass: 'imnosuperman',
+    };
+    const classedUser = plainToInstance(User, plainUser, { strategy: 'exposeAll' });
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    });
+
+    const plainedUser = instanceToPlain(classedUser, { strategy: 'exposeAll' });
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    });
+  });
+
+  it('@Expose with custom name and toPlainOnly set to true should be exposed only during instanceToPlain and classToPlainFromExist operations', () => {
+    defaultMetadataStorage.clear();
+
+    class User {
+      @Expose()
+      firstName: string;
+
+      @Expose()
+      lastName: string;
+
+      @Expose({ name: 'pass', toPlainOnly: true })
+      password: string;
+    }
+
+    const plainUser = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    };
+    const classedUser = plainToInstance(User, plainUser, { strategy: 'exposeAll' });
+    expect(classedUser).toBeInstanceOf(User);
+    expect(classedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      password: 'imnosuperman',
+    });
+
+    const plainedUser = instanceToPlain(classedUser, { strategy: 'exposeAll' });
+    expect(plainedUser).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      pass: 'imnosuperman',
+    });
+  });
+});

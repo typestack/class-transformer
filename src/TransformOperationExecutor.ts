@@ -184,7 +184,10 @@ export class TransformOperationExecutor {
             this.transformationType === TransformationType.CLASS_TO_CLASS
           ) {
             const exposeMetadata = defaultMetadataStorage.findExposeMetadata(targetType as Function, key);
-            if (exposeMetadata && exposeMetadata.options && exposeMetadata.options.name) {
+            const shouldRunOnToPlain = !(
+              exposeMetadata?.options?.toPlainOnly === false || exposeMetadata?.options?.toClassOnly === true
+            );
+            if (exposeMetadata && exposeMetadata.options && exposeMetadata.options.name && shouldRunOnToPlain) {
               newValueKey = exposeMetadata.options.name;
             }
           }
