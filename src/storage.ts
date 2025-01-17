@@ -10,4 +10,4 @@ if (!globalScope.classTransformerMetadataStorage) {
   globalScope.classTransformerMetadataStorage = new MetadataStorage();
 }
 
-export const defaultMetadataStorage = globalScope.classTransformerMetadataStorage;
+export const defaultMetadataStorage = globalScope.classTransformerMetadataStorage as MetadataStorage;
