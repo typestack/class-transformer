@@ -783,6 +783,28 @@ describe('custom transformation decorator', () => {
     }).not.toThrow();
   });
 
+  it('should serialize json to invoice instance of class Invoice with type arguments', () => {
+    defaultMetadataStorage.clear();
+    expect(() => {
+      interface CSVInvoiceRecord {
+        net: string;
+      }
+
+      class Invoice {
+        @Transform<CSVInvoiceRecord, 'net', number>(({ value }) => Number(value.replace(',', '')))
+        net: number;
+      }
+
+      const rawInvoice: CSVInvoiceRecord = {
+        net: '2,000',
+      };
+
+      const invoice = plainToInstance(Invoice, rawInvoice);
+      expect(invoice).toBeInstanceOf(Invoice);
+      expect(invoice.net).toEqual(2000);
+    }).not.toThrow();
+  });
+
   it('should serialize a model into json', () => {
     expect(() => {
       instanceToPlain(model);
