@@ -107,6 +107,9 @@ export class TransformOperationExecutor {
       return Number(value);
     } else if (targetType === Boolean && !isMap) {
       if (value === null || value === undefined) return value;
+      if (typeof value === 'string' && !isNaN(parseFloat(value))) return Boolean(+value);
+      if (typeof value === 'string' && ['true', 'false'].includes(value.toLowerCase()))
+        return value.toLowerCase() === 'true';
       return Boolean(value);
     } else if ((targetType === Date || value instanceof Date) && !isMap) {
       if (value instanceof Date) {
