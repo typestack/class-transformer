@@ -4,13 +4,13 @@
 [![codecov](https://codecov.io/gh/typestack/class-transformer/branch/develop/graph/badge.svg)](https://codecov.io/gh/typestack/class-transformer)
 [![npm version](https://badge.fury.io/js/class-transformer.svg)](https://badge.fury.io/js/class-transformer)
 
-Its ES6 and Typescript era. Nowadays you are working with classes and constructor objects more than ever.
-Class-transformer allows you to transform plain object to some instance of class and versa.
-Also it allows to serialize / deserialize object based on criteria.
+It's ES6 and Typescript era. Nowadays, you are working with classes and constructor objects more than ever.
+Class-transformer allows you to transform a plain object to some class instance and vice versa.
+Also, it allows to serialize/deserialize objects based on criteria.
 This tool is super useful on both frontend and backend.
 
-Example how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
-Source code is available [here](https://github.com/pleerock/class-transformer-demo).
+Example of how to use with angular 2 in [plunker](http://plnkr.co/edit/Mja1ZYAjVySWASMHVB9R).
+The source code is available [here](https://github.com/pleerock/class-transformer-demo).
 
 ## Table of contents
 
