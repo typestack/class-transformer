@@ -13,6 +13,9 @@ describe('implicit type conversion', () => {
 
       @Expose()
       readonly implicitTypeString: string;
+
+      @Expose()
+      readonly implicitTypeEmptyNumber: number;
     }
 
     const result1: SimpleExample = plainToInstance(
@@ -20,6 +23,7 @@ describe('implicit type conversion', () => {
       {
         implicitTypeNumber: '100',
         implicitTypeString: 133123,
+        implicitTypeEmptyNumber: '',
       },
       { enableImplicitConversion: true }
     );
@@ -29,12 +33,13 @@ describe('implicit type conversion', () => {
       {
         implicitTypeNumber: '100',
         implicitTypeString: 133123,
+        implicitTypeEmptyNumber: '',
       },
       { enableImplicitConversion: false }
     );
 
-    expect(result1).toEqual({ implicitTypeNumber: 100, implicitTypeString: '133123' });
-    expect(result2).toEqual({ implicitTypeNumber: '100', implicitTypeString: 133123 });
+    expect(result1).toEqual({ implicitTypeNumber: 100, implicitTypeString: '133123', implicitTypeEmptyNumber: null });
+    expect(result2).toEqual({ implicitTypeNumber: '100', implicitTypeString: 133123, implicitTypeEmptyNumber: '' });
   });
 });
 
