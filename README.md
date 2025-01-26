@@ -134,7 +134,7 @@ But things may go wrong very fast once you have a more complex object hierarchy.
 Alternatives? Yes, you can use class-transformer. Purpose of this library is to help you to map your plain javascript
 objects to the instances of classes you have.
 
-This library also great for models exposed in your APIs,
+This library is also great for models exposed in your APIs,
 because it provides a great tooling to control what your models are exposing in your API.
 Here is an example how it will look like:
 
