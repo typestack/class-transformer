@@ -626,7 +626,7 @@ describe('basic functionality', () => {
       uuidBuffer: uuid,
       nullableString: null,
       nullableNumber: null,
-      nullableBoolean: null,
+      nullableBoolean: false,
       nullableDate: null,
       nullableBuffer: null,
     });
@@ -646,7 +646,7 @@ describe('basic functionality', () => {
       uuidBuffer: uuid,
       nullableString: null,
       nullableNumber: null,
-      nullableBoolean: null,
+      nullableBoolean: false,
       nullableDate: null,
       nullableBuffer: null,
     });
@@ -664,7 +664,7 @@ describe('basic functionality', () => {
       uuidBuffer: uuid,
       nullableString: null,
       nullableNumber: null,
-      nullableBoolean: null,
+      nullableBoolean: false,
       nullableDate: null,
       nullableBuffer: null,
     });
@@ -682,7 +682,7 @@ describe('basic functionality', () => {
       uuidBuffer: uuid,
       nullableString: null,
       nullableNumber: null,
-      nullableBoolean: null,
+      nullableBoolean: false,
       nullableDate: null,
       nullableBuffer: null,
     });
@@ -700,7 +700,7 @@ describe('basic functionality', () => {
       uuidBuffer: uuid,
       nullableString: null,
       nullableNumber: null,
-      nullableBoolean: null,
+      nullableBoolean: false,
       nullableDate: null,
       nullableBuffer: null,
     });
@@ -720,7 +720,7 @@ describe('basic functionality', () => {
       uuidBuffer: uuid,
       nullableString: null,
       nullableNumber: null,
-      nullableBoolean: null,
+      nullableBoolean: false,
       nullableDate: null,
       nullableBuffer: null,
     });
