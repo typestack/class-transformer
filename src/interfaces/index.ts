@@ -1,5 +1,6 @@
-export * from './decorator-options/expose-options.interface';
 export * from './decorator-options/exclude-options.interface';
+export * from './decorator-options/expose-options.interface';
+export * from './decorator-options/alias-options.interface';
 export * from './decorator-options/transform-options.interface';
 export * from './decorator-options/type-discriminator-descriptor.interface';
 export * from './decorator-options/type-options.interface';

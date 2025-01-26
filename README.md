@@ -493,6 +493,55 @@ export class User {
 }
 ```
 
+If you need to rename the property from or to a plain instance,
+you can use the `from` and `to` options of `@Alias`:
+
+```typescript
+import { Expose } from 'class-transformer';
+
+export class User {
+  @Expose({ name: 'uid' })
+  id: string;
+
+  firstName: string;
+
+  lastName: string;
+
+  @Alias({ from: 'secretKey', to: '__password' })
+  password: string;
+
+  @Alias({ to: 'fullName' })
+  getFullName() {
+    return this.firstName + ' ' + this.lastName;
+  }
+}
+```
+
+Using this configuration, the `User` object would accept
+the following plain object for `plainToInstance(User, ...)`:
+
+```json
+{
+  "uid": "1234",
+  "firstName": "John",
+  "lastName": "Doe",
+  "secretKey": "allYourBaseAreBelongToUs"
+}
+```
+
+Subsequently `instanceToPlain(...)` would then produce the
+following plain object:
+
+```json
+{
+  "uid": "1234",
+  "firstName": "John",
+  "lastName": "Doe",
+  "__password": "allYourBaseAreBelongToUs",
+  "fullName": "John Doe"
+}
+```
+
 ## Skipping specific properties[⬆](#table-of-contents)
 
 Sometimes you want to skip some properties during transformation.
