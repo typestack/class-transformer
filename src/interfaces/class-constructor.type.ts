@@ -1,3 +1,1 @@
-export type ClassConstructor<T> = {
-  new (...args: any[]): T;
-};
+export type ClassConstructor<T> = { prototype: T };
