@@ -76,4 +76,9 @@ export interface ClassTransformOptions {
    * DEFAULT: `true`
    */
   exposeUnsetFields?: boolean;
+  
+  /**
+   * Arbitrary options to be used in the transform decorator
+   */
+  extraOptions?: any;
 }
