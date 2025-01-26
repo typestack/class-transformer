@@ -19,6 +19,14 @@ export interface ClassTransformOptions {
   excludeExtraneousValues?: boolean;
 
   /**
+   * Indicates if it throws an error when extraneous properties are found.
+   *
+   * This option requires that each property on the target class has at least one `@Expose` or `@Exclude` decorator
+   * assigned from this library.
+   */
+  throwErrorExtraneousValues?: boolean;
+
+  /**
    * Only properties with given groups gonna be transformed.
    */
   groups?: string[];
