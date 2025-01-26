@@ -6,6 +6,7 @@ export { ClassTransformer } from './ClassTransformer';
 export * from './decorators';
 export * from './interfaces';
 export * from './enums';
+export * from './storage';
 
 const classTransformer = new ClassTransformer();
 
