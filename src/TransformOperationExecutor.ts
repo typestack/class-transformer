@@ -341,12 +341,16 @@ export class TransformOperationExecutor {
             }
           }
 
-          if (finalValue !== undefined || this.options.exposeUnsetFields) {
+          if (finalValue !== undefined) {
             if (newValue instanceof Map) {
               newValue.set(newValueKey, finalValue);
             } else {
               newValue[newValueKey] = finalValue;
             }
+          }
+
+          if (finalValue === undefined && !this.options.exposeUnsetFields) {
+            delete newValue[newValueKey];
           }
         } else if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
           let finalValue = subValue;
@@ -357,12 +361,16 @@ export class TransformOperationExecutor {
             value,
             this.transformationType
           );
-          if (finalValue !== undefined || this.options.exposeUnsetFields) {
+          if (finalValue !== undefined) {
             if (newValue instanceof Map) {
               newValue.set(newValueKey, finalValue);
             } else {
               newValue[newValueKey] = finalValue;
             }
+          }
+
+          if (finalValue === undefined && !this.options.exposeUnsetFields) {
+            delete newValue[newValueKey];
           }
         }
       }
