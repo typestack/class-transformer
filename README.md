@@ -14,40 +14,41 @@ Source code is available [here](https://github.com/pleerock/class-transformer-de
 
 ## Table of contents
 
-- [What is class-transformer](#what-is-class-transformer)
-- [Installation](#installation)
-  - [Node.js](#nodejs)
-  - [Browser](#browser)
-- [Methods](#methods)
-  - [plainToInstance](#plaintoinstance)
-  - [plainToClassFromExist](#plaintoclassfromexist)
-  - [instanceToPlain](#instancetoplain)
-  - [instanceToInstance](#instanceToInstance)
-  - [serialize](#serialize)
-  - [deserialize and deserializeArray](#deserialize-and-deserializearray)
-- [Enforcing type-safe instance](#enforcing-type-safe-instance)
-- [Working with nested objects](#working-with-nested-objects)
-  - [Providing more than one type option](#providing-more-than-one-type-option)
-- [Exposing getters and method return values](#exposing-getters-and-method-return-values)
-- [Exposing properties with different names](#exposing-properties-with-different-names)
-- [Skipping specific properties](#skipping-specific-properties)
-- [Skipping depend of operation](#skipping-depend-of-operation)
-- [Skipping all properties of the class](#skipping-all-properties-of-the-class)
-- [Skipping private properties, or some prefixed properties](#skipping-private-properties-or-some-prefixed-properties)
-- [Using groups to control excluded properties](#using-groups-to-control-excluded-properties)
-- [Using versioning to control exposed and excluded properties](#using-versioning-to-control-exposed-and-excluded-properties)
-- [Сonverting date strings into Date objects](#сonverting-date-strings-into-date-objects)
-- [Working with arrays](#working-with-arrays)
-- [Additional data transformation](#additional-data-transformation)
-  - [Basic usage](#basic-usage)
-  - [Advanced usage](#advanced-usage)
-- [Other decorators](#other-decorators)
-- [Working with generics](#working-with-generics)
-- [Implicit type conversion](#implicit-type-conversion)
-- [How does it handle circular references?](#how-does-it-handle-circular-references)
-- [Example with Angular2](#example-with-angular2)
-- [Samples](#samples)
-- [Release notes](#release-notes)
+* [Table of contents](#table-of-contents)
+* [What is class-transformer⬆](#what-is-class-transformer)
+* [Installation⬆](#installation)
+  * [Node.js⬆](#nodejs)
+  * [Browser⬆](#browser)
+* [Methods⬆](#methods)
+  * [plainToInstance⬆](#plaintoinstance)
+  * [plainToClassFromExist⬆](#plaintoclassfromexist)
+  * [instanceToPlain⬆](#instancetoplain)
+  * [instanceToInstance⬆](#instancetoinstance)
+  * [serialize⬆](#serialize)
+  * [deserialize and deserializeArray⬆](#deserialize-and-deserializearray)
+* [Enforcing type-safe instance⬆](#enforcing-type-safe-instance)
+* [Working with nested objects⬆](#working-with-nested-objects)
+  * [Providing more than one type option⬆](#providing-more-than-one-type-option)
+* [Exposing getters and method return values⬆](#exposing-getters-and-method-return-values)
+* [Exposing properties with different names⬆](#exposing-properties-with-different-names)
+* [Skipping specific properties⬆](#skipping-specific-properties)
+* [Skipping depend of operation⬆](#skipping-depend-of-operation)
+* [Skipping all properties of the class⬆](#skipping-all-properties-of-the-class)
+* [Skipping private properties, or some prefixed properties⬆](#skipping-private-properties-or-some-prefixed-properties)
+* [Using groups to control excluded properties⬆](#using-groups-to-control-excluded-properties)
+* [Using versioning to control exposed and excluded properties⬆](#using-versioning-to-control-exposed-and-excluded-properties)
+* [Сonverting date strings into Date objects⬆](#сonverting-date-strings-into-date-objects)
+* [Working with arrays⬆](#working-with-arrays)
+* [Additional data transformation⬆](#additional-data-transformation)
+  * [Basic usage⬆](#basic-usage)
+  * [Advanced usage⬆](#advanced-usage)
+* [Other decorators⬆](#other-decorators)
+* [Working with generics⬆](#working-with-generics)
+* [Implicit type conversion⬆](#implicit-type-conversion)
+* [How does it handle circular references?⬆](#how-does-it-handle-circular-references)
+* [Example with Angular2⬆](#example-with-angular2)
+* [Samples⬆](#samples)
+* [Release notes⬆](#release-notes)
 
 ## What is class-transformer[⬆](#table-of-contents)
 
@@ -298,7 +299,7 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
+  unknownProp: 'hello there',
   firstName: 'Umed',
   lastName: 'Khudoiberdiev',
 };
@@ -306,7 +307,7 @@ const fromPlainUser = {
 console.log(plainToInstance(User, fromPlainUser));
 
 // User {
-//   unkownProp: 'hello there',
+//   unknownProp: 'hello there',
 //   firstName: 'Umed',
 //   lastName: 'Khudoiberdiev',
 // }
@@ -325,7 +326,7 @@ class User {
 }
 
 const fromPlainUser = {
-  unkownProp: 'hello there',
+  unknownProp: 'hello there',
   firstName: 'Umed',
   lastName: 'Khudoiberdiev',
 };
@@ -830,7 +831,7 @@ const user = controller.getUser();
 ```
 
 the `user` variable will contain only firstName,lastName, email properties because they are
-the exposed variables. email property is also exposed because we metioned the group "user.email".
+the exposed variables. email property is also exposed because we mentioned the group "user.email".
 
 ## Working with generics[⬆](#table-of-contents)
 
@@ -841,7 +842,7 @@ There are some tweaks however you can use, that maybe can solve your problem.
 
 ## Implicit type conversion[⬆](#table-of-contents)
 
-> **NOTE** If you use class-validator together with class-transformer you propably DON'T want to enable this function.
+> **NOTE** If you use class-validator together with class-transformer you probably DON'T want to enable this function.
 
 Enables automatic conversion between built-in types based on type information provided by Typescript. Disabled by default.
 
