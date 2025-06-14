@@ -157,7 +157,8 @@ export class TransformOperationExecutor {
         if (isMap) {
           newValue = new Map();
         } else if (targetType) {
-          newValue = new (targetType as any)();
+          const args = this.extractClassConstructorProperties(targetType.toString());
+          newValue = new (targetType as any)(...args.map(({ argument }) => value[argument]));
         } else {
           newValue = {};
         }
@@ -551,5 +552,33 @@ export class TransformOperationExecutor {
 
     const prototype = Object.getPrototypeOf(obj);
     return prototype ? this.getPropertyDescriptor(prototype, key) : undefined;
+  }
+
+  private extractClassConstructorProperties(code: string): Array<{ property: string; argument: string }> {
+    const match = /constructor\s*\(([\s\S]*?)\)/.exec(code);
+    const matchedString = match && match[1];
+    if (!matchedString) return [];
+
+    const args = match[1]
+      .replace(/\/\*[\s\S]*?\*\//g, '') // remove block comment
+      .replace(/\/\/.*/g, '') // remove line comments
+      .replace(/[\r\n\t]/g, ' ') // replace all escaped whitespace chars to space
+      .split(',')
+      .map(arg => arg.trim())
+      .filter(arg => arg);
+
+    const assignmentRegex = /this\.(\w+)\s*=\s*(\w+)/g;
+    /** @type {{ property: string, argument: string }[]} */
+    const results = [];
+
+    let matchAssign;
+    while ((matchAssign = assignmentRegex.exec(code)) !== null) {
+      const [, property, argument] = matchAssign;
+      if (args.includes(argument)) {
+        results.push({ property, argument });
+      }
+    }
+
+    return results;
   }
 }
