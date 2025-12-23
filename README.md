@@ -342,9 +342,9 @@ console.log(plainToInstance(User, fromPlainUser, { excludeExtraneousValues: true
 ## Working with nested objects[⬆](#table-of-contents)
 
 When you are trying to transform objects that have nested objects,
-it's required to known what type of object you are trying to transform.
+it's required to know what type of object being transformed.
 Since Typescript does not have good reflection abilities yet,
-we should implicitly specify what type of object each property contain.
+we must implicitly specify what type of object each property contains.
 This is done using `@Type` decorator.
 
 Lets say we have an album with photos.
