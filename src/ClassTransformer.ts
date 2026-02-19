@@ -18,10 +18,7 @@ export class ClassTransformer {
     object: T | T[],
     options?: ClassTransformOptions
   ): Record<string, any> | Record<string, any>[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, {
-      ...defaultOptions,
-      ...options,
-    });
+    const executor = this.getExecutor(TransformationType.CLASS_TO_PLAIN, options);
     return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
   }
 
@@ -45,10 +42,7 @@ export class ClassTransformer {
     plainObject: P | P[],
     options?: ClassTransformOptions
   ): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_PLAIN, {
-      ...defaultOptions,
-      ...options,
-    });
+    const executor = this.getExecutor(TransformationType.CLASS_TO_PLAIN, options);
     return executor.transform(plainObject, object, undefined, undefined, undefined, undefined);
   }
 
@@ -70,10 +64,7 @@ export class ClassTransformer {
     plain: V | V[],
     options?: ClassTransformOptions
   ): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, {
-      ...defaultOptions,
-      ...options,
-    });
+    const executor = this.getExecutor(TransformationType.PLAIN_TO_CLASS, options);
     return executor.transform(undefined, plain, cls, undefined, undefined, undefined);
   }
 
@@ -93,10 +84,7 @@ export class ClassTransformer {
     plain: V | V[],
     options?: ClassTransformOptions
   ): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, {
-      ...defaultOptions,
-      ...options,
-    });
+    const executor = this.getExecutor(TransformationType.PLAIN_TO_CLASS, options);
     return executor.transform(clsObject, plain, undefined, undefined, undefined, undefined);
   }
 
@@ -106,10 +94,7 @@ export class ClassTransformer {
   instanceToInstance<T>(object: T, options?: ClassTransformOptions): T;
   instanceToInstance<T>(object: T[], options?: ClassTransformOptions): T[];
   instanceToInstance<T>(object: T | T[], options?: ClassTransformOptions): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, {
-      ...defaultOptions,
-      ...options,
-    });
+    const executor = this.getExecutor(TransformationType.CLASS_TO_CLASS, options);
     return executor.transform(undefined, object, undefined, undefined, undefined, undefined);
   }
 
@@ -121,10 +106,7 @@ export class ClassTransformer {
   classToClassFromExist<T>(object: T, fromObject: T, options?: ClassTransformOptions): T;
   classToClassFromExist<T>(object: T, fromObjects: T[], options?: ClassTransformOptions): T[];
   classToClassFromExist<T>(object: T, fromObject: T | T[], options?: ClassTransformOptions): T | T[] {
-    const executor = new TransformOperationExecutor(TransformationType.CLASS_TO_CLASS, {
-      ...defaultOptions,
-      ...options,
-    });
+    const executor = this.getExecutor(TransformationType.CLASS_TO_CLASS, options);
     return executor.transform(fromObject, object, undefined, undefined, undefined, undefined);
   }
 
@@ -151,5 +133,19 @@ export class ClassTransformer {
   deserializeArray<T>(cls: ClassConstructor<T>, json: string, options?: ClassTransformOptions): T[] {
     const jsonObject: any[] = JSON.parse(json);
     return this.plainToInstance(cls, jsonObject, options);
+  }
+
+  // -------------------------------------------------------------------------
+  // Private Methods
+  // -------------------------------------------------------------------------
+
+  private getExecutor(
+    transformationType: TransformationType,
+    options?: ClassTransformOptions
+  ): TransformOperationExecutor {
+    return new TransformOperationExecutor(
+      transformationType,
+      options ? { ...defaultOptions, ...options } : defaultOptions
+    );
   }
 }
