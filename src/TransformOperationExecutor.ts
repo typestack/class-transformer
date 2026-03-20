@@ -486,7 +486,9 @@ export class TransformOperationExecutor {
       // apply versioning options
       if (this.options.version !== undefined) {
         keys = keys.filter(key => {
-          const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+          const exposeMetadata =
+            defaultMetadataStorage.findExposeMetadata(target, key) ||
+            defaultMetadataStorage.findExposeMetadataByCustomName(target, key);
           if (!exposeMetadata || !exposeMetadata.options) return true;
 
           return this.checkVersion(exposeMetadata.options.since, exposeMetadata.options.until);
@@ -496,14 +498,18 @@ export class TransformOperationExecutor {
       // apply grouping options
       if (this.options.groups && this.options.groups.length) {
         keys = keys.filter(key => {
-          const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+          const exposeMetadata =
+            defaultMetadataStorage.findExposeMetadata(target, key) ||
+            defaultMetadataStorage.findExposeMetadataByCustomName(target, key);
           if (!exposeMetadata || !exposeMetadata.options) return true;
 
           return this.checkGroups(exposeMetadata.options.groups);
         });
       } else {
         keys = keys.filter(key => {
-          const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+          const exposeMetadata =
+            defaultMetadataStorage.findExposeMetadata(target, key) ||
+            defaultMetadataStorage.findExposeMetadataByCustomName(target, key);
           return (
             !exposeMetadata ||
             !exposeMetadata.options ||

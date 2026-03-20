@@ -1496,6 +1496,27 @@ describe('basic functionality', () => {
     });
   });
 
+  it('should respect since/until on properties with a different name', () => {
+    defaultMetadataStorage.clear();
+
+    class Sample {
+      @Expose({ name: 'fizz', since: 0, until: 1 })
+      foo: any;
+      @Expose({ name: 'buzz', since: 2 })
+      bar: any;
+    }
+
+    const result1 = plainToInstance(Sample, { fizz: 'fizz', buzz: 'buzz' }, { version: 2 });
+    expect(result1).toBeInstanceOf(Sample);
+    expect(result1.foo).toBeUndefined();
+    expect(result1.bar).toEqual('buzz');
+
+    const result2 = plainToInstance(Sample, { fizz: 'fizz', buzz: 'buzz' }, { version: 0.5 });
+    expect(result2).toBeInstanceOf(Sample);
+    expect(result2.foo).toEqual('fizz');
+    expect(result2.bar).toBeUndefined();
+  });
+
   it('should expose method and accessors that have @Expose()', () => {
     defaultMetadataStorage.clear();
 
