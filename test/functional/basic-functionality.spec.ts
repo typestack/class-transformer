@@ -1496,6 +1496,27 @@ describe('basic functionality', () => {
     });
   });
 
+  it('should respect since/until on properties with a different name', () => {
+    defaultMetadataStorage.clear();
+
+    class Sample {
+      @Expose({ name: 'fizz', since: 0, until: 1 })
+      foo: any;
+      @Expose({ name: 'buzz', since: 2 })
+      bar: any;
+    }
+
+    const result1 = plainToInstance(Sample, { fizz: 'fizz', buzz: 'buzz' }, { version: 2 });
+    expect(result1).toBeInstanceOf(Sample);
+    expect(result1.foo).toBeUndefined();
+    expect(result1.bar).toEqual('buzz');
+
+    const result2 = plainToInstance(Sample, { fizz: 'fizz', buzz: 'buzz' }, { version: 0.5 });
+    expect(result2).toBeInstanceOf(Sample);
+    expect(result2.foo).toEqual('fizz');
+    expect(result2.bar).toBeUndefined();
+  });
+
   it('should expose method and accessors that have @Expose()', () => {
     defaultMetadataStorage.clear();
 
@@ -1662,6 +1683,55 @@ describe('basic functionality', () => {
     likeUser.photo.id = 1;
     likeUser.photo.status = 1;
     expect(transformedUser).toEqual(likeUser);
+  });
+
+  it('should expose inherited method and accessors that have @Expose()', () => {
+    class User {
+      firstName: string;
+      lastName: string;
+
+      @Expose()
+      get name() {
+        return this.firstName + ' ' + this.lastName;
+      }
+
+      @Expose()
+      getName() {
+        return this.firstName + ' ' + this.lastName;
+      }
+    }
+    class Programmer extends User {
+      language: string;
+    }
+
+    const programmer = new Programmer();
+    programmer.firstName = 'Umed';
+    programmer.lastName = 'Khudoiberdiev';
+    programmer.language = 'en';
+
+    const fromPlainProgrammer = {
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      language: 'en',
+    };
+
+    const plainProgrammer: any = instanceToPlain(programmer);
+    expect(plainProgrammer).not.toBeInstanceOf(Programmer);
+    expect(plainProgrammer).toEqual({
+      firstName: 'Umed',
+      lastName: 'Khudoiberdiev',
+      language: 'en',
+      name: 'Umed Khudoiberdiev',
+      getName: 'Umed Khudoiberdiev',
+    });
+
+    const transformedProgrammer = plainToInstance(Programmer, fromPlainProgrammer);
+    expect(transformedProgrammer).toBeInstanceOf(Programmer);
+    const likeProgrammer = new Programmer();
+    likeProgrammer.firstName = 'Umed';
+    likeProgrammer.lastName = 'Khudoiberdiev';
+    likeProgrammer.language = 'en';
+    expect(transformedProgrammer).toEqual(likeProgrammer);
   });
 
   it('should transform array', () => {

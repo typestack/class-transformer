@@ -295,7 +295,7 @@ export class TransformOperationExecutor {
 
         // if newValue is a source object that has method that match newKeyName then skip it
         if (newValue.constructor.prototype) {
-          const descriptor = Object.getOwnPropertyDescriptor(newValue.constructor.prototype, newValueKey);
+          const descriptor = this.getPropertyDescriptor(newValue.constructor.prototype, newValueKey);
           if (
             (this.transformationType === TransformationType.PLAIN_TO_CLASS ||
               this.transformationType === TransformationType.CLASS_TO_CLASS) &&
@@ -486,7 +486,9 @@ export class TransformOperationExecutor {
       // apply versioning options
       if (this.options.version !== undefined) {
         keys = keys.filter(key => {
-          const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+          const exposeMetadata =
+            defaultMetadataStorage.findExposeMetadata(target, key) ||
+            defaultMetadataStorage.findExposeMetadataByCustomName(target, key);
           if (!exposeMetadata || !exposeMetadata.options) return true;
 
           return this.checkVersion(exposeMetadata.options.since, exposeMetadata.options.until);
@@ -496,14 +498,18 @@ export class TransformOperationExecutor {
       // apply grouping options
       if (this.options.groups && this.options.groups.length) {
         keys = keys.filter(key => {
-          const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+          const exposeMetadata =
+            defaultMetadataStorage.findExposeMetadata(target, key) ||
+            defaultMetadataStorage.findExposeMetadataByCustomName(target, key);
           if (!exposeMetadata || !exposeMetadata.options) return true;
 
           return this.checkGroups(exposeMetadata.options.groups);
         });
       } else {
         keys = keys.filter(key => {
-          const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
+          const exposeMetadata =
+            defaultMetadataStorage.findExposeMetadata(target, key) ||
+            defaultMetadataStorage.findExposeMetadataByCustomName(target, key);
           return (
             !exposeMetadata ||
             !exposeMetadata.options ||
@@ -543,5 +549,13 @@ export class TransformOperationExecutor {
     if (!groups) return true;
 
     return this.options.groups.some(optionGroup => groups.includes(optionGroup));
+  }
+
+  private getPropertyDescriptor(obj: any, key: PropertyKey): PropertyDescriptor | undefined {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    if (descriptor) return descriptor;
+
+    const prototype = Object.getPrototypeOf(obj);
+    return prototype ? this.getPropertyDescriptor(prototype, key) : undefined;
   }
 }

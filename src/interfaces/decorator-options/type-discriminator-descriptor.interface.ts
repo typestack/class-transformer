@@ -18,7 +18,7 @@ export interface DiscriminatorDescriptor {
     /**
      * Name of the type.
      */
-    name: string;
+    name: string | number;
 
     /**
      * A class constructor which can be used to create the object.

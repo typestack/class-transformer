@@ -2,8 +2,8 @@
 
 There are two main exported functions what can be used for transformations:
 
-- `plainToClass` - transforms a plain object to an instance of the specified class constructor
-- `classToPlain` - transforms a _known_ class instance to a plain object
+- `plainToInstance` - transforms a plain object to an instance of the specified class constructor
+- `instanceToPlain` - transforms a _known_ class instance to a plain object
 
 Both function transforms the source object to the target via applying the metadata registered by the decorators on
 the class definition. The four main decorators are:
