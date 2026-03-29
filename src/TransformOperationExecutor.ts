@@ -470,7 +470,11 @@ export class TransformOperationExecutor {
         });
       }
       if (this.options.excludeExtraneousValues) {
-        keys = exposedProperties;
+        if (this.options.strategy === 'exposeAll') {
+          keys = [...new Set([...keys, ...exposedProperties])];
+        } else {
+          keys = exposedProperties;
+        }
       } else {
         keys = keys.concat(exposedProperties);
       }
