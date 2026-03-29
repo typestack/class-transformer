@@ -152,6 +152,45 @@ describe('basic functionality', () => {
     });
   });
 
+  it('should not return empty object when using exposeAll strategy with excludeExtraneousValues', () => {
+    // fixes https://github.com/typestack/class-transformer/issues/740
+    defaultMetadataStorage.clear();
+
+    class Dog {
+      name: string;
+      surname: string;
+    }
+
+    const plainDog = { name: 'hello', surname: 'world' };
+    const dog = plainToInstance(Dog, plainDog, {
+      strategy: 'exposeAll',
+      excludeExtraneousValues: true,
+    });
+
+    expect(dog).toBeInstanceOf(Dog);
+    expect(dog.name).toEqual('hello');
+    expect(dog.surname).toEqual('world');
+  });
+
+  it('should preserve @Expose() properties when using exposeAll strategy with excludeExtraneousValues', () => {
+    defaultMetadataStorage.clear();
+
+    class Cat {
+      @Expose({ name: 'catName' }) name: string;
+      color: string;
+    }
+
+    const plainCat = { catName: 'Whiskers', color: 'black' };
+    const cat = plainToInstance(Cat, plainCat, {
+      strategy: 'exposeAll',
+      excludeExtraneousValues: true,
+    });
+
+    expect(cat).toBeInstanceOf(Cat);
+    expect(cat.name).toEqual('Whiskers');
+    expect(cat.color).toEqual('black');
+  });
+
   it('should exclude all objects marked with @Exclude() decorator', () => {
     defaultMetadataStorage.clear();
 
