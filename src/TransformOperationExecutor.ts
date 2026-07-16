@@ -241,7 +241,7 @@ export class TransformOperationExecutor {
                   }
                 }
                 if (this.transformationType === TransformationType.CLASS_TO_CLASS) {
-                  type = subValue.constructor;
+                  type = subValue ? subValue.constructor : newType;
                 }
                 if (this.transformationType === TransformationType.CLASS_TO_PLAIN) {
                   if (subValue) {

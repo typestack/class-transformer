@@ -783,6 +783,43 @@ describe('custom transformation decorator', () => {
     }).not.toThrow();
   });
 
+  it('should not throw when transforming an instance whose discriminated property is null (instanceToInstance)', () => {
+    defaultMetadataStorage.clear();
+
+    class FullName {
+      public first?: string;
+      public last?: string;
+    }
+
+    class LockedValue {
+      public readonly __type = 'LockedValue';
+
+      constructor(public value: string) {}
+    }
+
+    class User {
+      @Type(() => FullName, {
+        keepDiscriminatorProperty: true,
+        discriminator: {
+          property: '__type',
+          subTypes: [{ value: LockedValue, name: 'LockedValue' }],
+        },
+      })
+      @Expose()
+      public fullName?: FullName | LockedValue = null;
+    }
+
+    const user = new User();
+    user.fullName = null;
+
+    let copy: User;
+    expect(() => {
+      copy = instanceToInstance(user);
+    }).not.toThrow();
+    expect(copy).toBeInstanceOf(User);
+    expect(copy.fullName).toBeNull();
+  });
+
   it('should serialize a model into json', () => {
     expect(() => {
       instanceToPlain(model);
