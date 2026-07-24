@@ -117,6 +117,9 @@ export class TransformOperationExecutor {
     } else if (!!getGlobal().Buffer && (targetType === Buffer || value instanceof Buffer) && !isMap) {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
+    } else if ((targetType === Uint8Array || value instanceof Uint8Array) && !isMap) {
+      if (value === null || value === undefined) return value;
+      return new Uint8Array(value);
     } else if (isPromise(value) && !isMap) {
       return new Promise((resolve, reject) => {
         value.then(
