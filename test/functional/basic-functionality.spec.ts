@@ -726,6 +726,29 @@ describe('basic functionality', () => {
     });
   });
 
+  it('should preserve Uint8Array values when converting to class instances', () => {
+    defaultMetadataStorage.clear();
+
+    class User {
+      @Type(() => Uint8Array)
+      bytes: Uint8Array;
+    }
+
+    const bytes = new Uint8Array([1, 2, 3]);
+    const fromPlainUser = { bytes };
+
+    const transformedUser = plainToInstance(User, fromPlainUser);
+    expect(transformedUser).toBeInstanceOf(User);
+    expect(transformedUser.bytes).toBeInstanceOf(Uint8Array);
+    expect(Array.from(transformedUser.bytes)).toEqual([1, 2, 3]);
+
+    const fromExistUser = new User();
+    const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser);
+    expect(fromExistTransformedUser).toBe(fromExistUser);
+    expect(fromExistTransformedUser.bytes).toBeInstanceOf(Uint8Array);
+    expect(Array.from(fromExistTransformedUser.bytes)).toEqual([1, 2, 3]);
+  });
+
   it('should transform nested objects too and make sure their decorators are used too', () => {
     defaultMetadataStorage.clear();
 
