@@ -55,7 +55,7 @@ export class ClassTransformer {
   /**
    * Converts plain (literal) object to class (constructor) object. Also works with arrays.
    */
-  plainToInstance<T extends Record<string, any>, V extends Array<any>>(
+  plainToInstance<T extends Record<string, any>, V extends ReadonlyArray<any>>(
     cls: ClassConstructor<T>,
     plain: V,
     options?: ClassTransformOptions
@@ -67,7 +67,7 @@ export class ClassTransformer {
   ): T;
   plainToInstance<T extends Record<string, any>, V>(
     cls: ClassConstructor<T>,
-    plain: V | V[],
+    plain: V | ReadonlyArray<V>,
     options?: ClassTransformOptions
   ): T | T[] {
     const executor = new TransformOperationExecutor(TransformationType.PLAIN_TO_CLASS, {
