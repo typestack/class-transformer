@@ -4,6 +4,45 @@ import { defaultMetadataStorage } from '../../src/storage';
 import { Type } from '../../src/decorators';
 
 describe('es6 data types', () => {
+  it('preserves a Set input when the destination property is a Set', () => {
+    defaultMetadataStorage.clear();
+
+    class User {
+      @Type(() => String)
+      weapons: Set<string>;
+    }
+
+    const weapons = new Set(['knife', 'eagle']);
+    const user = plainToInstance(User, { weapons });
+
+    expect(user.weapons).toBeInstanceOf(Set);
+    expect(user.weapons).toEqual(weapons);
+    expect(user.weapons).not.toBe(weapons);
+    expect(instanceToPlain(user)).toEqual({ weapons: ['knife', 'eagle'] });
+  });
+
+  it('transforms objects in a Set input to the declared element type', () => {
+    defaultMetadataStorage.clear();
+
+    class Skill {
+      name: string;
+    }
+
+    class User {
+      @Type(() => Skill)
+      skills: Set<Skill>;
+    }
+
+    const skill = { name: 'archery' };
+    const user = plainToInstance(User, { skills: new Set([skill]) });
+
+    expect(user.skills).toBeInstanceOf(Set);
+    const [transformedSkill] = Array.from(user.skills);
+    expect(transformedSkill).toBeInstanceOf(Skill);
+    expect(transformedSkill.name).toBe('archery');
+    expect(transformedSkill).not.toBe(skill);
+  });
+
   it('using Map', () => {
     defaultMetadataStorage.clear();
 

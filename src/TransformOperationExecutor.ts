@@ -280,10 +280,11 @@ export class TransformOperationExecutor {
           }
         }
 
-        // if value is an array try to get its custom array type
-        const arrayType = Array.isArray(value[valueKey])
-          ? this.getReflectedType(targetType as Function, propertyName)
-          : undefined;
+        // Preserve the declared collection type for both array and Set inputs.
+        const arrayType =
+          Array.isArray(value[valueKey]) || value[valueKey] instanceof Set
+            ? this.getReflectedType(targetType as Function, propertyName)
+            : undefined;
 
         // const subValueKey = TransformationType === TransformationType.PLAIN_TO_CLASS && newKeyName ? newKeyName : key;
         const subSource = source ? source[valueKey] : undefined;
