@@ -1,9 +1,43 @@
 import 'reflect-metadata';
-import { deserialize, deserializeArray, serialize } from '../../src/index';
+import { deserialize, deserializeArray, serialize, plainToInstance, instanceToPlain } from '../../src/index';
 import { defaultMetadataStorage } from '../../src/storage';
-import { Exclude } from '../../src/decorators';
+import { Exclude, Expose } from '../../src/decorators';
 
 describe('serialization and deserialization objects', () => {
+  it('maps an exposed alias before checking whether the destination property is excluded', () => {
+    defaultMetadataStorage.clear();
+
+    class Example {
+      @Expose({ name: 'value' })
+      _value = 0;
+
+      @Exclude()
+      get value(): number {
+        return this._value;
+      }
+
+      set value(value: number) {
+        throw new Error('The excluded setter must not run');
+      }
+    }
+
+    const result = plainToInstance(Example, { value: 1000 });
+    expect(result._value).toBe(1000);
+    expect(instanceToPlain(result)).toEqual({ value: 1000 });
+  });
+
+  it('still excludes a property when its input uses an exposed alias', () => {
+    defaultMetadataStorage.clear();
+
+    class Example {
+      @Expose({ name: 'secret' })
+      @Exclude()
+      value = 'default';
+    }
+
+    expect(plainToInstance(Example, { secret: 'hidden' }).value).toBe('default');
+  });
+
   it('should perform serialization and deserialization properly', () => {
     defaultMetadataStorage.clear();
 

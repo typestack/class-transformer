@@ -479,7 +479,12 @@ export class TransformOperationExecutor {
       const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);
       if (excludedProperties.length > 0) {
         keys = keys.filter(key => {
-          return !excludedProperties.includes(key);
+          const exposeMetadata =
+            this.transformationType === TransformationType.PLAIN_TO_CLASS
+              ? defaultMetadataStorage.findExposeMetadataByCustomName(target, key)
+              : undefined;
+          const propertyName = exposeMetadata ? exposeMetadata.propertyName : key;
+          return !excludedProperties.includes(propertyName);
         });
       }
 
