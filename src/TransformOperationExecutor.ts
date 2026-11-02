@@ -199,7 +199,7 @@ export class TransformOperationExecutor {
            *
            * We should not call functions or constructors when transforming to class.
            */
-          subValue = value[valueKey];
+          subValue = value instanceof Map ? value.get(valueKey) : value[valueKey];
         } else {
           if (value instanceof Map) {
             subValue = value.get(valueKey);
