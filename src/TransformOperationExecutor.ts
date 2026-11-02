@@ -533,8 +533,8 @@ export class TransformOperationExecutor {
 
   private checkVersion(since: number, until: number): boolean {
     let decision = true;
-    if (decision && since) decision = this.options.version >= since;
-    if (decision && until) decision = this.options.version < until;
+    if (decision && since !== undefined) decision = this.options.version >= since;
+    if (decision && until !== undefined) decision = this.options.version < until;
 
     return decision;
   }
