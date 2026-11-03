@@ -156,6 +156,7 @@ export class MetadataStorage {
 
   clear(): void {
     this._typeMetadatas.clear();
+    this._transformMetadatas.clear();
     this._exposeMetadatas.clear();
     this._excludeMetadatas.clear();
     this._ancestorsMap.clear();
