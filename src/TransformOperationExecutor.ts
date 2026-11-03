@@ -118,12 +118,9 @@ export class TransformOperationExecutor {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
     } else if (isPromise(value) && !isMap) {
-      return new Promise((resolve, reject) => {
-        value.then(
-          (data: any) => resolve(this.transform(undefined, data, targetType, undefined, undefined, level + 1)),
-          reject
-        );
-      });
+      return Promise.resolve(value).then(data =>
+        this.transform(undefined, data, targetType, undefined, undefined, level + 1)
+      );
     } else if (!isMap && value !== null && typeof value === 'object' && typeof value.then === 'function') {
       // Note: We should not enter this, as promise has been handled above
       // This option simply returns the Promise preventing a JS error from happening and should be an inaccessible path.

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { defaultMetadataStorage } from '../../src/storage';
-import { plainToInstance, Type, instanceToPlain } from '../../src';
+import { plainToInstance, Type, instanceToPlain, Transform } from '../../src';
 
 describe('promise field', () => {
   it('should transform plan to class with promise field', async () => {
@@ -80,4 +80,31 @@ describe('promise field', () => {
     expect(value).toBeInstanceOf(InnerClass);
     expect(value.position).toBe('developer');
   });
+});
+
+describe('promise transformation failures', () => {
+  it('rejects the transformed promise when a nested transform throws', async () => {
+    const failure = new Error('invalid nested value');
+    class Child {
+      @Transform(() => {
+        throw failure;
+      })
+      value: string;
+    }
+    class Parent {
+      @Type(() => Child)
+      child: Promise<Child>;
+    }
+    const parent = plainToInstance(Parent, { child: Promise.resolve({ value: 'invalid' }) });
+    await expect(parent.child).rejects.toBe(failure);
+  });
+});
+
+it('preserves a rejected input promise', async () => {
+  class Parent {
+    value: Promise<string>;
+  }
+  const failure = new Error('failed to load value');
+  const parent = plainToInstance(Parent, { value: Promise.reject(failure) });
+  await expect(parent.value).rejects.toBe(failure);
 });
