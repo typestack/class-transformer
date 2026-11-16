@@ -1,7 +1,7 @@
 import { defaultMetadataStorage } from './storage';
 import { ClassTransformOptions, TypeHelpOptions, TypeMetadata, TypeOptions } from './interfaces';
 import { TransformationType } from './enums';
-import { getGlobal, isPromise } from './utils';
+import { getGlobal, isPromise, isTemporalValue } from './utils';
 
 function instantiateArrayType(arrayType: Function): Array<any> | Set<any> {
   const array = new (arrayType as any)();
@@ -114,6 +114,9 @@ export class TransformOperationExecutor {
       }
       if (value === null || value === undefined) return value;
       return new Date(value);
+    } else if (isTemporalValue(value) && !isMap) {
+      // Temporal values are immutable and cannot be built without constructor arguments.
+      return value;
     } else if (!!getGlobal().Buffer && (targetType === Buffer || value instanceof Buffer) && !isMap) {
       if (value === null || value === undefined) return value;
       return Buffer.from(value);
