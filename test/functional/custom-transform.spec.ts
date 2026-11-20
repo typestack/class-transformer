@@ -788,4 +788,39 @@ describe('custom transformation decorator', () => {
       instanceToPlain(model);
     }).not.toThrow();
   });
+
+  it('should transform plain to instance when field is an instance of a class that requires constructor arguments (#1829)', () => {
+    defaultMetadataStorage.clear();
+
+    class CustomDecimal {
+      public value: number;
+      constructor(val: any) {
+        if (val === undefined) {
+          throw new Error('Invalid argument: undefined');
+        }
+        this.value = val instanceof CustomDecimal ? val.value : Number(val);
+      }
+    }
+
+    class FailingDto {
+      @Transform(({ value }) => new CustomDecimal(value))
+      public value!: CustomDecimal;
+    }
+
+    const input = { value: new CustomDecimal(1) };
+    const result = plainToInstance(FailingDto, input);
+    expect(result).toBeInstanceOf(FailingDto);
+    expect(result.value).toBeInstanceOf(CustomDecimal);
+    expect(result.value.value).toEqual(1);
+
+    class SimpleDto {
+      @Expose()
+      public value!: CustomDecimal;
+    }
+
+    const simpleResult = plainToInstance(SimpleDto, input);
+    expect(simpleResult).toBeInstanceOf(SimpleDto);
+    expect(simpleResult.value).toBeInstanceOf(CustomDecimal);
+    expect(simpleResult.value.value).toEqual(1);
+  });
 });

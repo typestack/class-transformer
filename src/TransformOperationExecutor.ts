@@ -157,7 +157,11 @@ export class TransformOperationExecutor {
         if (isMap) {
           newValue = new Map();
         } else if (targetType) {
-          newValue = new (targetType as any)();
+          try {
+            newValue = new (targetType as any)();
+          } catch {
+            newValue = (targetType as any).prototype ? Object.create((targetType as any).prototype) : {};
+          }
         } else {
           newValue = {};
         }
